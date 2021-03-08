@@ -87,11 +87,7 @@ public class NavMeshMovement : MonoBehaviour
 
     private void MoveInToDirection(Vector3 direction)
     {
-        direction.x *= SideAndBackFactor;
-        if (direction.y < 0)
-        {
-            direction.y *= SideAndBackFactor;
-        }
+        
         direction = direction * (Time.deltaTime * speed);
         agent.Move(direction);
         
@@ -130,9 +126,22 @@ public class NavMeshMovement : MonoBehaviour
         return _currentSpeed;
     }
 
-    /*public Vector3 GetCurrentPositionOnNavmesh()
+    public Vector3 GetCurrentPositionOnGround()
     {
-      //  agent.
-    }*/
+        RaycastHit hit;
+        if (Physics.Raycast(_hmdTransform.position, Vector3.down, out hit))
+        {
+            return hit.point;
+        }
+        else
+        {
+            return _hmdTransform.position;
+        }
+    }
+
+    public Quaternion GetCurrentRotation()
+    {
+        return _hmdTransform.rotation;
+    }
     
 }

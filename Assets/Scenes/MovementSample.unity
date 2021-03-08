@@ -208,7 +208,7 @@ PrefabInstance:
     - target: {fileID: 1994059494901426056, guid: 31b47306033263d46a7af37e524afe31,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.59
+      value: 0.382
       objectReference: {fileID: 0}
     - target: {fileID: 1994059494901426056, guid: 31b47306033263d46a7af37e524afe31,
         type: 3}
@@ -317,7 +317,7 @@ MonoBehaviour:
   _hmdTransform: {fileID: 189965259}
   head: {fileID: 1765875077}
   Orientation: {fileID: 189965258}
-  speed: 1
+  speed: 4.5
   SideAndBackFactor: 0.33
 --- !u!114 &43924313
 MonoBehaviour:
@@ -2018,7 +2018,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 1926792969}
 --- !u!114 &1029897361
@@ -7833,9 +7833,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 429506, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.323
+      objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7843,7 +7847,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -11910,9 +11914,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3201057282036645989}
   - component: {fileID: 3201057282036645988}
+  - component: {fileID: 3201057282036645991}
   - component: {fileID: 3201057282036645987}
   - component: {fileID: 3201057282036645990}
-  - component: {fileID: 3201057282036645991}
   - component: {fileID: 3201057282036645992}
   m_Layer: 0
   m_Name: Pilot
@@ -11988,7 +11992,7 @@ MonoBehaviour:
       rootHeadingOffset: 7
     leftArm:
       bones: []
-      target: {fileID: 0}
+      target: {fileID: 3201057281712438568}
       bendGoal: {fileID: 0}
       positionWeight: 1
       rotationWeight: 1
@@ -12035,7 +12039,7 @@ MonoBehaviour:
         m_RotationOrder: 0
     rightArm:
       bones: []
-      target: {fileID: 0}
+      target: {fileID: 3201057281742958719}
       bendGoal: {fileID: 0}
       positionWeight: 1
       rotationWeight: 1
