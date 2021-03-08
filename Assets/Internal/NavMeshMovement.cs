@@ -14,20 +14,32 @@ public class NavMeshMovement : MonoBehaviour
     private NavMeshAgent agent;
     [Range(0.0f,15.0f)] public float speed;
     private Vector3 BodyDirection;
+
+    private float _currentSpeed;
+    
     private bool freezed;
-   
+
+    private Vector3 oldPos;
+    private Vector3 newPos;
+
+
+    public float SideAndBackFactor = 0.33f;
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         //agent.updateRotation = true;
-        
+        oldPos =newPos=  transform.position;
     }
 
     private void FixedUpdate()
     {
         if(!freezed)
             head.transform.position = this.transform.position;
+        
+        newPos = transform.position;
+        var media =  (newPos - oldPos);
+        _currentSpeed = (media / Time.deltaTime).magnitude;
     }
 
     // Update is called once per frame
@@ -45,9 +57,22 @@ public class NavMeshMovement : MonoBehaviour
         this.transform.rotation = targetRot;
         
         
-       //agent.angularSpeed = 300;
-
+        newPos = transform.position;
+        var media =  (newPos - oldPos);
+        _currentSpeed = (media.magnitude / Time.deltaTime);
+      
         
+        
+        Debug.Log(_currentSpeed);
+        
+       //agent.angularSpeed = 300;
+       oldPos = newPos;
+        
+        
+    }
+
+    private void LateUpdate()
+    {
         
     }
 
@@ -62,9 +87,17 @@ public class NavMeshMovement : MonoBehaviour
 
     private void MoveInToDirection(Vector3 direction)
     {
+        direction.x *= SideAndBackFactor;
+        if (direction.y < 0)
+        {
+            direction.y *= SideAndBackFactor;
+        }
+        direction = direction * (Time.deltaTime * speed);
+        agent.Move(direction);
         
-        agent.Move(Time.deltaTime*speed*direction);
-       
+       // _currentSpeed = direction.magnitude;
+        agent.velocity = direction;
+//        Debug.Log(agent.velocity.z +" " + _currentSpeed);
     }
 
 
@@ -91,6 +124,15 @@ public class NavMeshMovement : MonoBehaviour
         
         //agent.enabled = true;
     }
-    
+
+    public float GetCurrentSpeed()
+    {
+        return _currentSpeed;
+    }
+
+    /*public Vector3 GetCurrentPositionOnNavmesh()
+    {
+      //  agent.
+    }*/
     
 }
