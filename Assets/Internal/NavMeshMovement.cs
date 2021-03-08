@@ -45,7 +45,7 @@ public class NavMeshMovement : MonoBehaviour
         this.transform.rotation = targetRot;
         
         
-        agent.angularSpeed = 300;
+       //agent.angularSpeed = 300;
 
         
         

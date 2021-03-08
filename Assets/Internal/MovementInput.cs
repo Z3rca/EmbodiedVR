@@ -17,9 +17,10 @@ public class MovementInput : MonoBehaviour
     private bool UseIsPressed; 
     
     private bool InputAllowed;
+
+    public EventHandler<InputData> InputEvent;
     
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +33,7 @@ public class MovementInput : MonoBehaviour
         //Use.AddOnStateDownListener(TriggerUp, SteamVR_Input_Sources.Any);
         UseIsPressed = false;
 
+       
     }
 
     // Update is called once per frame
@@ -39,6 +41,11 @@ public class MovementInput : MonoBehaviour
     {
 
         Vector2 Movement = Input.GetAxis(SteamVR_Input_Sources.Any);
+
+        InputData inputData= new InputData();
+        inputData.input = Movement;
+        //TODO still missing inputData.timeStamp;
+        InputEvent?.Invoke(this,inputData);
 
         if (DisableSideWayMovement)
         {
