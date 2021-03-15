@@ -44,10 +44,13 @@ public class PhysicalMovement : MonoBehaviour
 
         Vector3 move = (transform.right * x + transform.forward * z);
         
-        controller.Move(move*speed*Time.deltaTime);
+        controller.Move(((move*speed)+velocity)*Time.deltaTime);
 
 
-        controller.Move(velocity*Time.deltaTime);
+       // controller.Move(*Time.deltaTime);
+        
+        
+     
     }
     
     
@@ -64,6 +67,7 @@ public class PhysicalMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
+        Debug.Log(controller.velocity.magnitude*Time.deltaTime);
        // rb.velocity = transform.up * (Gravity * Time.deltaTime);
         
     }
