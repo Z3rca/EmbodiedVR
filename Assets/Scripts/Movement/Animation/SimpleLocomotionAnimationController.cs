@@ -50,13 +50,13 @@ public class SimpleLocomotionAnimationController: MonoBehaviour
         currentPositionOnGround = movementData.WorldPosition;
         currentRotation = movementData.RotationInWorld;
         smoothedSpeed = Mathf.Lerp(currentSpeed, lastSpeed, Time.deltaTime);
-           Debug.Log("received input " + movementData.speed );
+//           Debug.Log("received input " + movementData.speed );
         if (movementData.input != Vector2.zero)
         {
             
             //animator.speed = movementData.speed;
             animator.SetFloat("Velocity",smoothedSpeed);
-            Debug.Log("anim" + animator.GetFloat("Velocity"));
+    //        Debug.Log("anim" + animator.GetFloat("Velocity"));
             animator.SetBool("IsMoving",true);
             animator.SetFloat("X", movementData.input.x);
             animator.SetFloat("Z", movementData.input.y);
