@@ -23,10 +23,28 @@ public class PhysicalMovement : MonoBehaviour
 
     private bool isGrounded;
     public LayerMask groundMask;
+
+    private float currentSpeed;
+    private Vector2 direction;
+
+    public GameObject puppet;
+    private CCAnimator ccAnimator;
+
+
+    public float speedFront;
+    public float speedBack;
+    public float speedLeft;
+    public float speedRight;
+
+
+
+
     private void Start()
     {
         controller = GetComponent<CharacterController>();
         rb = GetComponent<Rigidbody>();
+
+        ccAnimator = puppet.GetComponent<CCAnimator>();
     }
 
     private void Update()
@@ -41,6 +59,11 @@ public class PhysicalMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+      
+//        Debug.Log(x + " " + z);
+        direction.x = x;
+        direction.y = z;
+
 
         Vector3 move = (transform.right * x + transform.forward * z);
         
@@ -48,9 +71,11 @@ public class PhysicalMovement : MonoBehaviour
 
 
        // controller.Move(*Time.deltaTime);
-        
-        
-     
+
+       ccAnimator.ApplyAnimation(direction, currentSpeed);
+
+       puppet.transform.position = feet.transform.position;
+
     }
     
     
@@ -67,7 +92,7 @@ public class PhysicalMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        Debug.Log(controller.velocity.magnitude*Time.deltaTime);
+      currentSpeed = (controller.velocity.magnitude);
        // rb.velocity = transform.up * (Gravity * Time.deltaTime);
         
     }
