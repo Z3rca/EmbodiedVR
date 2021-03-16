@@ -7,9 +7,10 @@ using UnityEngine;
 public class PhysicalMovement : MonoBehaviour
 {
     public Transform feet;
+    public float sideWaySpeed;
     public float speed;
     private CharacterController controller;
-
+    
     private Vector3 velocity;
     
     private Rigidbody rb;
@@ -52,7 +53,7 @@ public class PhysicalMovement : MonoBehaviour
         isGrounded = GroundCheck(feet.position, groundDistance);
         
       
-        verticalVelocityForce =isGrounded ?  -0.4f : verticalVelocityForce += Gravity * Time.deltaTime;
+      
         
         velocity = Vector3.up * verticalVelocityForce;
 
@@ -65,9 +66,9 @@ public class PhysicalMovement : MonoBehaviour
         direction.y = z;
 
 
-        Vector3 move = (transform.right * x + transform.forward * z);
+        Vector3 move = (transform.right * (x * sideWaySpeed) + (z>=0? transform.forward * (z * speed): transform.forward * (z * sideWaySpeed) ));
         
-        controller.Move(((move*speed)+velocity)*Time.deltaTime);
+        controller.Move(((move)+velocity)*Time.deltaTime);
 
 
        // controller.Move(*Time.deltaTime);
@@ -93,6 +94,8 @@ public class PhysicalMovement : MonoBehaviour
     private void FixedUpdate()
     {
       currentSpeed = (controller.velocity.magnitude);
+      
+      verticalVelocityForce =isGrounded ?  -0.4f : verticalVelocityForce += Gravity * Time.deltaTime;
        // rb.velocity = transform.up * (Gravity * Time.deltaTime);
         
     }
