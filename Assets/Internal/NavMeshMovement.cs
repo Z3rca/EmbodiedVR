@@ -63,7 +63,7 @@ public class NavMeshMovement : MonoBehaviour
       
         
         
-        Debug.Log(_currentSpeed);
+//        Debug.Log(_currentSpeed);
         
        //agent.angularSpeed = 300;
        oldPos = newPos;
