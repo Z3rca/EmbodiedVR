@@ -22,7 +22,8 @@ public class CCAnimator : MonoBehaviour
 
     private void LateUpdate()
     {
-        Debug.Log(animationSpeed = animator.velocity.magnitude);
+        //animationSpeed = animator.GetCurrentAnimatorStateInfo().
+        //Debug.Log(animationSpeed = animator.GetCurrentAnimatorClipInfo().);
     }
 
     public void ApplyAnimation(Vector2 direction, float speed)
