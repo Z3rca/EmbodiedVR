@@ -31,8 +31,11 @@ public class CCAnimator : MonoBehaviour
         
         if(Mathf.Abs(direction.x) > 0.01f || Mathf.Abs(direction.y) > 0.01f)
         {
+            
             animator.SetBool("IsMoving",true);
             ;
+            
+            
             if (speed > maximumForward)
             {
                 animator.SetFloat("Velocity", speed);

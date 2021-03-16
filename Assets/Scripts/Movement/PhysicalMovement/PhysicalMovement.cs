@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
+using Valve.VR;
 
 public class PhysicalMovement : MonoBehaviour
 {
@@ -27,46 +28,44 @@ public class PhysicalMovement : MonoBehaviour
 
     private float currentSpeed;
     private Vector2 direction;
+    private Quaternion orientation;
 
     public GameObject puppet;
     private CCAnimator ccAnimator;
 
 
-    public float speedFront;
-    public float speedBack;
-    public float speedLeft;
-    public float speedRight;
+    private VRMovement vrMovement;
 
 
-
-
+    
     private void Start()
     {
+       
         controller = GetComponent<CharacterController>();
-        rb = GetComponent<Rigidbody>();
-
+        //rb = GetComponent<Rigidbody>();
+       
         ccAnimator = puppet.GetComponent<CCAnimator>();
+        vrMovement = GetComponent<VRMovement>(); 
     }
 
     private void Update()
     {
         isGrounded = GroundCheck(feet.position, groundDistance);
-        
-      
-      
+
+
+        direction = vrMovement.GetCurrentInput();
+
+
+        orientation = vrMovement.GetOrientation();
         
         velocity = Vector3.up * verticalVelocityForce;
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
 
-      
 //        Debug.Log(x + " " + z);
-        direction.x = x;
-        direction.y = z;
 
 
-        Vector3 move = (transform.right * (x * sideWaySpeed) + (z>=0? transform.forward * (z * speed): transform.forward * (z * sideWaySpeed) ));
+
+        Vector3 move = (transform.right * (direction.x * sideWaySpeed) + (direction.y>=0? transform.forward * (direction.y * speed): transform.forward * (direction.y * sideWaySpeed) ));
         
         controller.Move(((move)+velocity)*Time.deltaTime);
 
@@ -77,6 +76,7 @@ public class PhysicalMovement : MonoBehaviour
 
        puppet.transform.position = feet.transform.position;
 
+       
     }
     
     
@@ -93,6 +93,7 @@ public class PhysicalMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
+        transform.rotation = orientation;
       currentSpeed = (controller.velocity.magnitude);
       
       verticalVelocityForce =isGrounded ?  -0.4f : verticalVelocityForce += Gravity * Time.deltaTime;
