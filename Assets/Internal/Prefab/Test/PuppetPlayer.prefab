@@ -302,7 +302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8165928973974187615}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.34, y: -0.14999999, z: -7.8053856}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8165928974959242851}
@@ -852,7 +852,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8165928974488525901}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.34, y: 1.15, z: 7.8053856}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8165928974961170126}
@@ -1474,7 +1474,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8165928974959242848}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.34, y: 0.14999999, z: 7.8053856}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8165928974920828655}
@@ -2124,6 +2124,7 @@ GameObject:
   - component: {fileID: 8165928975469347185}
   - component: {fileID: 8165928975469347184}
   - component: {fileID: 8165928975469347186}
+  - component: {fileID: 8035380364277395461}
   m_Layer: 9
   m_Name: Puppet
   m_TagString: Untagged
@@ -2139,7 +2140,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8165928975469347191}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.34, y: 0.14999999, z: 7.8053856}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8165928974809457400}
@@ -2602,7 +2603,7 @@ MonoBehaviour:
       bone2: {fileID: 8165928975322803289}
       bone3: {fileID: 8165928973853642277}
       maintainRotationWeight: 0
-      weight: 1
+      weight: 0
     - parentBone: {fileID: 8165928975277279170}
       bone1: {fileID: 8165928974086834933}
       bone2: {fileID: 8165928975444422172}
@@ -2874,6 +2875,24 @@ MonoBehaviour:
       onRightFootstep:
         m_PersistentCalls:
           m_Calls: []
+--- !u!114 &8035380364277395461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8165928975469347191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0c41edb12fbcd43a5086847ceec806, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ik: {fileID: 0}
+  scaleMlp: 1.03
+  calibrationAction:
+    actionPath: /actions/default/in/InteractUI
+    needsReinit: 0
+  inputSource: 0
 --- !u!1 &8165928975542398292
 GameObject:
   m_ObjectHideFlags: 0
@@ -3551,6 +3570,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8165928974921175869}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8165928974921170737 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 125964, guid: dc06161b6d97feb419f45f03b62e14b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8165928974921175869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8165928974920743863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 485514, guid: dc06161b6d97feb419f45f03b62e14b9,
@@ -3566,12 +3591,6 @@ Transform:
 --- !u!4 &8165928974920828655 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 8165928974921175869}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8165928974921170737 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 125964, guid: dc06161b6d97feb419f45f03b62e14b9,
     type: 3}
   m_PrefabInstance: {fileID: 8165928974921175869}
   m_PrefabAsset: {fileID: 0}
@@ -3651,6 +3670,11 @@ PrefabInstance:
         type: 3}
       propertyPath: weight
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 591131853391544635, guid: 60bcd0e2b02edd741a583279c73e1647,
+        type: 3}
+      propertyPath: solver.layers.m_Bits
+      value: 273
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60bcd0e2b02edd741a583279c73e1647, type: 3}
