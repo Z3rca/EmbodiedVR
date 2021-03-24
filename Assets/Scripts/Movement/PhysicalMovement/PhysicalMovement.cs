@@ -14,17 +14,15 @@ public class PhysicalMovement : MonoBehaviour
     
     private Vector3 velocity;
     
-    private Rigidbody rb;
     
     public float Gravity = -9.81f;
-
-    public float groundDistance= 0.4f;
+    public LayerMask groundMask;
+    public float groundCheckDistance= 0.4f;
     
-    public Vector3 gravitationForce;
     private float verticalVelocityForce;
 
     private bool isGrounded;
-    public LayerMask groundMask;
+ 
 
     private float currentSpeed;
     private Vector2 direction;
@@ -50,7 +48,7 @@ public class PhysicalMovement : MonoBehaviour
 
     private void Update()
     {
-        isGrounded = GroundCheck(feet.position, groundDistance);
+        isGrounded = GroundCheck(feet.position, groundCheckDistance);
 
 
         direction = vrMovement.GetCurrentInput();
