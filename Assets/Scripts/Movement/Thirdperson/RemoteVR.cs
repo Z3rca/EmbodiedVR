@@ -14,6 +14,8 @@ public class RemoteVR : MonoBehaviour
     public GameObject RemoteLeft;
 
     public GameObject RemoteRight;
+
+    private bool isFirstPerson;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,10 @@ public class RemoteVR : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isFirstPerson)
+        {
+            
+        }
         RemoteHMD.transform.localPosition = LocalHMD.transform.localPosition;
         RemoteHMD.transform.localRotation = LocalHMD.transform.localRotation;
 
