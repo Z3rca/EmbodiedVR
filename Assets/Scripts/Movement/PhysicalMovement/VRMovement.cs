@@ -43,8 +43,8 @@ public class VRMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Head.transform.position = Body.transform.position;
-        
-        
+
+        Body.transform.rotation = Orientation.transform.rotation;
         
         targetRotation= Quaternion.LookRotation(Orientation.transform.forward);
         Vector3 eulerRotation = new Vector3();
