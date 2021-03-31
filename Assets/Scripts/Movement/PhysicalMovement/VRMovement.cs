@@ -47,7 +47,7 @@ public class VRMovement : MonoBehaviour
     {
         Head.transform.position = Body.transform.position;
 
-        Body.transform.rotation = Orientation.transform.rotation;
+        
         
         targetRotation= Quaternion.LookRotation(Orientation.transform.forward);
         Vector3 eulerRotation = new Vector3();
@@ -55,7 +55,7 @@ public class VRMovement : MonoBehaviour
         eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
         eulerRotation.x = 0f;
         targetRotation = Quaternion.Euler(eulerRotation);
-
+        Body.transform.rotation = targetRotation;
         
     }
 
