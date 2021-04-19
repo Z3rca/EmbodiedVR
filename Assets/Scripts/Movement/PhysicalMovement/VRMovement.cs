@@ -30,7 +30,10 @@ public class VRMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Orientation = Camera;
+        if (Orientation == null)
+        {
+            Orientation = Camera;
+        }
     }
 
 
@@ -43,7 +46,7 @@ public class VRMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Head.transform.position = Body.transform.position;
-        
+
         
         
         targetRotation= Quaternion.LookRotation(Orientation.transform.forward);
@@ -52,7 +55,7 @@ public class VRMovement : MonoBehaviour
         eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
         eulerRotation.x = 0f;
         targetRotation = Quaternion.Euler(eulerRotation);
-
+        Body.transform.rotation = targetRotation;
         
     }
 
