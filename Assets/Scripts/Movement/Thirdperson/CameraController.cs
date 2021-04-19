@@ -12,6 +12,10 @@ public class CameraController : MonoBehaviour
     public GameObject CameraArm;
 
     public bool VrObjectOriented;
+
+    public float cameraDistance;
+
+    private bool isThirdPerson=true;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +25,22 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            if (isThirdPerson)
+            {
+                isThirdPerson = false;
+                CameraArm.transform.localPosition = Vector3.zero; 
+            }
+            else
+            {
+                isThirdPerson = true;
+                CameraArm.transform.localPosition= Vector3.back*cameraDistance;
+            }
+        }
+        
+        
+        
         if (VrObjectOriented)
         {
             Vector3 currentRotation = RotationAxis.transform.rotation.eulerAngles;
