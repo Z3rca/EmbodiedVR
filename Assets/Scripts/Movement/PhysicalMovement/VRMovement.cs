@@ -14,10 +14,12 @@ public class VRMovement : MonoBehaviour
 
     public GameObject Camera;
 
-    public SteamVR_Action_Vector2 Input;
+    public SteamVR_Action_Vector2 MovementInput;
+    public SteamVR_Action_Vector2 RotationInput;
     public SteamVR_ActionSet actionSetEnable;
     
     private Vector2 movementInput;
+    private Vector2 rotationInput;
     public GameObject Orientation;
 
     private Quaternion targetRotation;
@@ -39,7 +41,8 @@ public class VRMovement : MonoBehaviour
 
     private void Update()
     {
-        movementInput = Input.GetAxis(SteamVR_Input_Sources.Any);
+        movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.LeftHand);
+        rotationInput = RotationInput.GetAxis(SteamVR_Input_Sources.RightHand);
     }
 
     // Update is called once per frame

@@ -32,5 +32,13 @@ namespace Valve.VR
                 return SteamVR_Actions.platformer_Jump;
             }
         }
+        
+        public virtual SteamVR_Action_Vector2 Rotation
+        {
+            get
+            {
+                return SteamVR_Actions.platformer_Rotation;
+            }
+        }
     }
 }
