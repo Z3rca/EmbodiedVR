@@ -40,5 +40,21 @@ namespace Valve.VR
                 return SteamVR_Actions.platformer_Rotation;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean RotationRight
+        {
+            get
+            {
+                return SteamVR_Actions.platformer_RotationRight;
+            }
+        }
+        
+        public virtual SteamVR_Action_Boolean RotationLeft
+        {
+            get
+            {
+                return SteamVR_Actions.platformer_RotationLeft;
+            }
+        }
     }
 }
