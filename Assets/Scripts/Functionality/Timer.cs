@@ -8,10 +8,14 @@ public class Timer : MonoBehaviour
     public float timerInMinutes;
     public GameObject player;
     public Vector3 exit;
-    
+    public AudioSource audioSource;
+    public AudioClip firstWarning;
+    public AudioClip secondWarning;
+
     private float timeRemaining;
     private bool timerIsRunning = false;
-    
+    private bool firstClipPlayed = false;
+    private bool secondClipPlayed = false;
     
     // Start is called before the first frame update
     void Start()
@@ -31,15 +35,30 @@ public class Timer : MonoBehaviour
             {
                 timeRemaining -= Time.deltaTime;
             }
-            else if (timeRemaining <= 15 & timeRemaining > 0)
+            else if (timeRemaining <= 15 & timeRemaining > secondWarning.length)
             {
                 // starting countdown
-                Debug.Log("Time remaining" + timeRemaining);
+                if (firstClipPlayed == false)
+                {
+                    audioSource.clip = firstWarning;
+                    audioSource.Play();
+                    firstClipPlayed = true;
+                }
+                timeRemaining -= Time.deltaTime;
+            }
+            else if (timeRemaining <= secondWarning.length & timeRemaining > 0)
+            {
+                // warning before teleport
+                if (secondClipPlayed == false)
+                {
+                    audioSource.clip = secondWarning;
+                    audioSource.Play();
+                    secondClipPlayed = true;
+                }
                 timeRemaining -= Time.deltaTime;
             }
             else
             {
-                Debug.Log("Time has run out!");
                 timeRemaining = 0;
                 timerIsRunning = false;
                 // teleport player to exit
