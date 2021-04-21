@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Packages.Rider.Editor;
 using UnityEngine;
+using UnityEngine.Events;
 using Valve.VR;
 
 public class VRMovement : MonoBehaviour
@@ -18,6 +19,7 @@ public class VRMovement : MonoBehaviour
     public SteamVR_Action_Vector2 RotationInput;
     public SteamVR_Action_Boolean rotateLeft;
     public SteamVR_Action_Boolean rotateRight;
+    public SteamVR_Action_Boolean switchPerspective;
     public SteamVR_ActionSet actionSetEnable;
     
     private Vector2 movementInput;
@@ -28,6 +30,9 @@ public class VRMovement : MonoBehaviour
 
     private bool rotationApplied;
     private float rotationImpuls;
+
+
+    public UnityEvent OnControllSwitchChange;
     private void Awake()
     {
         actionSetEnable.Activate();   
@@ -45,6 +50,7 @@ public class VRMovement : MonoBehaviour
         
         rotateLeft.AddOnStateUpListener(RotateLeft, SteamVR_Input_Sources.Any);
         rotateRight.AddOnStateUpListener(RotateRight, SteamVR_Input_Sources.Any);
+        switchPerspective.AddOnStateDownListener(SwitchPerspective,SteamVR_Input_Sources.Any);
     }
 
 
@@ -100,6 +106,12 @@ public class VRMovement : MonoBehaviour
         Debug.Log("right");
         rotationImpuls = 15f;
         rotationApplied = true;
+    }
+    
+    public void SwitchPerspective(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        Debug.Log("switch");
+       OnControllSwitchChange.Invoke();
     }
 
     

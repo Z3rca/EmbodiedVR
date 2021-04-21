@@ -19,4 +19,11 @@ public class HybridControl : MonoBehaviour
     {
         cameraController.RotateCamera(InputController.GetRotation());
     }
+
+
+
+    public void SwitchPerspective()
+    {
+        cameraController.SwitchPerspective();
+    }
 }
