@@ -269,11 +269,17 @@
             },
             {
                "inputs" : {
-                  "position" : {
-                     "output" : "/actions/platformer/in/rotation"
+                  "east" : {
+                     "output" : "/actions/platformer/in/rotationright"
+                  },
+                  "west" : {
+                     "output" : "/actions/platformer/in/rotationleft"
                   }
                },
-               "mode" : "joystick",
+               "mode" : "dpad",
+               "parameters" : {
+                  "sub_mode" : "touch"
+               },
                "path" : "/user/hand/right/input/thumbstick"
             },
             {
