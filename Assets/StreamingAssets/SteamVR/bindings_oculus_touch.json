@@ -273,15 +273,27 @@
             },
             {
                "inputs" : {
-                  "click" : {
-                     "output" : "/actions/platformer/in/jump"
+                  "east" : {
+                     "output" : "/actions/platformer/in/rotationright"
                   },
-                  "position" : {
-                     "output" : "/actions/platformer/in/rotation"
+                  "west" : {
+                     "output" : "/actions/platformer/in/rotationleft"
                   }
                },
-               "mode" : "joystick",
+               "mode" : "dpad",
+               "parameters" : {
+                  "sub_mode" : "touch"
+               },
                "path" : "/user/hand/right/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/platformer/in/switchperspective"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/a"
             }
          ]
       }
