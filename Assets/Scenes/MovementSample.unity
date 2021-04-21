@@ -2281,7 +2281,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 798595925}
+    m_TransformParent: {fileID: 820230286}
     m_Modifications:
     - target: {fileID: 100470, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_Layer
@@ -2373,7 +2373,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2385,7 +2385,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.6000004
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2561,8 +2561,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 820230286}
+  - {fileID: 495273366}
   m_Father: {fileID: 798595925}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &440238148 stripped
 Transform:
@@ -2692,8 +2693,8 @@ Transform:
   - {fileID: 1084629544}
   - {fileID: 1539247235}
   - {fileID: 338909007}
-  m_Father: {fileID: 798595925}
-  m_RootOrder: 0
+  m_Father: {fileID: 437769153}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &495273367
 MonoBehaviour:
@@ -3353,6 +3354,7 @@ GameObject:
   - component: {fileID: 769587658}
   - component: {fileID: 769587657}
   - component: {fileID: 769587656}
+  - component: {fileID: 769587659}
   m_Layer: 9
   m_Name: Character Controller
   m_TagString: Untagged
@@ -3396,9 +3398,32 @@ MonoBehaviour:
   RotationInput:
     actionPath: /actions/platformer/in/Rotation
     needsReinit: 0
+  rotateLeft:
+    actionPath: /actions/platformer/in/RotationLeft
+    needsReinit: 0
+  rotateRight:
+    actionPath: /actions/platformer/in/RotationRight
+    needsReinit: 0
+  switchPerspective:
+    actionPath: /actions/platformer/in/SwitchPerspective
+    needsReinit: 0
   actionSetEnable:
     actionSetPath: /actions/platformer
-  Orientation: {fileID: 853717097}
+  Orientation: {fileID: 344065221}
+  OnControllSwitchChange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 769587659}
+        m_MethodName: SwitchPerspective
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &769587657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3438,6 +3463,19 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &769587659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 769587654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfeb340e1b0b715459dd05a83067965d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraController: {fileID: 798595926}
 --- !u!1 &798595924
 GameObject:
   m_ObjectHideFlags: 0
@@ -3466,8 +3504,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 495273366}
-  - {fileID: 1984303410}
   - {fileID: 437769153}
   m_Father: {fileID: 1827899208}
   m_RootOrder: 2
@@ -3491,6 +3527,8 @@ MonoBehaviour:
   CameraArm: {fileID: 820230285}
   VrObjectOriented: 1
   cameraDistance: 4.6
+  characterController: {fileID: 769587656}
+  speed: 5
 --- !u!1 &807955501
 GameObject:
   m_ObjectHideFlags: 0
@@ -3548,7 +3586,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -4.6000004}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1984303410}
   m_Father: {fileID: 437769153}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
