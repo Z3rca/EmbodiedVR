@@ -15,7 +15,14 @@ public class CameraController : MonoBehaviour
 
     public float cameraDistance;
 
+    public VRMovement characterController;
+
     private bool isThirdPerson=true;
+
+    private Quaternion _targetRotation;
+
+    public float speed= 5;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,16 +51,22 @@ public class CameraController : MonoBehaviour
         if (VrObjectOriented)
         {
             Vector3 currentRotation = RotationAxis.transform.rotation.eulerAngles;
-            Vector3 eulerRotAxis = Camera.transform.rotation.eulerAngles;
+            Vector3 eulerRotAxis = characterController.GetRotation().eulerAngles;
             eulerRotAxis.x = 0;
             eulerRotAxis.z = 0;
 
            //eulerRotAxis.y= Mathf.Lerp(currentRotation.y, eulerRotAxis.y, Time.deltaTime * 2f);
             
-            RotationAxis.transform.rotation = Quaternion.Lerp(RotationAxis.transform.rotation, Quaternion.Euler(eulerRotAxis),Time.deltaTime*2f );
+            RotationAxis.transform.rotation = Quaternion.Lerp(RotationAxis.transform.rotation, Quaternion.Euler(_targetRotation.eulerAngles),Time.deltaTime* speed );
             
             Player.transform.position = CameraArm.transform.position;
         }
         
+    }
+
+
+    public void RotateCamera(Quaternion rotation)
+    {
+        _targetRotation = rotation;
     }
 }

@@ -3390,8 +3390,11 @@ MonoBehaviour:
   Body: {fileID: 277626190}
   Head: {fileID: 798595924}
   Camera: {fileID: 853717097}
-  Input:
+  MovementInput:
     actionPath: /actions/platformer/in/Move
+    needsReinit: 0
+  RotationInput:
+    actionPath: /actions/platformer/in/Rotation
     needsReinit: 0
   actionSetEnable:
     actionSetPath: /actions/platformer
@@ -3487,6 +3490,7 @@ MonoBehaviour:
   ThirdPersonPosition: {fileID: 0}
   CameraArm: {fileID: 820230285}
   VrObjectOriented: 1
+  cameraDistance: 4.6
 --- !u!1 &807955501
 GameObject:
   m_ObjectHideFlags: 0
