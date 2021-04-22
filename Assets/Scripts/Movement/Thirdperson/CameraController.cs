@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using Valve.VR;
 
 public class CameraController : MonoBehaviour
 {
@@ -22,6 +23,9 @@ public class CameraController : MonoBehaviour
     private Quaternion _targetRotation;
 
     public float speed= 5;
+
+    private bool rotationChanged;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -51,12 +55,14 @@ public class CameraController : MonoBehaviour
     }
 
 
-    public void SwitchPerspective()
+    public void SwitchPerspective(bool Fade=true)
     {
+        
         if (isThirdPerson)
         {
             isThirdPerson = false;
-            CameraArm.transform.localPosition = Vector3.zero; 
+            CameraArm.transform.localPosition = Vector3.zero;
+            
         }
         else
         {
@@ -70,4 +76,7 @@ public class CameraController : MonoBehaviour
     {
         _targetRotation = rotation;
     }
+
+
+    
 }
