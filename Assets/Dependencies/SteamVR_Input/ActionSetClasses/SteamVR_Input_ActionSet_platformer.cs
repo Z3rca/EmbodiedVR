@@ -56,5 +56,13 @@ namespace Valve.VR
                 return SteamVR_Actions.platformer_RotationLeft;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean SwitchPerspective
+        {
+            get
+            {
+                return SteamVR_Actions.platformer_SwitchPerspective;
+            }
+        }
     }
 }
