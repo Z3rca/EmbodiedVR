@@ -54,7 +54,7 @@ public class PhysicalMovement : MonoBehaviour
         direction = vrMovement.GetCurrentInput();
 
 
-        orientation = vrMovement.GetOrientation();
+        //orientation = vrMovement.GetRotation();
         
         velocity = Vector3.up * verticalVelocityForce;
 
@@ -91,7 +91,7 @@ public class PhysicalMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        transform.rotation = orientation;
+        transform.rotation = vrMovement.GetRotation();
       currentSpeed = (controller.velocity.magnitude);
       
       verticalVelocityForce =isGrounded ?  -0.4f : verticalVelocityForce += Gravity * Time.deltaTime;
