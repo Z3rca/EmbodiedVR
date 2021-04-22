@@ -21,7 +21,11 @@ public class VRMovement : MonoBehaviour
     public SteamVR_Action_Boolean rotateRight;
     public SteamVR_Action_Boolean switchPerspective;
     public SteamVR_ActionSet actionSetEnable;
-    
+
+    public bool SnapTurn;
+
+    [Range(0.1f, 45)] public float SetRotationImpuls;
+
     private Vector2 movementInput;
     private Vector2 rotationInput;
     //public GameObject Orientation;
@@ -29,10 +33,18 @@ public class VRMovement : MonoBehaviour
     private Quaternion targetRotation;
 
     private bool rotationApplied;
+    private bool _allowRotation;
     private float rotationImpuls;
 
+    public delegate void OnButtonPressed();
 
-    public UnityEvent OnControllSwitchChange;
+    public event OnButtonPressed notifyLeftButtonPressedObserver;
+    public event OnButtonPressed notifyRightButtonPressedObserver;
+    public event OnButtonPressed notifySwitchButtonPressedObserver;
+
+    
+   
+
     private void Awake()
     {
         actionSetEnable.Activate();   
@@ -46,17 +58,29 @@ public class VRMovement : MonoBehaviour
         {
             Orientation = Camera;
         }*/
-        
-        
-        rotateLeft.AddOnStateUpListener(RotateLeft, SteamVR_Input_Sources.Any);
-        rotateRight.AddOnStateUpListener(RotateRight, SteamVR_Input_Sources.Any);
         switchPerspective.AddOnStateDownListener(SwitchPerspective,SteamVR_Input_Sources.Any);
+
+
+
+        if (SnapTurn)
+        {
+            rotateLeft.AddOnStateUpListener(RotateLeft, SteamVR_Input_Sources.Any);
+            rotateRight.AddOnStateUpListener(RotateRight, SteamVR_Input_Sources.Any);
+        }
+        else
+        {
+            rotateLeft.AddOnStateDownListener(RotateLeft,SteamVR_Input_Sources.Any);
+            rotateRight.AddOnStateDownListener(RotateRight,SteamVR_Input_Sources.Any);
+            rotateLeft.AddOnStateUpListener(RotateZero, SteamVR_Input_Sources.Any);
+            rotateRight.AddOnStateUpListener(RotateZero, SteamVR_Input_Sources.Any);
+        }
+        
     }
 
 
     private void Update()
     {
-        movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.LeftHand);
+        movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.Any);
         rotationInput = RotationInput.GetAxis(SteamVR_Input_Sources.RightHand);
         
     }
@@ -64,6 +88,7 @@ public class VRMovement : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
+
         Head.transform.position = Body.transform.position;
 
 
@@ -85,35 +110,64 @@ public class VRMovement : MonoBehaviour
             Body.transform.rotation = targetRotation;
             
 
-        if (rotationApplied)
+        if (rotationApplied&& SnapTurn)
         {
             Debug.Log("lol2");
             rotationImpuls = 0f;
             rotationApplied = false;
         }
-
+        else
+        {
+            rotationApplied = false;
+        }
     }
 
     public void RotateLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
+        notifyLeftButtonPressedObserver?.Invoke();
         Debug.Log("left");
-        rotationImpuls = -15f;
+        rotationImpuls = -SetRotationImpuls;
+        if (!SnapTurn)
+        {
+            rotationImpuls *= Time.deltaTime;
+        }
         rotationApplied = true;
     }
     
     public void RotateRight(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
+        notifyRightButtonPressedObserver?.Invoke();
         Debug.Log("right");
-        rotationImpuls = 15f;
+        rotationImpuls = SetRotationImpuls;
+        if (!SnapTurn)
+        {
+            rotationImpuls *= Time.deltaTime;
+        }
         rotationApplied = true;
+    }
+
+    public void RotateZero(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
+    {
+        rotationImpuls = 0;
     }
     
     public void SwitchPerspective(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
+        notifySwitchButtonPressedObserver?.Invoke();
         Debug.Log("switch");
-       OnControllSwitchChange.Invoke();
     }
 
+
+    public void AllowRotation(bool state)
+    {
+        _allowRotation = state;
+    }
+
+    public void AllowMovement(bool state)
+    {
+        
+    }
+    
     
     public Vector2 GetCurrentInput()
     {
