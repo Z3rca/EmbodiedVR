@@ -33,6 +33,7 @@ public class VRMovement : MonoBehaviour
     private Quaternion targetRotation;
 
     private bool rotationApplied;
+    private bool _allowRotation;
     private float rotationImpuls;
 
     public delegate void OnButtonPressed();
@@ -57,14 +58,16 @@ public class VRMovement : MonoBehaviour
         {
             Orientation = Camera;
         }*/
-        
-        
-        rotateLeft.AddOnStateUpListener(RotateLeft, SteamVR_Input_Sources.Any);
-        rotateRight.AddOnStateUpListener(RotateRight, SteamVR_Input_Sources.Any);
         switchPerspective.AddOnStateDownListener(SwitchPerspective,SteamVR_Input_Sources.Any);
 
 
-        if (!SnapTurn)
+
+        if (SnapTurn)
+        {
+            rotateLeft.AddOnStateUpListener(RotateLeft, SteamVR_Input_Sources.Any);
+            rotateRight.AddOnStateUpListener(RotateRight, SteamVR_Input_Sources.Any);
+        }
+        else
         {
             rotateLeft.AddOnStateDownListener(RotateLeft,SteamVR_Input_Sources.Any);
             rotateRight.AddOnStateDownListener(RotateRight,SteamVR_Input_Sources.Any);
@@ -77,7 +80,7 @@ public class VRMovement : MonoBehaviour
 
     private void Update()
     {
-        movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.LeftHand);
+        movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.Any);
         rotationInput = RotationInput.GetAxis(SteamVR_Input_Sources.RightHand);
         
     }
@@ -111,6 +114,10 @@ public class VRMovement : MonoBehaviour
         {
             Debug.Log("lol2");
             rotationImpuls = 0f;
+            rotationApplied = false;
+        }
+        else
+        {
             rotationApplied = false;
         }
     }
@@ -150,6 +157,17 @@ public class VRMovement : MonoBehaviour
         Debug.Log("switch");
     }
 
+
+    public void AllowRotation(bool state)
+    {
+        _allowRotation = state;
+    }
+
+    public void AllowMovement(bool state)
+    {
+        
+    }
+    
     
     public Vector2 GetCurrentInput()
     {
