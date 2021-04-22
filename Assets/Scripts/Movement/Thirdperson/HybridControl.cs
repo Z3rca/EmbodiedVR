@@ -12,9 +12,10 @@ public class HybridControl : MonoBehaviour
     [SerializeField] private  bool AllowViewSwitch;
     public bool FadingDuringRotation;
     public bool FadingBetweenViews;
+    [Range(0f,1f)] public float FadeOutDuration;
     [Range(0f,1f)] public float FadeDuration;
     [Range(0f,1f)] public float FadeInDuration;
-    [Range(0f,1f)] public float FadeOutDuration;
+    
     
     [Range(0f,1f)] public float SwitchFadeDuration;
     [Range(0f,1f)] public float SwitchFadeInDuration;
