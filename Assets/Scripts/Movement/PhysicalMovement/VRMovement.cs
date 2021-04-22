@@ -24,7 +24,7 @@ public class VRMovement : MonoBehaviour
     
     private Vector2 movementInput;
     private Vector2 rotationInput;
-    public GameObject Orientation;
+    //public GameObject Orientation;
 
     private Quaternion targetRotation;
 
@@ -42,10 +42,10 @@ public class VRMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (Orientation == null)
+        /*if (Orientation == null)
         {
             Orientation = Camera;
-        }
+        }*/
         
         
         rotateLeft.AddOnStateUpListener(RotateLeft, SteamVR_Input_Sources.Any);
@@ -126,8 +126,8 @@ public class VRMovement : MonoBehaviour
         return targetRotation;
     }
 
-    public GameObject GetOrientation()
+    /*public GameObject GetOrientation()
     {
         return Orientation;
-    }
+    }*/
 }
