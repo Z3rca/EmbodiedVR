@@ -9,23 +9,30 @@ public class HybridControl : MonoBehaviour
     
     private VRMovement InputController;
     private CameraController cameraController;
-    [SerializeField] private  bool AllowViewSwitch;
+    private PhysicalMovement physicalMovement;
+    [SerializeField] private  bool ThirdPerson=true;
+    
+    [Header("Rotation Settings")]
     public bool FadingDuringRotation;
-    public bool FadingBetweenViews;
     [Range(0f,1f)] public float FadeOutDuration;
     [Range(0f,1f)] public float FadeDuration;
     [Range(0f,1f)] public float FadeInDuration;
+    public bool AllowRotationDuringFirstperson;
     
-    
+    [Header("Switch View Settings")]
+    [SerializeField] private  bool AllowViewSwitch;
+    public bool FadingBetweenViews;
+    [Range(0f, 1f)] public float SwitchFadeOutDuration;
     [Range(0f,1f)] public float SwitchFadeDuration;
     [Range(0f,1f)] public float SwitchFadeInDuration;
-    [Range(0f, 1f)] public float SwitchFadeOutDuration;
+    [Range(0f, 1f)] public float MovementReductionDuringFirstPerson;
+    
 
-    [SerializeField] private  bool ThirdPerson=true;
     private void Start()
     {
         InputController = GetComponent<VRMovement>();
         cameraController = GetComponent<CameraController>();
+        physicalMovement = GetComponent<PhysicalMovement>();
 
 
         InputController.notifyLeftButtonPressedObserver += Fading;
@@ -33,8 +40,9 @@ public class HybridControl : MonoBehaviour
 
         InputController.notifySwitchButtonPressedObserver += SwitchPerspective;
         
-      
         //cameraController = GetComponentInChildren<CameraController>();
+       if(!ThirdPerson)
+            InputController.AllowRotation(AllowRotationDuringFirstperson);
     }
 
 
@@ -55,7 +63,16 @@ public class HybridControl : MonoBehaviour
        
             cameraController.SetThirdPerson(ThirdPerson);
             cameraController.SwitchPerspective();
-            
+            if (!ThirdPerson)
+            {
+                physicalMovement.SetSpeedFactor(MovementReductionDuringFirstPerson);
+                InputController.AllowRotation(AllowRotationDuringFirstperson);
+            }
+            else
+            {
+                physicalMovement.SetSpeedFactor(1);
+                InputController.AllowRotation(true);
+            }
         }
     }
 
@@ -75,6 +92,7 @@ public class HybridControl : MonoBehaviour
     private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)
     {
         SteamVR_Fade.Start(Color.black,FadeOut);
+        yield return new WaitForSeconds(FadeOut);
         yield return new WaitForSeconds(FadeTime);
         SteamVR_Fade.Start(Color.clear,FadeIn);
     }

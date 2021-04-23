@@ -3382,7 +3382,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Body: {fileID: 8123214595540638468}
   Head: {fileID: 8123214596025777438}
-  Camera: {fileID: 8123214595666869836}
   MovementInput:
     actionPath: /actions/platformer/in/Move
     needsReinit: 0
@@ -3400,8 +3399,8 @@ MonoBehaviour:
     needsReinit: 0
   actionSetEnable:
     actionSetPath: /actions/platformer
-  SnapTurn: 0
-  SetRotationImpuls: 0
+  SnapTurn: 1
+  SetRotationImpuls: 8
 --- !u!114 &8123214595988201345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3414,16 +3413,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfeb340e1b0b715459dd05a83067965d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AllowViewSwitch: 1
+  ThirdPerson: 1
   FadingDuringRotation: 1
-  FadingBetweenViews: 1
   FadeOutDuration: 0.125
-  FadeDuration: 0.25
+  FadeDuration: 0
   FadeInDuration: 0.125
+  AllowRotationDuringFirstperson: 1
+  AllowViewSwitch: 1
+  FadingBetweenViews: 1
+  SwitchFadeOutDuration: 0.5
   SwitchFadeDuration: 0.5
   SwitchFadeInDuration: 0.5
-  SwitchFadeOutDuration: 0.5
-  ThirdPerson: 1
+  MovementReductionDuringFirstPerson: 0.5
 --- !u!114 &1762552079244933549
 MonoBehaviour:
   m_ObjectHideFlags: 0
