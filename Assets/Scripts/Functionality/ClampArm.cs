@@ -1,10 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Valve.VR.InteractionSystem;
 
 public class ClampArm : MonoBehaviour
 {
+    private bool open = false;
+    public UnityEvent onClampOpen;
 
     // Start is called before the first frame update
     void Start()
@@ -15,18 +19,10 @@ public class ClampArm : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    void unlockClamp()
-    {
-        GetComponent<Interactable>().enabled=true;
-        GetComponent<LinearDrive>().enabled=true;
+        if (!open & transform.position.y > 1.45)
+        {
+            onClampOpen.Invoke();
+        }
     }
     
-    void lockClamp()
-    {
-        GetComponent<Interactable>().enabled=false;
-        GetComponent<LinearDrive>().enabled=false;
-    }
 }
