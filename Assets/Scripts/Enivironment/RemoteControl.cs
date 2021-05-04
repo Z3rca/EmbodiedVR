@@ -13,29 +13,28 @@ public class RemoteControl : MonoBehaviour
     
     public  SteamVR_ActionSet LiftActionset;
     [SerializeField] private GameObject Joystick;
-    
-    private SteamVR_Action_Vector2 MovementInput;
 
-    public UnityEvent<Vector2> OutputEvent;
+    public SteamVR_Action_Vector2 MovementInput = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("LiftControl", "Direction");
+    
     
     private Vector2 movementInput;
 
     public bool AllowInputX;
     public bool AllowInputY;
-
-
+    
     private float InputValue;
 
     private bool activated;
-    private Hand hand;
+    private SteamVR_Input_Sources hand;
     
-    
+    private Interactable interactable;
     public event EventHandler<InputArgs> OnInputReceiver;
-
+    
     // Start is called before the first frame update
     void Start()
     {
-        MovementInput = SteamVR_Input.GetAction<SteamVR_Action_Vector2>(LiftActionset.GetShortName(), "Direction");
+        interactable = GetComponent<Interactable>();
+        
     }
 
 
@@ -44,15 +43,13 @@ public class RemoteControl : MonoBehaviour
         Debug.Log("is now on" + state);
         if (state == true)
         {
-            LiftActionset.Activate();
             activated = true;
-            hand = this.gameObject.GetComponent<Interactable>().attachedToHand;
-            
         }
         else
         {
+           
             activated = false;
-            LiftActionset.Deactivate();
+            LiftActionset.Deactivate(hand);
         }
         
     }
@@ -65,31 +62,39 @@ public class RemoteControl : MonoBehaviour
     {
         if (activated)
         {
+            if (interactable.attachedToHand)
+            {
+                hand = interactable.attachedToHand.handType;
+                Debug.Log(hand);
+                LiftActionset.Activate(hand);
+            }
             
-            movementInput = MovementInput.axis;
+            Vector2 input = new Vector2();
+            input = MovementInput.GetAxis(hand);
+            
             Vector3  resultMovement= new Vector3();
             if (AllowInputY)
             {
-                resultMovement += new Vector3(0, 0, movementInput.y);
+                resultMovement += new Vector3(0, 0, input.y);
             }
             else
             {
-                movementInput.y = 0;
+                input.y = 0;
             }
             if (AllowInputX)
             {
-                resultMovement += new Vector3(movementInput.x, 0,0 );
+                resultMovement += new Vector3(input.x, 0,0 );
             }
             else
             {
-                movementInput.x = 0;
+                input.x = 0;
             }
             
             Joystick.transform.localPosition = resultMovement*0.015f;
 
             InputArgs args = new InputArgs();
 
-            args.inputValue = movementInput;
+            args.inputValue = input;
 
 
             OnInputReceiver?.Invoke(this, args);
