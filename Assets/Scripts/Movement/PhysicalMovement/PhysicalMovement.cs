@@ -97,7 +97,7 @@ public class PhysicalMovement : MonoBehaviour
         transform.rotation = vrMovement.GetRotation();
       
       
-      verticalVelocityForce =isGrounded ?  -0.4f : verticalVelocityForce += Gravity * Time.deltaTime;
+      verticalVelocityForce =isGrounded ?  -4f : verticalVelocityForce += Gravity * Time.deltaTime;
        // rb.velocity = transform.up * (Gravity * Time.deltaTime);
         
     }
