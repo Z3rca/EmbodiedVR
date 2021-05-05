@@ -15,10 +15,13 @@ public class Elevator : MonoBehaviour
 
     private float _inputX;
     private float _inputY;
+
+    private Vector3 targetPos;
     // Start is called before the first frame update
     void Start()
     {
         remoteControl.OnInputReceiver += Move;
+        targetPos = elevator.transform.position;
     }
     
 
@@ -26,6 +29,11 @@ public class Elevator : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void FixedUpdate()
+    {
+        elevator.transform.position = targetPos;
     }
 
     // Update is called once per frame
@@ -44,7 +52,8 @@ public class Elevator : MonoBehaviour
         posY =  Mathf.Clamp(posY,  
             (LowerBoundary.transform.position.y), 
             (UpperBoundary.transform.position.y));
-        elevator.transform.position = new Vector3(posX, posY, posZ);;
+        
+         targetPos= new Vector3(posX, posY, posZ);;
     }
 
     

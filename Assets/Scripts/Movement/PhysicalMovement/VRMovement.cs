@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Packages.Rider.Editor;
 using UnityEngine;
 using UnityEngine.Events;
 using Valve.VR;
@@ -25,23 +24,15 @@ public class VRMovement : MonoBehaviour
     [Range(0.1f, 45)] public float SetRotationImpuls;
 
     private Vector2 movementInput;
-    //public GameObject Orientation;
-
     private Quaternion targetRotation;
-
     private bool rotationApplied;
     private float rotationImpuls;
     private bool _allowRotation=true;
-
     public delegate void OnButtonPressed();
-
     public event OnButtonPressed notifyLeftButtonPressedObserver;
     public event OnButtonPressed notifyRightButtonPressedObserver;
     public event OnButtonPressed notifySwitchButtonPressedObserver;
-
     
-   
-
     private void Awake()
     {
         actionSetEnable.Activate();   
@@ -51,14 +42,8 @@ public class VRMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        /*if (Orientation == null)
-        {
-            Orientation = Camera;
-        }*/
         switchPerspective.AddOnStateDownListener(SwitchPerspective,SteamVR_Input_Sources.Any);
-
-
-
+        
         if (SnapTurn)
         {
             rotateLeft.AddOnStateUpListener(RotateLeft, SteamVR_Input_Sources.Any);
@@ -78,10 +63,9 @@ public class VRMovement : MonoBehaviour
     private void Update()
     {
         movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.Any);
-
+        
     }
-
-    // Update is called once per frame
+    
     private void FixedUpdate()
     {
         Head.transform.position = Body.transform.position;

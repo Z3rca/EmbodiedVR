@@ -9,8 +9,6 @@ using Valve.VR.InteractionSystem;
 
 public class RemoteControl : MonoBehaviour
 {
-    
-    
     public  SteamVR_ActionSet LiftActionset;
     [SerializeField] private GameObject Joystick;
 
@@ -41,15 +39,18 @@ public class RemoteControl : MonoBehaviour
     public void ActivateActionSet(bool state)
     {
         Debug.Log("is now on" + state);
-        if (state == true)
+        if (state)
         {
             activated = true;
+           
         }
         else
         {
            
             activated = false;
             LiftActionset.Deactivate(hand);
+//            interactable.attachedToHand.gameObject.transform.parent = Origin.transform;
+
         }
         
     }
@@ -64,9 +65,13 @@ public class RemoteControl : MonoBehaviour
         {
             if (interactable.attachedToHand)
             {
+               // Origin= interactable.attachedToHand.gameObject.transform.parent.parent.gameObject;
+
+               // interactable.attachedToHand.gameObject.transform.parent = RemoteTransform.transform;
                 hand = interactable.attachedToHand.handType;
                 Debug.Log(hand);
                 LiftActionset.Activate(hand);
+                
             }
             
             Vector2 input = new Vector2();
