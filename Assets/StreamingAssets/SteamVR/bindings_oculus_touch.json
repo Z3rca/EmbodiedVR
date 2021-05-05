@@ -253,6 +253,28 @@
             }
          ]
       },
+      "/actions/liftcontrol" : {
+         "sources" : [
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/liftcontrol/in/direction"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/left/input/joystick"
+            },
+            {
+               "inputs" : {
+                  "position" : {
+                     "output" : "/actions/liftcontrol/in/direction"
+                  }
+               },
+               "mode" : "joystick",
+               "path" : "/user/hand/right/input/joystick"
+            }
+         ]
+      },
       "/actions/platformer" : {
          "chords" : [],
          "haptics" : [],
