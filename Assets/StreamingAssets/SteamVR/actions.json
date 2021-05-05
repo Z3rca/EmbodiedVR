@@ -88,6 +88,11 @@
       "name": "/actions/mixedreality/in/ExternalCamera",
       "type": "pose",
       "requirement": "optional"
+    },
+    {
+      "name": "/actions/LiftControl/in/Direction",
+      "type": "vector2",
+      "requirement": "suggested"
     }
   ],
   "action_sets": [
@@ -105,6 +110,10 @@
     },
     {
       "name": "/actions/mixedreality",
+      "usage": "single"
+    },
+    {
+      "name": "/actions/LiftControl",
       "usage": "single"
     }
   ],
