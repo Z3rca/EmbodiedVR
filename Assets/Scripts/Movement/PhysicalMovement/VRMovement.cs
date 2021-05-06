@@ -68,7 +68,7 @@ public class VRMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
-        Head.transform.position = Body.transform.position;
+        
 
         
             targetRotation = transform.rotation;
@@ -92,6 +92,11 @@ public class VRMovement : MonoBehaviour
         {
             rotationApplied = false;
         }
+    }
+
+    private void LateUpdate()
+    {
+        Head.transform.position = Vector3.Lerp(Head.transform.position,Body.transform.position, 10*Time.deltaTime);
     }
 
     public void RotateLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
