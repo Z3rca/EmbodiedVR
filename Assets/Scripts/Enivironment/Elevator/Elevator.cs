@@ -28,12 +28,17 @@ public class Elevator : MonoBehaviour
 
     void Update()
     {
-        elevator.transform.position = targetPos; 
+        
     }
 
     private void FixedUpdate()
     {
         
+    }
+
+    private void LateUpdate()
+    {
+        elevator.transform.position = targetPos; 
     }
 
     // Update is called once per frame
