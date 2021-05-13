@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1853283094417095657}
   - component: {fileID: 6432027375569528547}
   - component: {fileID: 242091356932205217}
+  - component: {fileID: 2767740799766250865}
   m_Layer: 0
   m_Name: BigPlatform
   m_TagString: Untagged
@@ -92,8 +93,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3, y: 0.2, z: 2}
-  m_Center: {x: 1.5, y: 0.1, z: -1}
+  m_Size: {x: 3, y: 0, z: 2}
+  m_Center: {x: 1.5, y: 0.19999999, z: -1}
 --- !u!114 &242091356932205217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,3 +109,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   direction: {x: 1, y: 0, z: 0}
   speed: 1
+--- !u!65 &2767740799766250865
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195741698092369948}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 1.580534, z: 2}
+  m_Center: {x: 1.5, y: 0.99024236, z: -1}
