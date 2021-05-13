@@ -55,13 +55,14 @@ public class RemoteControl : MonoBehaviour
         if (state)
         {
             activated = true;
-            _cableAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Static;
-            Debug.Log("cable attachment is " + _cableAttachment.attachmentType);
+
+            GetComponent<ObiRigidbody>().kinematicForParticles = true;
+            /*_cableAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Static;
+            Debug.Log("cable attachment is " + _cableAttachment.attachmentType);*/
         }
         else
         {
-            StartCoroutine(ReactivateAtachment());
-            
+            GetComponent<ObiRigidbody>().kinematicForParticles = false;
             activated = false;
             LiftActionset.Deactivate(hand);
 //            interactable.attachedToHand.gameObject.transform.parent = Origin.transform;
