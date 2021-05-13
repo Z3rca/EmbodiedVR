@@ -49,34 +49,7 @@ public class PhysicalMovement : MonoBehaviour
 
     private void LateUpdate()
     {
-        isGrounded = GroundCheck(feet.position, groundCheckDistance);
-
-
-        direction = vrMovement.GetCurrentInput();
-
-
-        //orientation = vrMovement.GetRotation();
-        
-        velocity = Vector3.up * verticalVelocityForce;
-
-
-//        Debug.Log(x + " " + z);
-
-
-
-        Vector3 move = (transform.right * (direction.x * sideWaySpeed*_speedFactor) + (direction.y>=0? transform.forward * (direction.y * speed*_speedFactor): transform.forward * (direction.y * sideWaySpeed*_speedFactor) ));
-        
-        controller.Move(((move)+velocity)*Time.deltaTime);
-        
-
-        currentSpeed = (controller.velocity.magnitude);
-       // controller.Move(*Time.deltaTime);
-
-       ccAnimator.ApplyAnimation(direction, currentSpeed);
-
-       puppet.transform.position = feet.transform.position;
-       controller.Move(outerMovementDirection * (outerMovementVelocity * Time.deltaTime));
-       
+        puppet.transform.position = feet.transform.position;
     }
 
     public void SetSpeedFactor(float percentage)
@@ -101,6 +74,35 @@ public class PhysicalMovement : MonoBehaviour
       
       verticalVelocityForce =isGrounded ?  -4f : verticalVelocityForce += Gravity * Time.deltaTime;
        // rb.velocity = transform.up * (Gravity * Time.deltaTime);
+       
+       
+       isGrounded = GroundCheck(feet.position, groundCheckDistance);
+
+
+       direction = vrMovement.GetCurrentInput();
+
+
+       //orientation = vrMovement.GetRotation();
+        
+       velocity = Vector3.up * verticalVelocityForce;
+
+
+//        Debug.Log(x + " " + z);
+
+
+
+       Vector3 move = (transform.right * (direction.x * sideWaySpeed*_speedFactor) + (direction.y>=0? transform.forward * (direction.y * speed*_speedFactor): transform.forward * (direction.y * sideWaySpeed*_speedFactor) ));
+        
+       controller.Move(((move)+velocity)*Time.deltaTime);
+        
+
+       currentSpeed = (controller.velocity.magnitude);
+       // controller.Move(*Time.deltaTime);
+
+       ccAnimator.ApplyAnimation(direction, currentSpeed);
+
+      
+       controller.Move(outerMovementDirection * (outerMovementVelocity * Time.deltaTime));
         
     }
 
@@ -109,5 +111,11 @@ public class PhysicalMovement : MonoBehaviour
     {
         outerMovementDirection = direction;
         outerMovementVelocity = velocity;
+    }
+
+
+    public Transform GetParent()
+    {
+        return this.GetParent();
     }
 }
