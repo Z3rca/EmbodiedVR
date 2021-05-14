@@ -26,7 +26,7 @@ public class GoalBox : MonoBehaviour
         if (other.gameObject.tag=="Sphere")
         {
             counter++;
-            visibleCounter.text = counter + "/10 spheres collected!";
+            visibleCounter.text = counter + "/10 spheres collected! \r\n" + (9-counter) + " are still needed to exit.";
         }
     }
 }
