@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GoalBox : MonoBehaviour
 {
 
     public int counter = 0;
+    public int goal = 9;
+    public UnityEvent goalReached;
+    private bool eventCalled = false;
 
     public TMP_Text visibleCounter;
     // Start is called before the first frame update
@@ -18,7 +22,10 @@ public class GoalBox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!eventCalled & counter>=goal)
+        {
+            goalReached.Invoke();
+        }
     }
     
     void OnTriggerEnter(Collider other)
