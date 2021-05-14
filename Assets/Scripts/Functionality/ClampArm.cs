@@ -9,6 +9,7 @@ public class ClampArm : MonoBehaviour
 {
     private bool open = false;
     public UnityEvent onClampOpen;
+    public GameObject toUnlock;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +23,7 @@ public class ClampArm : MonoBehaviour
         if (!open & transform.position.y > 1.45)
         {
             onClampOpen.Invoke();
+            Destroy(toUnlock.GetComponent<IgnoreHovering>());
         }
     }
     
