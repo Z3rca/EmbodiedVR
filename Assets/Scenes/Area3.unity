@@ -2297,36 +2297,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1 &440345852
+--- !u!1 &440345852 stripped
 GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2079073939613242984, guid: 346abb584d180b34686ff1293a1646eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5995992287435859925}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 440345853}
-  m_Layer: 0
-  m_Name: Middle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &440345853
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 440345852}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.4668188, y: -2.44, z: 0.407238}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2009679122}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &454475181
 Mesh:
   m_ObjectHideFlags: 0
@@ -13621,77 +13597,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1 &1117470943
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1117470944}
-  - component: {fileID: 1117470945}
-  - component: {fileID: 1117470946}
-  m_Layer: 0
-  m_Name: EntryTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1117470944
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1117470943}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.4268188, y: -11.204535, z: -0.592762}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2009679122}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1117470945
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1117470943}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1117470946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1117470943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea94580f2d560a04d885aac560bb3eb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LiftEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2009679123}
-        m_MethodName: StartLift
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!43 &1119791359
 Mesh:
   m_ObjectHideFlags: 0
@@ -23467,12 +23372,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5995992287435859925}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &2009679122 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 897904563355830471, guid: 346abb584d180b34686ff1293a1646eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 5995992287435859925}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2009679123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27629,6 +27528,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 694451459647536220, guid: 346abb584d180b34686ff1293a1646eb,
+        type: 3}
+      propertyPath: LiftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2009679123}
     - target: {fileID: 776553727018113554, guid: 346abb584d180b34686ff1293a1646eb,
         type: 3}
       propertyPath: m_Enabled
