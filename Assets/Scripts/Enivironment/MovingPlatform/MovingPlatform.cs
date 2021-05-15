@@ -8,6 +8,8 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private Vector3 direction;
 
     [SerializeField] private float speed;
+
+    private bool checkedIn;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,14 +23,17 @@ public class MovingPlatform : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.GetComponent<PhysicalMovement>())
         {
             other.GetComponent<PhysicalMovement>().AddOuterMovementImpact(direction,speed);
         }
     }
-    
+
+
+   
+
     private void OnTriggerExit(Collider other)
     {
         if (other.GetComponent<PhysicalMovement>())
