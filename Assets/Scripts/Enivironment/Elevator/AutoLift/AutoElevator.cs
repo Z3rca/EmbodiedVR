@@ -9,6 +9,7 @@ public class AutoElevator : MonoBehaviour
     [SerializeField] private GameObject UpperBoundary;
     [SerializeField] private GameObject MiddlePosition;
     [SerializeField] private GameObject LowerBoundary;
+    [SerializeField] private GameObject Door;
 
     public float speed;
     
@@ -19,7 +20,7 @@ public class AutoElevator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Door.SetActive(false);
     }
 
     // Update is called once per frame
@@ -39,12 +40,14 @@ public class AutoElevator : MonoBehaviour
     private IEnumerator StartElevatorScript()
     {
         reachedPosition = false;
+        Door.SetActive(true);
         yield return MoveInDirection(speed, true, MiddlePosition.transform.position);
         Debug.Log("finished middle step");
         reachedPosition = false;
         yield return new WaitForSeconds(2f);
         yield return MoveInDirection(speed, true, UpperBoundary.transform.position);
         Debug.Log("finished lift");
+        Door.SetActive(false);
     }
 
     private IEnumerator MoveInDirection(float speed, bool upward, Vector3 targetPosition)
