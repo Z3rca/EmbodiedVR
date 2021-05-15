@@ -50,12 +50,12 @@ public class RotatonElevator : MonoBehaviour
             atTarget = false;
             if (clockwise)
             {
-                _rotationAffector.speed = speed;
+                _rotationAffector.speed = 100;
                 StartCoroutine(TurnPlatform(speed, true, new Vector3(0, 180, 0)));
             }
             else
             {
-                _rotationAffector.speed = speed;
+                _rotationAffector.speed = -15;
                 StartCoroutine(TurnPlatform(speed, false, new Vector3(0, 0, 0)));
             }
            
