@@ -81,6 +81,12 @@ public class HybridControl : MonoBehaviour
         if(FadingDuringRotation)
             StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
     }
+    
+    public void Fading(float FadeOutDuration,float FadeInDuration, float FadeDuration)
+    {
+        if(FadingDuringRotation)
+            StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
+    }
 
 
     public bool GetThirdPerson()

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Timers;
 using UnityEngine;
 using Valve.VR;
+using Debug = UnityEngine.Debug;
 
 public class PhysicalMovement : MonoBehaviour
 {
@@ -22,6 +24,7 @@ public class PhysicalMovement : MonoBehaviour
     private float verticalVelocityForce;
 
     private bool isGrounded;
+    private bool movementIsAllowed=true;
  
 
     private float currentSpeed;
@@ -36,7 +39,8 @@ public class PhysicalMovement : MonoBehaviour
 
     private Vector3 outerMovementDirection; //a lift or platform applying additional movement to the character
     private float outerMovementVelocity;
-    
+
+    private HybridControl hybridControl;
     private void Start()
     {
         _speedFactor = 1f;
@@ -44,7 +48,8 @@ public class PhysicalMovement : MonoBehaviour
         //rb = GetComponent<Rigidbody>();
        
         ccAnimator = puppet.GetComponent<CCAnimator>();
-        vrMovement = GetComponent<VRMovement>(); 
+        vrMovement = GetComponent<VRMovement>();
+        hybridControl = GetComponent<HybridControl>();
     }
 
     private void LateUpdate()
@@ -92,18 +97,17 @@ public class PhysicalMovement : MonoBehaviour
 
 
        Vector3 move = (transform.right * (direction.x * sideWaySpeed*_speedFactor) + (direction.y>=0? transform.forward * (direction.y * speed*_speedFactor): transform.forward * (direction.y * sideWaySpeed*_speedFactor) ));
-        
-       controller.Move(((move)+velocity)*Time.deltaTime);
-        
 
-       currentSpeed = (controller.velocity.magnitude);
-       // controller.Move(*Time.deltaTime);
 
-       ccAnimator.ApplyAnimation(direction, currentSpeed);
 
-      
-       controller.Move(outerMovementDirection * (outerMovementVelocity * Time.deltaTime));
-        
+       if (movementIsAllowed)
+       {
+           controller.Move(((move)+velocity)*Time.deltaTime);
+           currentSpeed = (controller.velocity.magnitude);
+           ccAnimator.ApplyAnimation(direction, currentSpeed);
+       
+           controller.Move(outerMovementDirection * (outerMovementVelocity * Time.deltaTime));
+       }
     }
 
 
@@ -111,6 +115,24 @@ public class PhysicalMovement : MonoBehaviour
     {
         outerMovementDirection = direction;
         outerMovementVelocity = velocity;
+    }
+
+
+    public void TeleportToPosition(Vector3 position)
+    {
+        StartCoroutine(TeleportationProgress(position));
+    }
+
+    IEnumerator TeleportationProgress(Vector3 position)
+    {
+        hybridControl.Fading(0f,0.5f,0.5f);
+        Debug.Log("teleporting");
+        movementIsAllowed = false;
+        this.transform.position= position;
+        yield return new WaitForFixedUpdate();
+        
+        movementIsAllowed = true;
+
     }
 
 
