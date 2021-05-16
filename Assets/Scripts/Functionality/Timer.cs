@@ -6,9 +6,9 @@ public class Timer : MonoBehaviour
 {
 
     public float timerInMinutes;
-    public GameObject player;
-    public Vector3 exit;
-    public AudioSource audioSource;
+    public PhysicalMovement player;
+    public GameObject exit;
+    private AudioSource audioSource;
     public AudioClip firstWarning;
     public AudioClip secondWarning;
 
@@ -23,13 +23,14 @@ public class Timer : MonoBehaviour
         // start timer
         timerIsRunning = true;
         timeRemaining = timerInMinutes * 60;
+        audioSource = FindObjectOfType<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
         // if timer is running, reduce time every frame by deltaTime
-        if (timerIsRunning)
+        if (timerIsRunning) 
         {
             if (timeRemaining > 15)
             {
@@ -62,7 +63,7 @@ public class Timer : MonoBehaviour
                 timeRemaining = 0;
                 timerIsRunning = false;
                 // teleport player to exit
-                player.transform.position = exit;
+                player.TeleportToPosition(exit.transform.position);
             }
         }
     }
