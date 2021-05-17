@@ -20,7 +20,9 @@ public class CameraController : MonoBehaviour
     public float speed= 5;
 
     private bool rotationChanged;
-    
+
+    [SerializeField] private StencilWallDection stecilWallDectector;
+
 
     // Start is called before the first frame update
 
@@ -43,11 +45,18 @@ public class CameraController : MonoBehaviour
         if (!isThirdPerson)
         {
             CameraArm.transform.localPosition = Vector3.zero;
-            
+            if (stecilWallDectector != null)
+            {
+                stecilWallDectector.IgnoreMask(true);
+            }
         }
         else
         {
             CameraArm.transform.localPosition= Vector3.back*cameraDistance;
+            if (stecilWallDectector != null)
+            {
+                stecilWallDectector.IgnoreMask(false);
+            }
         }
     }
 
