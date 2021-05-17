@@ -10,6 +10,7 @@ using Debug = UnityEngine.Debug;
 
 public class StencilWallDection : MonoBehaviour
 {
+    public GameObject stencilMaskObject;
     public LayerMask WallLayer;
     public LayerMask DefaultLayer;
     public LayerMask PlayerLayer;
@@ -21,6 +22,8 @@ public class StencilWallDection : MonoBehaviour
     private int _wallLayerNumber;
     private int _defaultLayerNumber;
     private int _playeLayerNumber;
+
+    private bool ignoreMask;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,12 +40,16 @@ public class StencilWallDection : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        Debug.Log(other.gameObject.layer + " " + other.name);
+       
+       // Debug.Log(other.gameObject.layer + " " + other.name);
         if (other.gameObject.layer == _wallLayerNumber)
         {
-            Debug.Log("wall object " + other.name);
+            if (ignoreMask)
+                return;
+            stencilMaskObject.SetActive(true);
+//            Debug.Log("wall object " + other.name);
             if (other.GetComponent<Renderer>()!=null)
             {
                 tmp_Material = other.gameObject.GetComponent<Renderer>().material;
@@ -65,6 +72,10 @@ public class StencilWallDection : MonoBehaviour
     
     private void OnTriggerExit(Collider other)
     {
+        if (ignoreMask)
+            return;
+        
+            stencilMaskObject.SetActive(false);
         if (other.gameObject.layer == _wallLayerNumber&& other.GetComponent<Renderer>()!=null)
         {
             other.gameObject.GetComponent<Renderer>().material = tmp_Material;
@@ -72,5 +83,20 @@ public class StencilWallDection : MonoBehaviour
             other.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.On;
         }
 
+    }
+
+
+    public void IgnoreMask(bool state)
+    {
+        if (state==true)
+        {
+            stencilMaskObject.SetActive(false);
+            ignoreMask=true;
+        }
+        else
+        {
+            ignoreMask = false;
+        }
+        
     }
 }

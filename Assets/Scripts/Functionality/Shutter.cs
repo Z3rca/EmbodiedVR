@@ -20,12 +20,12 @@ public class Shutter : MonoBehaviour
     {
         if (activated)
         {
-            Debug.Log("Activated");
+          //  Debug.Log("Activated");
             // if position has reached top or bottom flip direction
             if (transform.position.y > 2)
             {
                 direction = "down";
-                Debug.Log("Should move down now");
+          //      Debug.Log("Should move down now");
             }
             else if (transform.position.y < 1.5)
             {
