@@ -49,7 +49,7 @@ public class StencilWallDection : MonoBehaviour
             if (ignoreMask)
                 return;
             stencilMaskObject.SetActive(true);
-            Debug.Log("wall object " + other.name);
+//            Debug.Log("wall object " + other.name);
             if (other.GetComponent<Renderer>()!=null)
             {
                 tmp_Material = other.gameObject.GetComponent<Renderer>().material;

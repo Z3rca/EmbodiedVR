@@ -2316,7 +2316,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8123214595017876346}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2357,7 +2357,7 @@ SphereCollider:
   m_GameObject: {fileID: 8123214595017876346}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -3869,7 +3869,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8123214595540638468}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea0c41edb12fbcd43a5086847ceec806, type: 3}
   m_Name: 
@@ -3959,7 +3959,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8123214595588180849}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -6259,13 +6259,13 @@ MonoBehaviour:
   FadeOutDuration: 0.125
   FadeDuration: 0
   FadeInDuration: 0.125
-  AllowRotationDuringFirstperson: 1
+  AllowRotationDuringFirstperson: 0
   AllowViewSwitch: 1
   FadingBetweenViews: 1
   SwitchFadeOutDuration: 0.5
   SwitchFadeDuration: 0.5
   SwitchFadeInDuration: 0.5
-  MovementReductionDuringFirstPerson: 0.5
+  MovementReductionDuringFirstPerson: 0
 --- !u!114 &1762552079244933549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6283,6 +6283,7 @@ MonoBehaviour:
   CameraArm: {fileID: 8123214596071251655}
   cameraDistance: 4.6
   speed: 5
+  stecilWallDectector: {fileID: 0}
 --- !u!1 &8123214595990610103
 GameObject:
   m_ObjectHideFlags: 0
@@ -6577,7 +6578,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8123214596238763230}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
