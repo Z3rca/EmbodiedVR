@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TestTrigger : MonoBehaviour
+public class TutorialInteractionTrigger : MonoBehaviour
 {
 
 
@@ -12,7 +12,7 @@ public class TestTrigger : MonoBehaviour
     {
         if (other.GetComponent<PhysicalMovement>())
         {
-            TutorialManager.Instance.StartTutorial();
+            TutorialManager.Instance.ReachedInteractionArea();
         }
         
     }

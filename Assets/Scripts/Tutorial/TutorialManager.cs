@@ -67,14 +67,32 @@ public class TutorialManager : MonoBehaviour
         audioController.MovementAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         HybridControl.AllowViewSwitch = true;
+        //Show Controllers - View Switch Button
         yield return new WaitUntil(() => perspectiveSwitchWasDone);
+        //Dont show Controllers
         EnableInteractionArea();
 
     }
 
     public void ReachedInteractionArea()
     {
+        audioController.InteractionAudioClip();
+        //Show Controllers - ViewSwitchButton
         audioController.MovementAudioClip();
+        //pick up ball instruction on controller 
+        //Pick up ball  Audio Instruction
+        audioController.ThrowBallInBox(); //now throw the ball in the box to your right.
+    }
+
+    public void ReachedSecondInteractionArea()
+    {
+        //Show Controller, View Switch button
+    }
+
+    public void ThorwnBallInBox()
+    {
+        audioController.FinishedTask();  //Well done.
+        audioController.ExitTutorial();// now you can go go through the door and finish the tutorial section.  
     }
 
 

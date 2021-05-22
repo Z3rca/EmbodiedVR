@@ -7,6 +7,7 @@ public class TutorialAudioDialogController : MonoBehaviour
 {
    public AudioClip Familarization;
    public AudioClip Movement;
+   public AudioClip Interaction;
    public AudioSource audioSource;
 
    private bool _playingAudioClip;
@@ -24,6 +25,26 @@ public class TutorialAudioDialogController : MonoBehaviour
    public void MovementAudioClip()
    {
       StartAudioClip(Movement);
+   }
+
+   public void InteractionAudioClip()
+   {
+      StartAudioClip(Interaction);
+   }
+   
+   public void ThrowBallInBox()
+   {
+      throw new NotImplementedException();
+   }
+
+   public void ExitTutorial()
+   {
+      throw new NotImplementedException();
+   }
+   
+   public void FinishedTask()
+   {
+      throw new NotImplementedException();
    }
 
 
@@ -57,8 +78,7 @@ public class TutorialAudioDialogController : MonoBehaviour
    {
       return _playingAudioClip;
    }
-   
-   
-   
-   
+
+
+  
 }
