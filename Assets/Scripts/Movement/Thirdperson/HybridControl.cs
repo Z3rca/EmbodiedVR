@@ -20,7 +20,7 @@ public class HybridControl : MonoBehaviour
     public bool AllowRotationDuringFirstperson;
     
     [Header("Switch View Settings")]
-    [SerializeField] private  bool AllowViewSwitch;
+    private bool _allowViewSwitch;
     public bool FadingBetweenViews;
     [Range(0f, 1f)] public float SwitchFadeOutDuration;
     [Range(0f,1f)] public float SwitchFadeDuration;
@@ -28,6 +28,8 @@ public class HybridControl : MonoBehaviour
     [Range(0f, 1f)] public float MovementReductionDuringFirstPerson;
 
     private bool _fadingInProgres;
+    
+    public EventHandler<EventArgs> NotifyPerspectiveSwitch;
 
     private void Start()
     {
@@ -56,8 +58,9 @@ public class HybridControl : MonoBehaviour
 
     public void SwitchPerspective()
     {
-        if (AllowViewSwitch)
+        if (_allowViewSwitch)
         {
+            NotifyPerspectiveSwitch?.Invoke(this,EventArgs.Empty);
             ThirdPerson =!ThirdPerson;
             if(FadingBetweenViews)
                 StartCoroutine(FadeOutFadeIn(SwitchFadeOutDuration,SwitchFadeInDuration,SwitchFadeDuration));
@@ -105,8 +108,14 @@ public class HybridControl : MonoBehaviour
         physicalMovement.MovementIsAllowed = state;
         
     }
-    
-    
+
+    public bool AllowViewSwitch
+    {
+        get => _allowViewSwitch;
+        set => _allowViewSwitch = value;
+    }
+
+
     private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)
     {
             SteamVR_Fade.Start(Color.black,FadeOut);

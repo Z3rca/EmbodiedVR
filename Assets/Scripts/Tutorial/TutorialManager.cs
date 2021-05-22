@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,11 @@ public class TutorialManager : MonoBehaviour
     public GameObject InteractionAreaLock;
     public GameObject InteractionAreaArrow;
     public GameObject PathArrow;
+
+    private bool FamilarizationIsRunning;
+    private bool MovmentIntroIsRunning;
+
+    private bool perspectiveSwitchWasDone;
     private void Awake()
     {
         if (Instance == null)
@@ -31,6 +37,7 @@ public class TutorialManager : MonoBehaviour
     {
         audioController = GetComponent<TutorialAudioDialogController>();
         StartTutorial();
+        HybridControl.NotifyPerspectiveSwitch += PerspectiveSwitchWasPerformend;
     }
 
     // Update is called once per frame
@@ -46,26 +53,37 @@ public class TutorialManager : MonoBehaviour
         StartCoroutine(FamilarizationRoutine());
     }
 
+    
 
     private IEnumerator FamilarizationRoutine()
     {
+        HybridControl.AllowViewSwitch = false;
         HybridControl.AllowMovement(false);
         HybridControl.Fading(0f,2f,2f);
         yield return new WaitUntil(() =>!HybridControl.FadingInProgress);
         audioController.FamilarizationAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
-        Debug.Log("finished");
-       
+        Debug.Log("finished Introduction");
+        audioController.MovementAudioClip();
+        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        HybridControl.AllowViewSwitch = true;
+        yield return new WaitUntil(() => perspectiveSwitchWasDone);
+        EnableInteractionArea();
+
     }
 
-    private IEnumerator LearnMovementRoutine()
+    public void ReachedInteractionArea()
     {
-        audioController.FamilarizationAudioClip();
-        HybridControl.AllowMovement(true);
+        audioController.MovementAudioClip();
     }
 
 
 
+
+    private void PerspectiveSwitchWasPerformend(object sender, EventArgs eventArgs)
+    {
+        perspectiveSwitchWasDone = true;
+    }
 
     public void EnableInteractionArea()
     {
