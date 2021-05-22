@@ -26,7 +26,8 @@ public class HybridControl : MonoBehaviour
     [Range(0f,1f)] public float SwitchFadeDuration;
     [Range(0f,1f)] public float SwitchFadeInDuration;
     [Range(0f, 1f)] public float MovementReductionDuringFirstPerson;
-    
+
+    private bool _fadingInProgres;
 
     private void Start()
     {
@@ -84,8 +85,12 @@ public class HybridControl : MonoBehaviour
     
     public void Fading(float FadeOutDuration,float FadeInDuration, float FadeDuration)
     {
-        if(FadingDuringRotation)
+        if (FadingDuringRotation)
+        {
+            Debug.Log("fading");
+            _fadingInProgres = true;
             StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
+        }
     }
 
 
@@ -93,13 +98,26 @@ public class HybridControl : MonoBehaviour
     {
         return ThirdPerson;
     }
+
+
+    public void AllowMovement(bool state)
+    {
+        physicalMovement.MovementIsAllowed = state;
+        
+    }
     
     
     private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)
     {
-        SteamVR_Fade.Start(Color.black,FadeOut);
-        yield return new WaitForSeconds(FadeOut);
-        yield return new WaitForSeconds(FadeTime);
-        SteamVR_Fade.Start(Color.clear,FadeIn);
+            SteamVR_Fade.Start(Color.black,FadeOut);
+            yield return new WaitForSeconds(FadeOut);
+            yield return new WaitForSeconds(FadeTime);
+            SteamVR_Fade.Start(Color.clear,FadeIn);
+            _fadingInProgres = false;
+    }
+    
+    public bool FadingInProgress
+    {
+        get => _fadingInProgres;
     }
 }
