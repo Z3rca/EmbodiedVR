@@ -20,13 +20,16 @@ public class HybridControl : MonoBehaviour
     public bool AllowRotationDuringFirstperson;
     
     [Header("Switch View Settings")]
-    [SerializeField] private  bool AllowViewSwitch;
+    private bool _allowViewSwitch;
     public bool FadingBetweenViews;
     [Range(0f, 1f)] public float SwitchFadeOutDuration;
     [Range(0f,1f)] public float SwitchFadeDuration;
     [Range(0f,1f)] public float SwitchFadeInDuration;
     [Range(0f, 1f)] public float MovementReductionDuringFirstPerson;
+
+    private bool _fadingInProgres;
     
+    public EventHandler<EventArgs> NotifyPerspectiveSwitch;
 
     private void Start()
     {
@@ -55,8 +58,9 @@ public class HybridControl : MonoBehaviour
 
     public void SwitchPerspective()
     {
-        if (AllowViewSwitch)
+        if (_allowViewSwitch)
         {
+            NotifyPerspectiveSwitch?.Invoke(this,EventArgs.Empty);
             ThirdPerson =!ThirdPerson;
             if(FadingBetweenViews)
                 StartCoroutine(FadeOutFadeIn(SwitchFadeOutDuration,SwitchFadeInDuration,SwitchFadeDuration));
@@ -84,8 +88,12 @@ public class HybridControl : MonoBehaviour
     
     public void Fading(float FadeOutDuration,float FadeInDuration, float FadeDuration)
     {
-        if(FadingDuringRotation)
+        if (FadingDuringRotation)
+        {
+            Debug.Log("fading");
+            _fadingInProgres = true;
             StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
+        }
     }
 
 
@@ -93,13 +101,32 @@ public class HybridControl : MonoBehaviour
     {
         return ThirdPerson;
     }
-    
-    
+
+
+    public void AllowMovement(bool state)
+    {
+        physicalMovement.MovementIsAllowed = state;
+        
+    }
+
+    public bool AllowViewSwitch
+    {
+        get => _allowViewSwitch;
+        set => _allowViewSwitch = value;
+    }
+
+
     private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)
     {
-        SteamVR_Fade.Start(Color.black,FadeOut);
-        yield return new WaitForSeconds(FadeOut);
-        yield return new WaitForSeconds(FadeTime);
-        SteamVR_Fade.Start(Color.clear,FadeIn);
+            SteamVR_Fade.Start(Color.black,FadeOut);
+            yield return new WaitForSeconds(FadeOut);
+            yield return new WaitForSeconds(FadeTime);
+            SteamVR_Fade.Start(Color.clear,FadeIn);
+            _fadingInProgres = false;
+    }
+    
+    public bool FadingInProgress
+    {
+        get => _fadingInProgres;
     }
 }

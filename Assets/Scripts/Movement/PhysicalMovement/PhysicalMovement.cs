@@ -24,7 +24,7 @@ public class PhysicalMovement : MonoBehaviour
     private float verticalVelocityForce;
 
     private bool isGrounded;
-    private bool movementIsAllowed=true;
+    private bool _movementIsAllowed=true;
  
 
     private float currentSpeed;
@@ -100,13 +100,17 @@ public class PhysicalMovement : MonoBehaviour
 
 
 
-       if (movementIsAllowed)
+       if (_movementIsAllowed)
        {
            controller.Move(((move)+velocity)*Time.deltaTime);
            currentSpeed = (controller.velocity.magnitude);
            ccAnimator.ApplyAnimation(direction, currentSpeed);
        
            controller.Move(outerMovementDirection * (outerMovementVelocity * Time.deltaTime));
+       }
+       else
+       {
+           ccAnimator.ApplyAnimation(Vector2.zero, 0f);
        }
     }
 
@@ -127,12 +131,18 @@ public class PhysicalMovement : MonoBehaviour
     {
         hybridControl.Fading(0f,0.5f,0.5f);
         Debug.Log("teleporting");
-        movementIsAllowed = false;
+        _movementIsAllowed = false;
         this.transform.position= position;
         yield return new WaitForFixedUpdate();
         
-        movementIsAllowed = true;
+        _movementIsAllowed = true;
 
+    }
+
+    public bool MovementIsAllowed
+    {
+        get => _movementIsAllowed;
+        set => _movementIsAllowed = value;
     }
 
 
