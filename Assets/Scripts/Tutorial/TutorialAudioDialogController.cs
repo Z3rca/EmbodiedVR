@@ -8,6 +8,10 @@ public class TutorialAudioDialogController : MonoBehaviour
    public AudioClip Familarization;
    public AudioClip Movement;
    public AudioClip Interaction;
+   public AudioClip PickUp;
+   public AudioClip ThrowBallInBoxInstruction;
+   public AudioClip ThrowBallInBox;
+   public AudioClip ExitTutorial;
    public AudioSource audioSource;
 
    private bool _playingAudioClip;
@@ -32,14 +36,24 @@ public class TutorialAudioDialogController : MonoBehaviour
       StartAudioClip(Interaction);
    }
    
-   public void ThrowBallInBox()
+   public void PickBallAudioClip()
    {
-      throw new NotImplementedException();
+      StartAudioClip(PickUp);
+   }
+   
+   public void ThrowBallInBoxInstructionAudioClip()
+   {
+      StartAudioClip(ThrowBallInBoxInstruction);
+   }
+   
+   public void ThrowBallInBoxAudioClip()
+   {
+      StartAudioClip(ThrowBallInBox);
    }
 
-   public void ExitTutorial()
+   public void ExitTutorialAudioClip()
    {
-      throw new NotImplementedException();
+      StartAudioClip(ExitTutorial);
    }
    
    public void FinishedTask()
