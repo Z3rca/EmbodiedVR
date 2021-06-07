@@ -29,7 +29,7 @@ public class HybridControl : MonoBehaviour
 
     private bool _fadingInProgres;
     
-    public EventHandler<EventArgs> NotifyPerspectiveSwitch;
+    public EventHandler<SwitchPerspectiveEventArgs> NotifyPerspectiveSwitch;
 
     private void Start()
     {
@@ -60,7 +60,11 @@ public class HybridControl : MonoBehaviour
     {
         if (_allowViewSwitch)
         {
-            NotifyPerspectiveSwitch?.Invoke(this,EventArgs.Empty);
+            var eventArgs = new SwitchPerspectiveEventArgs
+            {
+                currentlyThirdPerson = this.ThirdPerson
+            };
+            NotifyPerspectiveSwitch?.Invoke(this,eventArgs);
             ThirdPerson =!ThirdPerson;
             if(FadingBetweenViews)
                 StartCoroutine(FadeOutFadeIn(SwitchFadeOutDuration,SwitchFadeInDuration,SwitchFadeDuration));
@@ -129,4 +133,13 @@ public class HybridControl : MonoBehaviour
     {
         get => _fadingInProgres;
     }
+    
+    
 }
+
+
+public class SwitchPerspectiveEventArgs : EventArgs
+{
+    public bool currentlyThirdPerson;
+}
+

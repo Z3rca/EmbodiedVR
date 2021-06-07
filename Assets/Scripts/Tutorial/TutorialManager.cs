@@ -18,7 +18,9 @@ public class TutorialManager : MonoBehaviour
     private bool FamilarizationIsRunning;
     private bool MovmentIntroIsRunning;
 
-    private bool perspectiveSwitchWasDone;
+    private bool _thirdPersonIsActive;
+
+    private bool ThirdPersonIsActive;
 
     public GameObject Door;
     public GameObject Door2;
@@ -77,7 +79,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         HybridControl.AllowViewSwitch = true;
         //Show Controllers - View Switch Button
-        yield return new WaitUntil(() => perspectiveSwitchWasDone);
+        yield return new WaitUntil(() => _thirdPersonIsActive);
         //Dont show Controllers
         EnableInteractionArea();
         HybridControl.AllowMovement(true);
@@ -93,7 +95,7 @@ public class TutorialManager : MonoBehaviour
     public IEnumerator ReachedInteractionAreaRoutine()
     {
         audioController.InteractionAudioClip();
-        yield return new WaitUntil(() => perspectiveSwitchWasDone);
+        yield return new WaitUntil(() => !_thirdPersonIsActive);
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         audioController.PickBallAudioClip();
         //TODO check SteamVR Interactable if attached to hand 
@@ -126,9 +128,9 @@ public class TutorialManager : MonoBehaviour
         audioController.ThrowBallInBoxInstructionAudioClip(); //now throw the ball in the box to your right.
     }
     
-    private void PerspectiveSwitchWasPerformend(object sender, EventArgs eventArgs)
+    private void PerspectiveSwitchWasPerformend(object sender, SwitchPerspectiveEventArgs eventArgs)
     {
-        perspectiveSwitchWasDone = true;
+        _thirdPersonIsActive = eventArgs.currentlyThirdPerson;
     }
 
     public void EnableInteractionArea()
