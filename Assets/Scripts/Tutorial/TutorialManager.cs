@@ -10,9 +10,9 @@ public class TutorialManager : MonoBehaviour
     private TutorialAudioDialogController audioController;
     public HybridControl HybridControl;
 
-    public GameObject InteractionAreaLock;
-    public GameObject InteractionAreaArrow;
-    public GameObject PathArrow;
+    public GameObject InteractionAreaShine;
+    public GameObject BoxAreaShine;
+    public GameObject ExitAreaShine;
     public GameObject Ball;
 
     private bool FamilarizationIsRunning;
@@ -75,11 +75,13 @@ public class TutorialManager : MonoBehaviour
         audioController.FamilarizationAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         Debug.Log("finished Introduction");
-        audioController.MovementAudioClip();
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        audioController.SwitchViewButtonAudioClip();
         HybridControl.AllowViewSwitch = true;
+        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         //Show Controllers - View Switch Button
         yield return new WaitUntil(() => _thirdPersonIsActive);
+        audioController.MovementAudioClip();
+        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         //Dont show Controllers
         EnableInteractionArea();
         HybridControl.AllowMovement(true);
@@ -112,7 +114,7 @@ public class TutorialManager : MonoBehaviour
     public void ThorwnBallInBox()
     {
         //audioController.FinishedTask();  //Well done.
-        
+        EnableExitArea();
         audioController.ExitTutorialAudioClip();
         // now you can go go through the door and finish the tutorial section.  
         Door.SetActive(false);
@@ -126,17 +128,34 @@ public class TutorialManager : MonoBehaviour
     {
         Ball.GetComponent<Rigidbody>().useGravity = true;
         audioController.ThrowBallInBoxInstructionAudioClip(); //now throw the ball in the box to your right.
+        EnableBoxArea();
     }
     
     private void PerspectiveSwitchWasPerformend(object sender, SwitchPerspectiveEventArgs eventArgs)
     {
-        _thirdPersonIsActive = eventArgs.currentlyThirdPerson;
+        _thirdPersonIsActive = eventArgs.switchToThirdPerson;
+        Debug.Log(_thirdPersonIsActive);
     }
 
     public void EnableInteractionArea()
     {
-        InteractionAreaLock.SetActive(false);
-        InteractionAreaArrow.SetActive(true);
-        PathArrow.SetActive(true);
+        InteractionAreaShine.SetActive(true);
+        BoxAreaShine.SetActive(false);
+        ExitAreaShine.SetActive(false);
+    }
+    
+    
+    public void EnableBoxArea()
+    {
+        InteractionAreaShine.SetActive(false);
+        BoxAreaShine.SetActive(true);
+        ExitAreaShine.SetActive(false);
+    }
+    
+    public void EnableExitArea()
+    {
+        InteractionAreaShine.SetActive(false);
+        BoxAreaShine.SetActive(false);
+        ExitAreaShine.SetActive(true);
     }
 }

@@ -60,12 +60,12 @@ public class HybridControl : MonoBehaviour
     {
         if (_allowViewSwitch)
         {
+            ThirdPerson =!ThirdPerson;
             var eventArgs = new SwitchPerspectiveEventArgs
             {
-                currentlyThirdPerson = this.ThirdPerson
+                switchToThirdPerson = this.ThirdPerson
             };
             NotifyPerspectiveSwitch?.Invoke(this,eventArgs);
-            ThirdPerson =!ThirdPerson;
             if(FadingBetweenViews)
                 StartCoroutine(FadeOutFadeIn(SwitchFadeOutDuration,SwitchFadeInDuration,SwitchFadeDuration));
        
@@ -140,6 +140,6 @@ public class HybridControl : MonoBehaviour
 
 public class SwitchPerspectiveEventArgs : EventArgs
 {
-    public bool currentlyThirdPerson;
+    public bool switchToThirdPerson;
 }
 
