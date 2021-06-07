@@ -10,15 +10,17 @@ public class TutorialManager : MonoBehaviour
     private TutorialAudioDialogController audioController;
     public HybridControl HybridControl;
 
-    public GameObject InteractionAreaLock;
-    public GameObject InteractionAreaArrow;
-    public GameObject PathArrow;
+    public GameObject InteractionAreaShine;
+    public GameObject BoxAreaShine;
+    public GameObject ExitAreaShine;
     public GameObject Ball;
 
     private bool FamilarizationIsRunning;
     private bool MovmentIntroIsRunning;
 
-    private bool perspectiveSwitchWasDone;
+    private bool _thirdPersonIsActive;
+
+    private bool ThirdPersonIsActive;
 
     public GameObject Door;
     public GameObject Door2;
@@ -73,11 +75,13 @@ public class TutorialManager : MonoBehaviour
         audioController.FamilarizationAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         Debug.Log("finished Introduction");
+        audioController.SwitchViewButtonAudioClip();
+        HybridControl.AllowViewSwitch = true;
+        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        //Show Controllers - View Switch Button
+        yield return new WaitUntil(() => _thirdPersonIsActive);
         audioController.MovementAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
-        HybridControl.AllowViewSwitch = true;
-        //Show Controllers - View Switch Button
-        yield return new WaitUntil(() => perspectiveSwitchWasDone);
         //Dont show Controllers
         EnableInteractionArea();
         HybridControl.AllowMovement(true);
@@ -93,7 +97,7 @@ public class TutorialManager : MonoBehaviour
     public IEnumerator ReachedInteractionAreaRoutine()
     {
         audioController.InteractionAudioClip();
-        yield return new WaitUntil(() => perspectiveSwitchWasDone);
+        yield return new WaitUntil(() => !_thirdPersonIsActive);
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         audioController.PickBallAudioClip();
         //TODO check SteamVR Interactable if attached to hand 
@@ -110,7 +114,7 @@ public class TutorialManager : MonoBehaviour
     public void ThorwnBallInBox()
     {
         //audioController.FinishedTask();  //Well done.
-        
+        EnableExitArea();
         audioController.ExitTutorialAudioClip();
         // now you can go go through the door and finish the tutorial section.  
         Door.SetActive(false);
@@ -124,17 +128,34 @@ public class TutorialManager : MonoBehaviour
     {
         Ball.GetComponent<Rigidbody>().useGravity = true;
         audioController.ThrowBallInBoxInstructionAudioClip(); //now throw the ball in the box to your right.
+        EnableBoxArea();
     }
     
-    private void PerspectiveSwitchWasPerformend(object sender, EventArgs eventArgs)
+    private void PerspectiveSwitchWasPerformend(object sender, SwitchPerspectiveEventArgs eventArgs)
     {
-        perspectiveSwitchWasDone = true;
+        _thirdPersonIsActive = eventArgs.switchToThirdPerson;
+        Debug.Log(_thirdPersonIsActive);
     }
 
     public void EnableInteractionArea()
     {
-        InteractionAreaLock.SetActive(false);
-        InteractionAreaArrow.SetActive(true);
-        PathArrow.SetActive(true);
+        InteractionAreaShine.SetActive(true);
+        BoxAreaShine.SetActive(false);
+        ExitAreaShine.SetActive(false);
+    }
+    
+    
+    public void EnableBoxArea()
+    {
+        InteractionAreaShine.SetActive(false);
+        BoxAreaShine.SetActive(true);
+        ExitAreaShine.SetActive(false);
+    }
+    
+    public void EnableExitArea()
+    {
+        InteractionAreaShine.SetActive(false);
+        BoxAreaShine.SetActive(false);
+        ExitAreaShine.SetActive(true);
     }
 }

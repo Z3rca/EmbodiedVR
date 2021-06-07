@@ -6,6 +6,7 @@ using UnityEngine;
 public class TutorialAudioDialogController : MonoBehaviour
 {
    public AudioClip Familarization;
+   public AudioClip SwitchViewButton;
    public AudioClip Movement;
    public AudioClip Interaction;
    public AudioClip PickUp;
@@ -24,6 +25,11 @@ public class TutorialAudioDialogController : MonoBehaviour
    public void FamilarizationAudioClip()
    {
       StartAudioClip(Familarization);
+   }
+
+   public void SwitchViewButtonAudioClip()
+   {
+      StartAudioClip(SwitchViewButton);
    }
    
    public void MovementAudioClip()
