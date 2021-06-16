@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,7 @@ public class RatingSystem : MonoBehaviour
    
    
    [SerializeField] private string basic;
-   [SerializeField] private Text textField;
+   [SerializeField] private TMP_Text textField;
    [SerializeField] private List<GameObject> RatingButtons;
    [SerializeField] private GameObject AcceptButton;
    public EventHandler<RatingBoardDataFrame> HitEvent;
@@ -41,7 +42,7 @@ public class RatingSystem : MonoBehaviour
    
    private void SetText(int val)
    {
-      textField.text= basic + ": "+ val;
+      textField.text = basic + ": "+ val;
    }
 
    public void Restart()
