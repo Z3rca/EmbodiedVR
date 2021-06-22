@@ -100,9 +100,9 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => !_thirdPersonIsActive);
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         audioController.PickBallAudioClip();
+        Ball.SetActive(true);
         //TODO check SteamVR Interactable if attached to hand 
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
-        Ball.SetActive(true);
     }
 
     public void ReachedSecondInteractionArea()
