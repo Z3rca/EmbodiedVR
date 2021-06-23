@@ -54,7 +54,8 @@ public class BlobScript : MonoBehaviour
         
         if (switchPerspectiveEventArgs.switchToThirdPerson)
         {
-            BlobModel.SetActive(true);
+            BlobModel.GetComponent<MeshRenderer>().enabled = true;
+            //BlobModel.SetActive(true);
             
             foreach (var hand in Player.instance.hands)
             {
@@ -65,7 +66,7 @@ public class BlobScript : MonoBehaviour
         }
         else
         {
-            BlobModel.SetActive(false);
+            BlobModel.GetComponent<MeshRenderer>().enabled = false;
             foreach (var hand in Player.instance.hands)
             {
                 hand.ShowController();
