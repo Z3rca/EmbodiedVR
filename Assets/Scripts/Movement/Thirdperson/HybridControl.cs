@@ -10,7 +10,7 @@ public class HybridControl : MonoBehaviour
     private VRMovement InputController;
     private CameraController cameraController;
     private PhysicalMovement physicalMovement;
-    [SerializeField] private  bool ThirdPerson=true;
+    [SerializeField] private bool ThirdPerson;
     
     [Header("Rotation Settings")]
     public bool FadingDuringRotation;
