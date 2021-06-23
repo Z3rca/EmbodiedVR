@@ -68,7 +68,7 @@ public class TutorialManager : MonoBehaviour
     {
         Debug.Log("start tutorial");
         yield return new WaitForEndOfFrame();
-        HybridControl.AllowViewSwitch = false;
+        HybridControl._allowViewSwitch = false;
         HybridControl.AllowMovement(false);
         HybridControl.Fading(0f,2f,2f);
         yield return new WaitUntil(() =>!HybridControl.FadingInProgress);
@@ -76,7 +76,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         Debug.Log("finished Introduction");
         audioController.SwitchViewButtonAudioClip();
-        HybridControl.AllowViewSwitch = true;
+        HybridControl._allowViewSwitch = true;
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         //Show Controllers - View Switch Button
         yield return new WaitUntil(() => _thirdPersonIsActive);

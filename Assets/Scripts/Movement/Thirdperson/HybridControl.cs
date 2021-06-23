@@ -10,7 +10,7 @@ public class HybridControl : MonoBehaviour
     private VRMovement InputController;
     private CameraController cameraController;
     private PhysicalMovement physicalMovement;
-    [SerializeField] private  bool ThirdPerson=true;
+    [SerializeField] private bool ThirdPerson;
     
     [Header("Rotation Settings")]
     public bool FadingDuringRotation;
@@ -20,7 +20,7 @@ public class HybridControl : MonoBehaviour
     public bool AllowRotationDuringFirstperson;
     
     [Header("Switch View Settings")]
-    private bool _allowViewSwitch;
+    public bool _allowViewSwitch;
     public bool FadingBetweenViews;
     [Range(0f, 1f)] public float SwitchFadeOutDuration;
     [Range(0f,1f)] public float SwitchFadeDuration;
@@ -112,12 +112,7 @@ public class HybridControl : MonoBehaviour
         physicalMovement.MovementIsAllowed = state;
         
     }
-
-    public bool AllowViewSwitch
-    {
-        get => _allowViewSwitch;
-        set => _allowViewSwitch = value;
-    }
+    
 
 
     private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)
