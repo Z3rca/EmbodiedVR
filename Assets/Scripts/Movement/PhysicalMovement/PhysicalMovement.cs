@@ -130,7 +130,7 @@ public class PhysicalMovement : MonoBehaviour
     IEnumerator TeleportationProgress(Vector3 position)
     {
         hybridControl.Fading(0f,0.5f,0.5f);
-        Debug.Log("teleporting");
+        Debug.Log("teleporting to " + position);
         _movementIsAllowed = false;
         this.transform.position= position;
         yield return new WaitForFixedUpdate();
