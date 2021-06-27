@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Valve.Newtonsoft.Json.Utilities;
 
 public class ExperimentManager : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class ExperimentManager : MonoBehaviour
     
     
     public GameObject Player;
+    private PhysicalMovement _playerMovement;
 
     public StationSpawner ActiveStation;
     private List<StationSpawner> RemainingstationsStationSpawners =new List<StationSpawner>();
@@ -51,10 +53,15 @@ public class ExperimentManager : MonoBehaviour
     public void TakeParticipantToNextStation()
     {
         RemainingstationsStationSpawners.Remove(ActiveStation);
+        if (!RemainingstationsStationSpawners.Any())
+        {
+            Debug.Log("Finished condition");
+        }
+        StationIndex++;
         
         if (StationIndex > StationOrder.Count)
         {
-            StationIndex++;
+            Debug.Log("no teleport, finished");
         }
 
         foreach (var stationSpawner in RemainingstationsStationSpawners)
@@ -65,8 +72,12 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
-
-        Player.GetComponentInChildren<PhysicalMovement>().TeleportToPosition(ActiveStation.gameObject.transform.position);
+        if (_playerMovement == null)
+        {
+            _playerMovement = Player.GetComponentInChildren<PhysicalMovement>();
+        }
+        
+        _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
         
     }
 
