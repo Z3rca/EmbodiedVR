@@ -8,7 +8,7 @@ public class StationSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ExperimentManager.Instance.G
+        ExperimentManager.Instance.RegisterSpawnerToList(this);
     }
 
     // Update is called once per frame

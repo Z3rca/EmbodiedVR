@@ -11,16 +11,11 @@ public class ExperimentManager : MonoBehaviour
     public GameObject Player;
 
     public StationSpawner ActiveStation;
-    private List<StationSpawner> RemainingstationsStationSpawners;
+    private List<StationSpawner> RemainingstationsStationSpawners =new List<StationSpawner>();
 
     public  List<int> StationOrder;
     private int StationIndex;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 
     // Update is called once per frame
     void Update()
@@ -42,6 +37,11 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+//        Player = FindObjectOfType<HybridControl>().gameObject;
+    }
+
     public void TakeParticipantToNextStation()
     {
         RemainingstationsStationSpawners.Remove(ActiveStation);
@@ -55,8 +55,7 @@ public class ExperimentManager : MonoBehaviour
 
 
         Player.GetComponentInChildren<PhysicalMovement>().TeleportToPosition(ActiveStation.transform.position);
-
-
+        
     }
 
 
