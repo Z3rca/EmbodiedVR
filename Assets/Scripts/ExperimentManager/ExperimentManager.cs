@@ -39,7 +39,13 @@ public class ExperimentManager : MonoBehaviour
 
     private void Start()
     {
-//        Player = FindObjectOfType<HybridControl>().gameObject;
+        foreach (var stationSpawner in RemainingstationsStationSpawners)
+        {
+            if (stationSpawner.ID == StationOrder[0])
+            {
+                ActiveStation = stationSpawner;
+            }
+        }
     }
 
     public void TakeParticipantToNextStation()
@@ -51,10 +57,16 @@ public class ExperimentManager : MonoBehaviour
             StationIndex++;
         }
 
-        ActiveStation= RemainingstationsStationSpawners[StationOrder[StationIndex]];
+        foreach (var stationSpawner in RemainingstationsStationSpawners)
+        {
+            if (stationSpawner.ID == StationOrder[StationIndex])
+            {
+                ActiveStation = stationSpawner;
+            }
+        }
 
 
-        Player.GetComponentInChildren<PhysicalMovement>().TeleportToPosition(ActiveStation.transform.position);
+        Player.GetComponentInChildren<PhysicalMovement>().TeleportToPosition(ActiveStation.gameObject.transform.position);
         
     }
 
