@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StationSpawner : MonoBehaviour
 {
-    public string ID;
+    public int ID;
     // Start is called before the first frame update
     void Start()
     {

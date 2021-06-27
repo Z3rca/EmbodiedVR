@@ -10,8 +10,11 @@ public class ExperimentManager : MonoBehaviour
     
     public GameObject Player;
 
-    public GameObject ActiveStation;
-    public List<StationSpawner> RemainingstationsStationSpawners;
+    public StationSpawner ActiveStation;
+    private List<StationSpawner> RemainingstationsStationSpawners;
+
+    public  List<int> StationOrder;
+    private int StationIndex;
     
     // Start is called before the first frame update
     void Start()
@@ -41,7 +44,19 @@ public class ExperimentManager : MonoBehaviour
 
     public void TakeParticipantToNextStation()
     {
-        Player.GetComponent<PhysicalMovement>().TeleportToPosition(Remainingstations[Remainingstations.Count].transform.position);
+        RemainingstationsStationSpawners.Remove(ActiveStation);
+        
+        if (StationIndex > StationOrder.Count)
+        {
+            StationIndex++;
+        }
+
+        ActiveStation= RemainingstationsStationSpawners[StationOrder[StationIndex]];
+
+
+        Player.GetComponentInChildren<PhysicalMovement>().TeleportToPosition(ActiveStation.transform.position);
+
+
     }
 
 

@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3843934306221813197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1680989225997507374}
+  - component: {fileID: 8962497372747405665}
+  m_Layer: 0
+  m_Name: StationSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1680989225997507374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843934306221813197}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -4.3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6953806733202759817}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8962497372747405665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843934306221813197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dc7987a4d60ae34aaf17e64e77136ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 2
 --- !u!1001 &6371842254631623730
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1985,7 +2029,7 @@ PrefabInstance:
     - target: {fileID: 4102135654876544186, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_Name
-      value: DataGatheringRoom
+      value: EndDataGatheringRoom
       objectReference: {fileID: 0}
     - target: {fileID: 4102135654876544187, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
@@ -1995,17 +2039,17 @@ PrefabInstance:
     - target: {fileID: 4102135654876544187, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.365528
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4102135654876544187, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.3821745
+      value: 4.4
       objectReference: {fileID: 0}
     - target: {fileID: 4102135654876544187, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.680767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4102135654876544187, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
@@ -2219,3 +2263,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21cfe44e54fd42448b2d17d31be6b11c, type: 3}
+--- !u!4 &6953806733202759817 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4102135654876544187, guid: 21cfe44e54fd42448b2d17d31be6b11c,
+    type: 3}
+  m_PrefabInstance: {fileID: 6371842254631623730}
+  m_PrefabAsset: {fileID: 0}
