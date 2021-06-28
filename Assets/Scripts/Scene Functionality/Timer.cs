@@ -21,7 +21,6 @@ public class Timer : MonoBehaviour
     void Start()
     {
         // start timer
-        _timerIsRunning = true;
         timeRemaining = timerInMinutes * 60;
         audioSource = FindObjectOfType<AudioSource>();
 

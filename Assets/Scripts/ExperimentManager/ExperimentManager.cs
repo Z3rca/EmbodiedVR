@@ -14,7 +14,7 @@ public class ExperimentManager : MonoBehaviour
 
     public StationSpawner ActiveStation;
     private List<StationSpawner> RemainingstationsStationSpawners =new List<StationSpawner>();
-    private List<AreaManager> AreaManagers;
+    private List<AreaManager> AreaManagers = new List<AreaManager>();
 
     public  List<int> StationOrder;
     private int StationIndex;
