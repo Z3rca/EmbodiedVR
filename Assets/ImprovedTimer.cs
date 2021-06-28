@@ -11,25 +11,34 @@ public class ImprovedTimer : MonoBehaviour
     public AudioClip secondWarning;
 
     private float timeRemaining;
-    private bool timerIsRunning = false;
+    private bool _timerIsRunning = false;
     private bool firstClipPlayed = false;
     private bool secondClipPlayed = false;
     
     public UnityEvent whenTimerIsUp;
-
+    
     // Start is called before the first frame update
     void Start()
     {
         // start timer
-        timerIsRunning = true;
         timeRemaining = timerInMinutes * 60;
+    }
+    
+    public void StartTimer()
+    {
+        _timerIsRunning = true;
+    }
+
+    public void StopTimer()
+    {
+        _timerIsRunning = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         // if timer is running, reduce time every frame by deltaTime
-        if (timerIsRunning)
+        if (_timerIsRunning)
         {
             if (timeRemaining > 15)
             {
@@ -62,7 +71,7 @@ public class ImprovedTimer : MonoBehaviour
             else
             {
                 timeRemaining = 0;
-                timerIsRunning = false;
+                _timerIsRunning = false;
                 // invoke unity event
                 whenTimerIsUp.Invoke();
             }
