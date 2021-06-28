@@ -48,6 +48,12 @@ public class ExperimentManager : MonoBehaviour
                 ActiveStation = stationSpawner;
             }
         }
+        
+        if (_playerMovement == null)
+        {
+            _playerMovement = Player.GetComponentInChildren<PhysicalMovement>();
+        }
+        _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
     }
 
     public void TakeParticipantToNextStation()
