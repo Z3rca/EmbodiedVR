@@ -14,6 +14,7 @@ public class ExperimentManager : MonoBehaviour
 
     public StationSpawner ActiveStation;
     private List<StationSpawner> RemainingstationsStationSpawners =new List<StationSpawner>();
+    private List<AreaManager> AreaManagers = new List<AreaManager>();
 
     public  List<int> StationOrder;
     private int StationIndex;
@@ -48,6 +49,12 @@ public class ExperimentManager : MonoBehaviour
                 ActiveStation = stationSpawner;
             }
         }
+        
+        if (_playerMovement == null)
+        {
+            _playerMovement = Player.GetComponentInChildren<PhysicalMovement>();
+        }
+        _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
     }
 
     public void TakeParticipantToNextStation()
@@ -85,5 +92,10 @@ public class ExperimentManager : MonoBehaviour
     public void RegisterSpawnerToList(StationSpawner spawner)
     {
         RemainingstationsStationSpawners.Add(spawner);
+    }
+    
+    public void RegisterAreaManager(AreaManager manager)
+    {
+        AreaManagers.Add(manager);
     }
 }
