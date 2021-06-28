@@ -13,7 +13,7 @@ public class Timer : MonoBehaviour
     public AudioClip secondWarning;
 
     private float timeRemaining;
-    private bool timerIsRunning = false;
+    private bool _timerIsRunning = false;
     private bool firstClipPlayed = false;
     private bool secondClipPlayed = false;
     
@@ -21,16 +21,30 @@ public class Timer : MonoBehaviour
     void Start()
     {
         // start timer
-        timerIsRunning = true;
+        _timerIsRunning = true;
         timeRemaining = timerInMinutes * 60;
         audioSource = FindObjectOfType<AudioSource>();
+
+
+        player = ExperimentManager.Instance.Player.GetComponentInChildren<PhysicalMovement>();
+    }
+
+
+    public void StartTimer()
+    {
+        _timerIsRunning = true;
+    }
+
+    public void StopTimer()
+    {
+        _timerIsRunning = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         // if timer is running, reduce time every frame by deltaTime
-        if (timerIsRunning) 
+        if (_timerIsRunning) 
         {
             if (timeRemaining > 15)
             {
@@ -61,7 +75,7 @@ public class Timer : MonoBehaviour
             else
             {
                 timeRemaining = 0;
-                timerIsRunning = false;
+                _timerIsRunning = false;
                 // teleport player to exit
                 player.TeleportToPosition(exit.transform.position);
             }

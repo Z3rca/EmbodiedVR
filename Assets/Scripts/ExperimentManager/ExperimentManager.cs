@@ -14,6 +14,7 @@ public class ExperimentManager : MonoBehaviour
 
     public StationSpawner ActiveStation;
     private List<StationSpawner> RemainingstationsStationSpawners =new List<StationSpawner>();
+    private List<AreaManager> AreaManagers;
 
     public  List<int> StationOrder;
     private int StationIndex;
@@ -91,5 +92,10 @@ public class ExperimentManager : MonoBehaviour
     public void RegisterSpawnerToList(StationSpawner spawner)
     {
         RemainingstationsStationSpawners.Add(spawner);
+    }
+    
+    public void RegisterAreaManager(AreaManager manager)
+    {
+        AreaManagers.Add(manager);
     }
 }
