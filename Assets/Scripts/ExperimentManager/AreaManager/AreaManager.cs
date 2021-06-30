@@ -9,6 +9,7 @@ public class AreaManager : MonoBehaviour
 
 
     public Timer Timer;
+    
 
     private void Start()
     {
