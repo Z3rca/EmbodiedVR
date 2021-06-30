@@ -8,6 +8,8 @@ public class MeasuringFlow : MonoBehaviour
     public GameObject motionSicknessMeasuringTool;
     public GameObject posturalStabilityMeasuringTool;
     
+    private bool recordingStarted;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -20,18 +22,39 @@ public class MeasuringFlow : MonoBehaviour
         
     }
 
-    void measureAudio()
+    public void measureAudio()
     {
         audioMeasuringTool.SetActive(true);
+        motionSicknessMeasuringTool.SetActive(false);
+        posturalStabilityMeasuringTool.SetActive(false);
     }
     
-    void measureMotionSickness()
+    public void measureMotionSickness()
     {
+        audioMeasuringTool.SetActive(false);
         motionSicknessMeasuringTool.SetActive(true);
+        posturalStabilityMeasuringTool.SetActive(false);
     }
 
-    void measurePosturalStability()
+    public void measurePosturalStability()
     {
+        audioMeasuringTool.SetActive(false);
+        motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(true);
+    }
+
+    public void audioFlow()
+    {
+        
+        if (recordingStarted == true)
+        {
+            //stop recording
+            measureMotionSickness();
+        }
+        else
+        {
+            recordingStarted = true;
+            //start recording
+        }
     }
 }
