@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AreaManager : MonoBehaviour
+public class Area2Manager : AreaManager
 {
-    public int id;
-
-
-    public Timer Timer;
+    
+    public ImprovedTimer ImprovedTimer;
     
 
     private void Start()
@@ -22,9 +20,9 @@ public class AreaManager : MonoBehaviour
 
     public void StartArea()
     {
-        if (Timer != null)
+        if (ImprovedTimer != null)
         {
-            Timer.StartTimer();
+            ImprovedTimer.StartTimer();
         }
         else
         {
@@ -34,9 +32,9 @@ public class AreaManager : MonoBehaviour
 
     public void StopArea()
     {
-        if (Timer != null)
+        if (ImprovedTimer != null)
         {
-            Timer.StopTimer();
+            ImprovedTimer.StopTimer();
         }
         else
         {
