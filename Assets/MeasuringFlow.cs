@@ -18,7 +18,7 @@ public class MeasuringFlow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        flow();
+        startDataGathering();
     }
 
     // Update is called once per frame
@@ -44,6 +44,8 @@ public class MeasuringFlow : MonoBehaviour
             yield return null;
         }
         
+        yield return new WaitForSeconds(1);
+        
         audioMeasuringTool.SetActive(false);
         motionSicknessMeasuringTool.SetActive(true);
         
@@ -68,6 +70,7 @@ public class MeasuringFlow : MonoBehaviour
 
     public void audioButton()
     {
+        
         if (recordingStarted == true)
         {
             //TODO stop recording
