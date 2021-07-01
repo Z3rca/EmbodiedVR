@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class GoalBox : MonoBehaviour
 {
 
     public int counter = 0;
-    public int goal = 9;
+    public int goal = 3;
     public UnityEvent goalReached;
     private bool eventCalled = false;
 
@@ -16,7 +17,7 @@ public class GoalBox : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        visibleCounter.text = counter + "/" + goal + "spheres collected! \r\n" + (goal-counter) + " are still needed to exit.";
     }
 
     // Update is called once per frame
@@ -33,7 +34,8 @@ public class GoalBox : MonoBehaviour
         if (other.gameObject.tag=="Sphere")
         {
             counter++;
-            visibleCounter.text = counter + "/10 spheres collected! \r\n" + (9-counter) + " are still needed to exit.";
+            visibleCounter.text = counter + " spheres collected! \r\n" + Math.Max((goal-counter), 0) + " still needed to exit.";
+            other.gameObject.SetActive(false);
         }
     }
 }
