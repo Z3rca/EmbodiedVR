@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MeasuringFlow : MonoBehaviour
 {
+    public UnityEvent whenMeasuringComplete;
+    
     public GameObject audioMeasuringTool;
     public GameObject motionSicknessMeasuringTool;
     public GameObject posturalStabilityMeasuringTool;
@@ -13,7 +16,7 @@ public class MeasuringFlow : MonoBehaviour
 
     private bool sicknessMeasured = false;
     
-    private bool stabilityMeasured = false;
+    private bool stabilityMeasured = true;
     
     // Start is called before the first frame update
     void Start()
@@ -51,7 +54,6 @@ public class MeasuringFlow : MonoBehaviour
         
         while(!sicknessMeasured)
         {
-            sicknessFlow();
             yield return null;
         }
         
@@ -65,6 +67,7 @@ public class MeasuringFlow : MonoBehaviour
         }
         
         posturalStabilityMeasuringTool.SetActive(false);
+        whenMeasuringComplete.Invoke();
     }
 
 
@@ -83,9 +86,9 @@ public class MeasuringFlow : MonoBehaviour
         }
     }
 
-    public void sicknessFlow()
+    public void sicknessButton()
     {
-        
+        sicknessMeasured = true;
     }
     
     public void stabilityFlow()
