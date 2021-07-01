@@ -66,6 +66,8 @@ public class MeasuringFlow : MonoBehaviour
             yield return null;
         }
         
+        yield return new WaitForSeconds(5);
+        
         posturalStabilityMeasuringTool.SetActive(false);
         whenMeasuringComplete.Invoke();
     }
