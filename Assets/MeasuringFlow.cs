@@ -8,12 +8,17 @@ public class MeasuringFlow : MonoBehaviour
     public GameObject motionSicknessMeasuringTool;
     public GameObject posturalStabilityMeasuringTool;
     
-    private bool recordingStarted;
+    private bool recordingStarted = false;
+    private bool audioMeasured = false;
+
+    private bool sicknessMeasured = false;
+    
+    private bool stabilityMeasured = false;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        flow();
     }
 
     // Update is called once per frame
@@ -22,39 +27,68 @@ public class MeasuringFlow : MonoBehaviour
         
     }
 
-    public void measureAudio()
+    public void startDataGathering()
+    {
+        StartCoroutine(flow());
+
+    }
+
+    IEnumerator flow()
     {
         audioMeasuringTool.SetActive(true);
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(false);
-    }
-    
-    public void measureMotionSickness()
-    {
+        
+        while(!audioMeasured)
+        {
+            yield return null;
+        }
+        
         audioMeasuringTool.SetActive(false);
         motionSicknessMeasuringTool.SetActive(true);
+        
+        while(!sicknessMeasured)
+        {
+            sicknessFlow();
+            yield return null;
+        }
+        
+        motionSicknessMeasuringTool.SetActive(false);
+        posturalStabilityMeasuringTool.SetActive(true);
+        
+        while(!stabilityMeasured)
+        {
+            stabilityFlow();
+            yield return null;
+        }
+        
         posturalStabilityMeasuringTool.SetActive(false);
     }
 
-    public void measurePosturalStability()
-    {
-        audioMeasuringTool.SetActive(false);
-        motionSicknessMeasuringTool.SetActive(false);
-        posturalStabilityMeasuringTool.SetActive(true);
-    }
 
-    public void audioFlow()
+    public void audioButton()
     {
-        
         if (recordingStarted == true)
         {
-            //stop recording
-            measureMotionSickness();
+            //TODO stop recording
+            audioMeasured = true;
         }
         else
         {
             recordingStarted = true;
-            //start recording
+            //TODO start recording
         }
     }
+
+    public void sicknessFlow()
+    {
+        
+    }
+    
+    public void stabilityFlow()
+    {
+        
+    }
+    
+    
 }
