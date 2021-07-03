@@ -78,8 +78,10 @@ public class TutorialManager : MonoBehaviour
         audioController.SwitchViewButtonAudioClip();
         HybridControl._allowViewSwitch = true;
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
-        //Show Controllers - View Switch Button
+        HybridControl.ShowControllers(true);
+        HybridControl.HighLightControlSwitchButton(true);
         yield return new WaitUntil(() => _thirdPersonIsActive);
+        HybridControl.HighLightControlSwitchButton(false);
         audioController.MovementAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         //Dont show Controllers
@@ -96,12 +98,15 @@ public class TutorialManager : MonoBehaviour
 
     public IEnumerator ReachedInteractionAreaRoutine()
     {
+        HybridControl.ShowControllers(true);
+        HybridControl.HighLightControlSwitchButton(true);
         audioController.InteractionAudioClip();
         yield return new WaitUntil(() => !_thirdPersonIsActive);
+        HybridControl.ShowControllers(false);
+        HybridControl.HighLightControlSwitchButton(false);
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         audioController.PickBallAudioClip();
         Ball.SetActive(true);
-        //TODO check SteamVR Interactable if attached to hand 
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
     }
 
@@ -126,6 +131,8 @@ public class TutorialManager : MonoBehaviour
 
     public void BallWasTaken()
     {
+        HybridControl.ShowControllers(true);
+        HybridControl.HighLightControlSwitchButton(true);
         Ball.GetComponent<Rigidbody>().useGravity = true;
         audioController.ThrowBallInBoxInstructionAudioClip(); //now throw the ball in the box to your right.
         EnableBoxArea();
