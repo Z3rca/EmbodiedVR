@@ -7,10 +7,12 @@ using Valve.Newtonsoft.Json.Utilities;
 
 public class ExperimentManager : MonoBehaviour
 {
+
+    public Camera mainMenuCamera;
     public static ExperimentManager Instance { get; private set; }
 
-
-    public GameObject Player;
+    public List<GameObject> Avatars;
+    public GameObject SelectedAvatar;
     private PhysicalMovement _playerMovement;
 
     public StationSpawner ActiveStation;
@@ -19,6 +21,12 @@ public class ExperimentManager : MonoBehaviour
 
     public List<int> StationOrder;
     private int StationIndex;
+
+    public TutorialManager tutorialManager;
+
+
+    public EventHandler startExperiment;
+    
 
 
     private enum MenuState
@@ -35,9 +43,14 @@ public class ExperimentManager : MonoBehaviour
     private string order;
     private string condition;
 
+    private float totalTime;
+    private bool runningExperiment;
+
     // Update is called once per frame
     void Update()
     {
+        if(runningExperiment)
+            totalTime += Time.deltaTime;
     }
 
 
@@ -56,11 +69,14 @@ public class ExperimentManager : MonoBehaviour
 
     private void Start()
     {
-        
+       
     }
 
     private void StartExperiment()
     {
+
+        runningExperiment = true;
+
         foreach (var stationSpawner in RemainingstationsStationSpawners)
         {
             if (stationSpawner.ID == StationOrder[0])
@@ -69,11 +85,39 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
+        
+        
+        mainMenuCamera.gameObject.SetActive(false);
+
+        
+        
+        if (ActiveStation.ID == 0)
+        {
+            tutorialManager.StartTutorial();
+        }
+        
+        startExperiment.Invoke(this, EventArgs.Empty);
+        
+        InstantiatePlayerOnStation();
+    }
+
+    private void InstantiatePlayerOnStation()
+    {
+        StartCoroutine(PlayerInstantiation());
+    }
+
+    private IEnumerator PlayerInstantiation()
+    {
+        SelectedAvatar.gameObject.SetActive(true);
+        
         if (_playerMovement == null)
         {
-            _playerMovement = Player.GetComponentInChildren<PhysicalMovement>();
+            _playerMovement = SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
         }
 
+        yield return new  WaitUntil(() => _playerMovement !=null);
+        
+        
         _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
     }
 
@@ -102,7 +146,7 @@ public class ExperimentManager : MonoBehaviour
 
         if (_playerMovement == null)
         {
-            _playerMovement = Player.GetComponentInChildren<PhysicalMovement>();
+            _playerMovement = SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
         }
 
         _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
@@ -117,6 +161,34 @@ public class ExperimentManager : MonoBehaviour
     public void RegisterAreaManager(AreaManager manager)
     {
         AreaManagers.Add(manager);
+    }
+
+
+    private void ReadOutPakourOrder(string Order)
+    {
+        var charArray = Order.ToCharArray();
+        order = "";
+        for (int i = 0; i < charArray.Length; i++)
+        {
+            int j = Convert.ToInt32(charArray[i]) - 48;         //ASCII to int
+            
+            Debug.Log(j);
+
+            if (j < 0 && j <= 4)
+            {
+                order = "ERROR";
+                StationOrder.Clear();
+                return;
+            }
+           
+            StationOrder.Add(j);
+            order+=(j);
+            
+
+
+        }
+        
+        
     }
 
     private void OnGUI()
@@ -158,7 +230,10 @@ public class ExperimentManager : MonoBehaviour
                     //Save Order temporary
                     //Save Participant ID temporary
 
-
+                    ReadOutPakourOrder(order);
+                    
+                    
+                    
                     _menuState = MenuState.Condition;
 
                 }
@@ -187,20 +262,24 @@ public class ExperimentManager : MonoBehaviour
                 if (GUI.Button(new Rect(x, Screen.height/2, w, 80), "Hybrid", buttonStyle))
                 {
                     condition = "Hybrid";
+                    SelectedAvatar = Avatars[0];
                     _menuState = MenuState.MainMenu;
                 }
                 if (GUI.Button(new Rect(x*3.5f, Screen.height/2, w, 80), "Hybrid(Blob)", buttonStyle))
                 {
+                    SelectedAvatar = Avatars[2];
                     condition = "Hybrid(Blob)";
                     _menuState = MenuState.MainMenu;
                 }
                 if (GUI.Button(new Rect(x*6, Screen.height/2, w, 80), "First-person", buttonStyle))
                 {
+                    SelectedAvatar = Avatars[1];
                     condition = "First-person";
                     _menuState = MenuState.MainMenu;
                 }
                 if (GUI.Button(new Rect(x*8.5f, Screen.height/2, w*1.3f, 80), "First-person(Blob)", buttonStyle))
                 {
+                    SelectedAvatar = Avatars[3];
                     condition = "First-Person(Blob)";
                     _menuState = MenuState.MainMenu;
                 }
@@ -224,6 +303,8 @@ public class ExperimentManager : MonoBehaviour
                 }
                 
                 valX += w;
+                
+                
 
                 valX += w+2;
                 GUI.Box(new Rect(valX, 100, w, 80), new GUIContent(condition), boxStyle);
@@ -234,7 +315,9 @@ public class ExperimentManager : MonoBehaviour
                 {
                     _menuState = MenuState.Condition;
                 }
-
+                
+                
+                GUI.backgroundColor = Color.cyan;
                 valX = x;
                 
                 if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Calibration", buttonStyle))
@@ -242,16 +325,16 @@ public class ExperimentManager : MonoBehaviour
                    //launch Calibration and Validation of the Eyetracker
                 }
                 
-                valX += w;
+                valX += w + 2;
                 
-                if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Calibration", buttonStyle))
+                if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Validation", buttonStyle))
                 {
                     //singe validation
                 }
                 
-                valX += w;
+                valX += w + 2 ;
                 
-                if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Start Experiment", buttonStyle))
+                if (GUI.Button(new Rect(valX, Screen.height/2, w*1.25f, 80), "Start Experiment", buttonStyle))
                 {
                     _menuState = MenuState.SafetyBeforeStart;
                 }
@@ -259,7 +342,41 @@ public class ExperimentManager : MonoBehaviour
             
                 case MenuState.SafetyBeforeStart:
                     
-                GUI.Box(new Rect(valX, Screen.height/2+y, w, 80), new GUIContent("Sure?"+ participantId), boxStyle);
+                    valX = x;
+                    GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ participantId), boxStyle);
+
+                    valX += w+ 2;
+                    GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
+
+                    GUI.backgroundColor = Color.red;
+
+                    valX += w + 2;
+
+                    if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                    {
+                        _menuState = MenuState.IDAndOrderSelection;
+                    }
+                
+                    valX += w;
+                
+                
+
+                    valX += w+2;
+                    GUI.Box(new Rect(valX, 100, w, 80), new GUIContent(condition), boxStyle);
+                
+                    valX += w+2;
+                
+                    if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                    {
+                        _menuState = MenuState.Condition;
+                    }
+                    
+                    
+                    valX = x;
+                    
+                GUI.Box(new Rect(valX, Screen.height/2-y, w*1.5f, 80), new GUIContent("Are you Sure?"), boxStyle);
+                    
+                    GUI.backgroundColor = Color.green;
                 
                 if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Yes", buttonStyle))
                 {
@@ -267,7 +384,7 @@ public class ExperimentManager : MonoBehaviour
                     StartExperiment();
                 }
                 valX += w;
-                
+                    GUI.backgroundColor = Color.red;
                 if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "No", buttonStyle))
                 {
                     _menuState = MenuState.MainMenu;
@@ -278,31 +395,29 @@ public class ExperimentManager : MonoBehaviour
                 case MenuState.Running:
                     
                 valX = x;
-                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ participantId), boxStyle);
+                int buttonwidth =(int) (w * 2);
+                GUI.Box(new Rect(valX, 100, buttonwidth, 80), new GUIContent("ID: "+ participantId), boxStyle);
 
-                valX += w+ 2;
-                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
+                valX += buttonwidth+ 2;
+                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Order: "+ order), boxStyle);
                 
-                valX += w+ 2;
-                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Station: "+ ActiveStation.ID), boxStyle);
+                valX += buttonwidth +2;
+                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Station: "+ ActiveStation.ID), boxStyle);
                 
-                valX += w+ 2;
-                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Station: "+ ActiveStation.ID), boxStyle);
-                
-                
-                
+                valX += buttonwidth+ 2;
+                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Time Station: "+ ActiveStation.ID), boxStyle);
 
-                    
+                valX += buttonwidth+ 2;
+                TimeSpan time = TimeSpan.FromSeconds(totalTime);
+                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Time Total "+ time.ToString("mm':'ss")), boxStyle);
 
-
-
+                break;
 
 
 
-                    break;
-            case MenuState.Running:
-            default:
-                throw new ArgumentOutOfRangeException();
+
+
+
         }
     }
 }
