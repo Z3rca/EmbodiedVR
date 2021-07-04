@@ -70,6 +70,11 @@ public class HybridControl : MonoBehaviour
 
     public void SwitchPerspective()
     {
+        if (!this.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+        
         if (_allowViewSwitch)
         {
             ThirdPerson =!ThirdPerson;
@@ -77,7 +82,8 @@ public class HybridControl : MonoBehaviour
             {
                 switchToThirdPerson = this.ThirdPerson
             };
-            NotifyPerspectiveSwitch?.Invoke(this,eventArgs);
+            NotifyPerspectiveSwitch?.Invoke(this,eventArgs);    
+            
             if(FadingBetweenViews)
                 StartCoroutine(FadeOutFadeIn(SwitchFadeOutDuration,SwitchFadeInDuration,SwitchFadeDuration));
        
@@ -98,6 +104,11 @@ public class HybridControl : MonoBehaviour
 
     public void Fading()
     {
+        if (!this.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+        
         if(FadingDuringRotation)
             StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
     }

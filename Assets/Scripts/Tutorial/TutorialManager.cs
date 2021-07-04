@@ -29,7 +29,6 @@ public class TutorialManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -41,8 +40,18 @@ public class TutorialManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       
+    }
+
+    public void StartTutorial()
+    {
+        if (ExperimentManager.Instance != null)
+        {
+            HybridControl = ExperimentManager.Instance.SelectedAvatar.GetComponentInChildren<HybridControl>();
+        }
+        
         audioController = GetComponent<TutorialAudioDialogController>();
-        StartTutorial();
+        StartFamilarization();
         HybridControl.NotifyPerspectiveSwitch += PerspectiveSwitchWasPerformend;
     }
 
@@ -56,7 +65,7 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    public void StartTutorial()
+    public void StartFamilarization()
     {
         
         StartCoroutine(FamilarizationRoutine());
