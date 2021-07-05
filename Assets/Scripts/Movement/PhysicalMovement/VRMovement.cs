@@ -102,7 +102,7 @@ public class VRMovement : MonoBehaviour
 
         if (!(rotateLeft.state || rotateRight.state))
         {
-            Debug.Log("released input");
+            //Debug.Log("released input");
             rotating = false;
         }
         
