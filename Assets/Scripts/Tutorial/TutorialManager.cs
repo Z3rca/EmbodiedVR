@@ -53,6 +53,7 @@ public class TutorialManager : MonoBehaviour
         audioController = GetComponent<TutorialAudioDialogController>();
         StartFamilarization();
         HybridControl.NotifyPerspectiveSwitch += PerspectiveSwitchWasPerformend;
+        HybridControl.ShowControllers(true);
     }
 
     // Update is called once per frame
@@ -133,6 +134,7 @@ public class TutorialManager : MonoBehaviour
         // now you can go go through the door and finish the tutorial section.  
         Door.SetActive(false);
         Door2.SetActive(false);
+        HybridControl.ShowControllers(false);
     }
 
 

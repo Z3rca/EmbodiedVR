@@ -91,10 +91,7 @@ public class ExperimentManager : MonoBehaviour
 
         
         
-        if (ActiveStation.ID == 0)
-        {
-            tutorialManager.StartTutorial();
-        }
+       
         
         startExperiment.Invoke(this, EventArgs.Empty);
         
@@ -117,6 +114,12 @@ public class ExperimentManager : MonoBehaviour
 
         yield return new  WaitUntil(() => _playerMovement !=null);
         
+        SelectedAvatar.GetComponentInChildren<HybridControl>().ShowControllers(false);
+        
+        if (ActiveStation.ID == 0)
+        {
+            tutorialManager.StartTutorial();
+        }
         
         _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
     }
@@ -147,6 +150,7 @@ public class ExperimentManager : MonoBehaviour
         if (_playerMovement == null)
         {
             _playerMovement = SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
+            
         }
 
         _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
