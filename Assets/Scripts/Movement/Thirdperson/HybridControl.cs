@@ -10,7 +10,9 @@ public class HybridControl : MonoBehaviour
     private VRMovement InputController;
     private CameraController cameraController;
     private PhysicalMovement physicalMovement;
+    private ControllerRepresentations controllerRepresentations;
     [SerializeField] private bool ThirdPerson;
+    [SerializeField] private bool ShowControllerHelp;
     
     [Header("Rotation Settings")]
     public bool FadingDuringRotation;
@@ -36,6 +38,7 @@ public class HybridControl : MonoBehaviour
         InputController = GetComponent<VRMovement>();
         cameraController = GetComponent<CameraController>();
         physicalMovement = GetComponent<PhysicalMovement>();
+        controllerRepresentations = GetComponent<ControllerRepresentations>();
 
 
         InputController.notifyLeftButtonPressedObserver += Fading;
@@ -46,6 +49,15 @@ public class HybridControl : MonoBehaviour
         //cameraController = GetComponentInChildren<CameraController>();
        if(!ThirdPerson)
             InputController.AllowRotation(AllowRotationDuringFirstperson);
+
+       if (ShowControllerHelp)
+       {
+           ShowControllers(true);
+       }
+       else
+       {
+           ShowControllers(true);
+       }
     }
 
 
@@ -58,6 +70,11 @@ public class HybridControl : MonoBehaviour
 
     public void SwitchPerspective()
     {
+        if (!this.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+        
         if (_allowViewSwitch)
         {
             ThirdPerson =!ThirdPerson;
@@ -65,7 +82,8 @@ public class HybridControl : MonoBehaviour
             {
                 switchToThirdPerson = this.ThirdPerson
             };
-            NotifyPerspectiveSwitch?.Invoke(this,eventArgs);
+            NotifyPerspectiveSwitch?.Invoke(this,eventArgs);    
+            
             if(FadingBetweenViews)
                 StartCoroutine(FadeOutFadeIn(SwitchFadeOutDuration,SwitchFadeInDuration,SwitchFadeDuration));
        
@@ -86,6 +104,11 @@ public class HybridControl : MonoBehaviour
 
     public void Fading()
     {
+        if (!this.gameObject.activeInHierarchy)
+        {
+            return;
+        }
+        
         if(FadingDuringRotation)
             StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
     }
@@ -112,7 +135,16 @@ public class HybridControl : MonoBehaviour
         physicalMovement.MovementIsAllowed = state;
         
     }
-    
+
+    public void ShowControllers(bool state)
+    {
+        controllerRepresentations.ShowController(state);
+    }
+
+    public void HighLightControlSwitchButton(bool state)
+    {
+        controllerRepresentations.HighLightPerspectiveChangeButton(state);
+    }
 
 
     private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)

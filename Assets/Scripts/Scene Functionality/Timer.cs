@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,12 +21,18 @@ public class Timer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // start timer
+        ExperimentManager.Instance.startExperiment += OnExperimentStart;
+    }
+
+
+    void OnExperimentStart(object sender, EventArgs eventArgs)
+    {
         timeRemaining = timerInMinutes * 60;
         audioSource = FindObjectOfType<AudioSource>();
 
 
-        player = ExperimentManager.Instance.Player.GetComponentInChildren<PhysicalMovement>();
+        player = ExperimentManager.Instance.SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
+    
     }
 
 

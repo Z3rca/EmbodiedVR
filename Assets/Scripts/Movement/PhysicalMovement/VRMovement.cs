@@ -22,6 +22,7 @@ public class VRMovement : MonoBehaviour
     public bool SnapTurn;
 
     [Range(0.1f, 45)] public float SetRotationImpuls;
+    [Range(0.0f, 1)] public float SetAutoRotationImpulsDuration = 0.5f;
 
     private Vector2 movementInput;
     private Quaternion targetRotation;
@@ -33,6 +34,8 @@ public class VRMovement : MonoBehaviour
     public event OnButtonPressed notifyRightButtonPressedObserver;
     public event OnButtonPressed notifySwitchButtonPressedObserver;
     
+    private bool rotating;
+
     private void Awake()
     {
         actionSetEnable.Activate();   
@@ -69,19 +72,47 @@ public class VRMovement : MonoBehaviour
     private void FixedUpdate()
     {
         
-
         
-            targetRotation = transform.rotation;
-            targetRotation *= Quaternion.Euler(0,rotationImpuls,0);
-            Vector3 eulerRotation = new Vector3();
-            eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
-            eulerRotation.x = 0f;
-            eulerRotation += rotationImpuls*Vector3.forward;
-            targetRotation = Quaternion.Euler(eulerRotation);
-            targetRotation *= Quaternion.Euler(0, rotationImpuls, 0);
+        if (rotateLeft.state || rotateRight.state)
+        {
+            if (rotateLeft.state)
+            {
+                rotationImpuls = -SetRotationImpuls;
+                notifyLeftButtonPressedObserver?.Invoke();
+            }
+
+            if (rotateRight.state)
+            {
+                rotationImpuls = SetRotationImpuls;
+                notifyRightButtonPressedObserver?.Invoke();
+            }
+                
+            
+            if (!SnapTurn)
+            {
+                rotationImpuls *= Time.deltaTime;
+            }
+            
+            if (!rotating)
+            {
+                rotating = true;
+                StartCoroutine(PerformRotationImpuls());
+            }
+        }
+
+        if (!(rotateLeft.state || rotateRight.state))
+        {
+            Debug.Log("released input");
+            rotating = false;
+        }
+        
+        
+          
+            
+            
 
 
-            Body.transform.rotation = targetRotation;
+           
             
         if (rotationApplied&& SnapTurn)
         {
@@ -94,6 +125,26 @@ public class VRMovement : MonoBehaviour
         }
     }
 
+
+    private IEnumerator PerformRotationImpuls()
+    {
+        while (rotating)
+        {
+            
+            targetRotation = transform.rotation;
+            targetRotation *= Quaternion.Euler(0,rotationImpuls,0);
+            Vector3 eulerRotation = new Vector3();
+            eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
+            eulerRotation.x = 0f;
+            eulerRotation += rotationImpuls*Vector3.forward;
+            targetRotation = Quaternion.Euler(eulerRotation);
+            targetRotation *= Quaternion.Euler(0, rotationImpuls, 0);
+            Body.transform.rotation = targetRotation;
+            yield return new WaitForSeconds(SetAutoRotationImpulsDuration);
+        }
+    } 
+    
+
     private void LateUpdate()
     {
         Head.transform.position = Body.transform.position;
@@ -101,30 +152,11 @@ public class VRMovement : MonoBehaviour
 
     public void RotateLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        if (_allowRotation)
-        {
-            notifyLeftButtonPressedObserver?.Invoke();
-            rotationImpuls = -SetRotationImpuls;
-            if (!SnapTurn)
-            {
-                rotationImpuls *= Time.deltaTime;
-            }
-            rotationApplied = true; 
-        }
     }
     
     public void RotateRight(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        if (_allowRotation)
-        {
-            notifyRightButtonPressedObserver?.Invoke();
-            rotationImpuls = SetRotationImpuls;
-            if (!SnapTurn)
-            {
-                rotationImpuls *= Time.deltaTime;
-            }
-            rotationApplied = true;
-        }
+      
     }
 
     public void RotateZero(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)

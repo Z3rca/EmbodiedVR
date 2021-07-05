@@ -31,10 +31,7 @@ public class RemoteVR : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isFirstPerson)
-        {
-            
-        }
+       
         RemoteHMD.transform.localPosition = LocalHMD.transform.localPosition;
         RemoteHMD.transform.localRotation = LocalHMD.transform.localRotation;
 

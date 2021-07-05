@@ -29,7 +29,6 @@ public class TutorialManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -41,9 +40,20 @@ public class TutorialManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       
+    }
+
+    public void StartTutorial()
+    {
+        if (ExperimentManager.Instance != null)
+        {
+            HybridControl = ExperimentManager.Instance.SelectedAvatar.GetComponentInChildren<HybridControl>();
+        }
+        
         audioController = GetComponent<TutorialAudioDialogController>();
-        StartTutorial();
+        StartFamilarization();
         HybridControl.NotifyPerspectiveSwitch += PerspectiveSwitchWasPerformend;
+        HybridControl.ShowControllers(true);
     }
 
     // Update is called once per frame
@@ -56,7 +66,7 @@ public class TutorialManager : MonoBehaviour
     }
 
 
-    public void StartTutorial()
+    public void StartFamilarization()
     {
         
         StartCoroutine(FamilarizationRoutine());
@@ -78,8 +88,10 @@ public class TutorialManager : MonoBehaviour
         audioController.SwitchViewButtonAudioClip();
         HybridControl._allowViewSwitch = true;
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
-        //Show Controllers - View Switch Button
+        HybridControl.ShowControllers(true);
+        HybridControl.HighLightControlSwitchButton(true);
         yield return new WaitUntil(() => _thirdPersonIsActive);
+        HybridControl.HighLightControlSwitchButton(false);
         audioController.MovementAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         //Dont show Controllers
@@ -96,12 +108,15 @@ public class TutorialManager : MonoBehaviour
 
     public IEnumerator ReachedInteractionAreaRoutine()
     {
+        HybridControl.ShowControllers(true);
+        HybridControl.HighLightControlSwitchButton(true);
         audioController.InteractionAudioClip();
         yield return new WaitUntil(() => !_thirdPersonIsActive);
+        HybridControl.ShowControllers(false);
+        HybridControl.HighLightControlSwitchButton(false);
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         audioController.PickBallAudioClip();
         Ball.SetActive(true);
-        //TODO check SteamVR Interactable if attached to hand 
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
     }
 
@@ -119,6 +134,7 @@ public class TutorialManager : MonoBehaviour
         // now you can go go through the door and finish the tutorial section.  
         Door.SetActive(false);
         Door2.SetActive(false);
+        HybridControl.ShowControllers(false);
     }
 
 
@@ -126,6 +142,8 @@ public class TutorialManager : MonoBehaviour
 
     public void BallWasTaken()
     {
+        HybridControl.ShowControllers(true);
+        HybridControl.HighLightControlSwitchButton(true);
         Ball.GetComponent<Rigidbody>().useGravity = true;
         audioController.ThrowBallInBoxInstructionAudioClip(); //now throw the ball in the box to your right.
         EnableBoxArea();

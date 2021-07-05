@@ -18,14 +18,17 @@ public class CloseDoorTrigger : MonoBehaviour
         if (ExperimentManager.Instance != null)
         {
             experimentManager = ExperimentManager.Instance;
-            playerBody = experimentManager.Player.GetComponentInChildren<PhysicalMovement>();
+            experimentManager.startExperiment += OnExperimentStart;
         }
-        else
-        {
-            Debug.Log(this.gameObject.name + " was unable to assign player. wont work");
-        }
+        
+        
+        
+    }
 
 
+    private void OnExperimentStart(object sender, EventArgs eventArgs)
+    {
+        playerBody = experimentManager.SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
         if (playerBody == null)
         {
             Debug.Log("Player body couln't be assigned");
