@@ -834,7 +834,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh25442
+  m_Name: pb_Mesh18128
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1145,7 +1145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86ab3c33023ce3a48a50e49118debb9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stencilMaskObject: {fileID: 0}
+  stencilMaskObject: {fileID: 1820362674}
   WallLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -5550,7 +5550,7 @@ PrefabInstance:
     - target: {fileID: 8123214594929352962, guid: aa00c702eaf804246bef8c8e8640640a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.34
+      value: 3.25
       objectReference: {fileID: 0}
     - target: {fileID: 8123214594929352962, guid: aa00c702eaf804246bef8c8e8640640a,
         type: 3}
@@ -5605,13 +5605,53 @@ PrefabInstance:
     - target: {fileID: 8123214594929352973, guid: aa00c702eaf804246bef8c8e8640640a,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123214595540638488, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: fixTransforms
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123214595540638488, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: references.root
+      value: 
+      objectReference: {fileID: 1870467989}
+    - target: {fileID: 8123214595540638488, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: solver.plantFeet
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123214595540638488, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: solver.leftLeg.target
+      value: 
+      objectReference: {fileID: 1870467989}
+    - target: {fileID: 8123214595540638488, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: solver.rightLeg.target
+      value: 
+      objectReference: {fileID: 1870467989}
+    - target: {fileID: 8123214595540638488, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: solver.locomotion.weight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123214595540638488, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: solver.spine.pelvisTarget
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8123214595540638491, guid: aa00c702eaf804246bef8c8e8640640a,
         type: 3}
       propertyPath: ik
       value: 
       objectReference: {fileID: 3201057282036645987}
+    - target: {fileID: 8123214595540638491, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8123214595988201345, guid: aa00c702eaf804246bef8c8e8640640a,
         type: 3}
       propertyPath: ThirdPerson
@@ -5820,6 +5860,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1820362674 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3038203510053990027, guid: aa00c702eaf804246bef8c8e8640640a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1588721553}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1863873976
 GameObject:
   m_ObjectHideFlags: 0
@@ -5911,6 +5957,12 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!4 &1870467989 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8123214595733462772, guid: aa00c702eaf804246bef8c8e8640640a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1588721553}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1906315382
 GameObject:
   m_ObjectHideFlags: 0
@@ -12598,6 +12650,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ThirdpersonPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872022609675954772, guid: 226f90922700fa84a879f25edffa69e4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8872022609675954779, guid: 226f90922700fa84a879f25edffa69e4,
         type: 3}
