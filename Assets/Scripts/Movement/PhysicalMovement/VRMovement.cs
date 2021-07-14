@@ -164,11 +164,13 @@ public class VRMovement : MonoBehaviour
     }
     private void LateUpdate()
     {
+        
+        
         if (!_readjustBodyToCenter)
         {
             Head.transform.position = Body.transform.position;
         }
-        
+
     }
 
 

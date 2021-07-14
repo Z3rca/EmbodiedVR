@@ -33,9 +33,13 @@ public class HybridControl : MonoBehaviour
     [Range(0f,1f)] public float SwitchFadeInDuration;
     [Range(0f, 1f)] public float MovementReductionDuringFirstPerson;
     private bool _fadingInProgres;
-    
+
+
+    private bool _isInThreshold;
     
     private bool _temporaryIkLocomotion;
+
+    private bool cooldown;
     
     [Header("Position Readjustment")][Range(0f, 1f)] public float ReadjustmentThreshold = 0.4f;
     private float currentPuppetToPlayerOffset;
@@ -79,48 +83,64 @@ public class HybridControl : MonoBehaviour
 
     private void Update()
     {
+        isInsideThreshold();
+        
+        
         cameraController.RotateCamera(InputController.GetRotation());
 
         if (_temporaryIkLocomotion)
         {
             this.transform.position = remoteVR.RemoteFootPositon.transform.position;
         }
-
-        currentPuppetToPlayerOffset = Vector3.Distance(remoteVR.RemoteFootPositon.transform.position,
-            physicalMovement.feet.transform.position);
-        
-        Debug.Log(currentPuppetToPlayerOffset);
-        
-        if(currentPuppetToPlayerOffset>ReadjustmentThreshold)
+        else
         {
-            Debug.Log( remoteVR.RemoteFootPositon.transform.position + " " +physicalMovement.feet.transform.position+ " " + currentPuppetToPlayerOffset);
-            AdjustPuppetPosition();
+            
+        }
+
+        
+        
+       // Debug.Log(currentPuppetToPlayerOffset);
+        
+        if(!_isInThreshold)
+        {
+            //Debug.Log( + " sad");
+            AdjustPuppet();
         }
         
-        
+      
     }
 
-
-
-    private void AdjustPuppetPosition()
+    private void isInsideThreshold()
     {
-       StartCoroutine(puppetAdjusting());
+        float distance = Vector3.Distance(remoteVR.RemoteFootPositon.transform.position,
+            physicalMovement.feet.transform.position);
+        //Debug.Log(distance);
+        
+        _isInThreshold= distance<ReadjustmentThreshold;
+
+    }
+
+    private void AdjustPuppet()
+    {
+        if (cooldown) return;
+        cooldown = true;
+//        Debug.Log( remoteVR.RemoteFootPositon.transform.position + " " +physicalMovement.feet.transform.position+ " " + currentPuppetToPlayerOffset);
+        StartCoroutine(puppetAdjusting());
     }
 
     private IEnumerator puppetAdjusting()
     {
+        float distance = (Vector3.Distance(remoteVR.RemoteFootPositon.transform.position, physicalMovement.feet.transform.position));
         AdjustPuppetPosition(true);
-        while (currentPuppetToPlayerOffset > ReadjustmentThreshold)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-        
-       // AdjustPuppetPosition(false);
-        
-        puppetIK.solver.Reset();
 
-        //physicalMovement.feet.position = remoteVR.RemoteFootPositon.transform.position;
-
+        yield return new WaitUntil(() => _isInThreshold);
+        
+        //AdjustPuppetPosition(false);
+        
+        //cameraController.AddOffset(remoteVR.RemoteFootPositon.transform.localPosition);
+        //yield return new WaitForSeconds(2f);
+        
+        cooldown = false;
     }
 
 
@@ -131,10 +151,8 @@ public class HybridControl : MonoBehaviour
 
     private void AdjustPuppetPosition(bool state)
     {
-        _temporaryIkLocomotion = state;
         
-        InputController.SetAdjustmentStatus(state);
-        physicalMovement.SetAdjustmentStatus(state);
+        Debug.Log("need to adjust " + state);
         
         if (state)
         {
@@ -145,6 +163,13 @@ public class HybridControl : MonoBehaviour
             puppetIK.solver.locomotion.weight = 0;
         }
         
+        _temporaryIkLocomotion = state;
+        
+        
+        InputController.SetAdjustmentStatus(state);
+        physicalMovement.SetAdjustmentStatus(state);
+        
+    
     }
     
     

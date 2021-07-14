@@ -17,6 +17,8 @@ public class CameraController : MonoBehaviour
 
     private Quaternion _targetRotation;
 
+    public GameObject Offset;
+
     public float speed= 5;
 
     private bool rotationChanged;
@@ -63,6 +65,12 @@ public class CameraController : MonoBehaviour
     public void SetThirdPerson(bool state)
     {
         isThirdPerson = state;
+    }
+
+
+    public void AddOffset(Vector3 offset)
+    {
+        Offset.transform.localPosition += offset;
     }
     
     
