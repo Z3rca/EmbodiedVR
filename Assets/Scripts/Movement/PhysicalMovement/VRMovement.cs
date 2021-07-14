@@ -158,52 +158,25 @@ public class VRMovement : MonoBehaviour
         }
     } 
     
-
+    public void SetAdjustmentStatus(bool state)
+    {
+        _readjustBodyToCenter = state;
+    }
     private void LateUpdate()
     {
-        /*if (_readjustBodyToCenter)
+        if (!_readjustBodyToCenter)
         {
-            if (Vector3.Distance(Head.transform.position, remoteVR.RemoteFootPositon.transform.position) < 0.3f)
-            {
-                _readjusted=true;
-            }
-            
-            if (Vector3.Distance(Head.transform.position, remoteVR.RemoteFootPositon.transform.position) > 0.3f)
-            {
-                _readjusted=false;
-                //Debug.Log("readjust");
-                temporaryIKLocomotion(Head, remoteVR.RemoteFootPositon);
-                return;
-            }
-            
-        }*/
+            Head.transform.position = Body.transform.position;
+        }
         
-        Head.transform.position = Body.transform.position;
     }
 
 
     private void temporaryIKLocomotion( GameObject Head, GameObject Body)
     {
-        if (temporaryIK) return;
-        temporaryIK = true;
-        StartCoroutine(MoveBodyToHead(Head, Body));
     }
 
-
-    private IEnumerator MoveBodyToHead(GameObject head, GameObject body)
-    {
-        while (!_readjusted)
-        {
-            Debug.Log("adjusting...");
-            GetComponent<HybridControl>().WeightIKLocomotion(1f);
-            
-            head.transform.position = Vector3.Lerp(head.transform.position, body.transform.position, 0.2f);
-
-            yield return new WaitForEndOfFrame();
-
-        }
-        GetComponent<HybridControl>().WeightIKLocomotion(0f);
-    }
+    
 
     public void RotateLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {

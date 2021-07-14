@@ -63,37 +63,14 @@ public class PhysicalMovement : MonoBehaviour
         
     private void LateUpdate()
     {
-        if (Vector3.Distance(feet.transform.position, remoteVR.RemoteFootPositon.transform.position) > 0.3f)
+        /*if (!_readjustBodyToCenter)
         {
-            hybridControl.WeightIKLocomotion(1f);
-            
-            WaitUntilPositionShift();
-        }
-        else
-        {
-            hybridControl.WeightIKLocomotion(0f);
             puppet.transform.position = feet.transform.position;
-        }
-        
-       
+        }*/
+        puppet.transform.position = feet.transform.position;
     }
-
-    private void WaitUntilPositionShift()
-    {
-        if (temporaryIK) return;
-        temporaryIK = true;
-
-        StartCoroutine(WaitForPositionShift());
-    }
-    private IEnumerator WaitForPositionShift()
-    {
-        Debug.Log("hey");
-        while (temporaryIK)
-        {
-            puppet.transform.position= Vector3.Lerp(puppet.transform.position,remoteVR.RemoteFootPositon.transform.position, 0.3f);
-            yield return new WaitForFixedUpdate();
-        }
-    }
+    
+   
 
     public void SetSpeedFactor(float percentage)
     {
@@ -108,6 +85,12 @@ public class PhysicalMovement : MonoBehaviour
         }
        
         return false;
+    }
+
+
+    public void SetAdjustmentStatus(bool state)
+    {
+        _readjustBodyToCenter = state;
     }
     
     private void FixedUpdate()

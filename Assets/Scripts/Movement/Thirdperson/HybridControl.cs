@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RootMotion.FinalIK;
 using UnityEngine;
 using Valve.VR;
+using Valve.VR.InteractionSystem;
 
 public class HybridControl : MonoBehaviour
 {
@@ -12,7 +13,8 @@ public class HybridControl : MonoBehaviour
     private CameraController cameraController;
     private PhysicalMovement physicalMovement;
     private ControllerRepresentations controllerRepresentations;
-    private VRIK puppetIK;
+    [SerializeField] private RemoteVR remoteVR;
+    [SerializeField] private VRIK puppetIK;
     [SerializeField] private bool ThirdPerson;
     [SerializeField] private bool ShowControllerHelp;
     
@@ -30,10 +32,13 @@ public class HybridControl : MonoBehaviour
     [Range(0f,1f)] public float SwitchFadeDuration;
     [Range(0f,1f)] public float SwitchFadeInDuration;
     [Range(0f, 1f)] public float MovementReductionDuringFirstPerson;
-    
-
     private bool _fadingInProgres;
-    private bool _temporaryLocomotion;
+    
+    
+    private bool _temporaryIkLocomotion;
+    
+    [Header("Position Readjustment")][Range(0f, 1f)] public float ReadjustmentThreshold = 0.4f;
+    private float currentPuppetToPlayerOffset;
     
     
     public EventHandler<SwitchPerspectiveEventArgs> NotifyPerspectiveSwitch;
@@ -75,6 +80,47 @@ public class HybridControl : MonoBehaviour
     private void Update()
     {
         cameraController.RotateCamera(InputController.GetRotation());
+
+        if (_temporaryIkLocomotion)
+        {
+            this.transform.position = remoteVR.RemoteFootPositon.transform.position;
+        }
+
+        currentPuppetToPlayerOffset = Vector3.Distance(remoteVR.RemoteFootPositon.transform.position,
+            physicalMovement.feet.transform.position);
+        
+        Debug.Log(currentPuppetToPlayerOffset);
+        
+        if(currentPuppetToPlayerOffset>ReadjustmentThreshold)
+        {
+            Debug.Log( remoteVR.RemoteFootPositon.transform.position + " " +physicalMovement.feet.transform.position+ " " + currentPuppetToPlayerOffset);
+            AdjustPuppetPosition();
+        }
+        
+        
+    }
+
+
+
+    private void AdjustPuppetPosition()
+    {
+       StartCoroutine(puppetAdjusting());
+    }
+
+    private IEnumerator puppetAdjusting()
+    {
+        AdjustPuppetPosition(true);
+        while (currentPuppetToPlayerOffset > ReadjustmentThreshold)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
+       // AdjustPuppetPosition(false);
+        
+        puppetIK.solver.Reset();
+
+        //physicalMovement.feet.position = remoteVR.RemoteFootPositon.transform.position;
+
     }
 
 
@@ -82,8 +128,27 @@ public class HybridControl : MonoBehaviour
     {
         puppetIK.solver.locomotion.weight = value;
     }
-    
 
+    private void AdjustPuppetPosition(bool state)
+    {
+        _temporaryIkLocomotion = state;
+        
+        InputController.SetAdjustmentStatus(state);
+        physicalMovement.SetAdjustmentStatus(state);
+        
+        if (state)
+        {
+            puppetIK.solver.locomotion.weight = 1;
+        }
+        else
+        {
+            puppetIK.solver.locomotion.weight = 0;
+        }
+        
+    }
+    
+    
+    
 
     public void SwitchPerspective()
     {
