@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.XR.Daydream;
 using UnityEngine;
 using UnityEngine.Events;
 using Valve.VR;
+using Valve.VR.InteractionSystem;
 
 public class VRMovement : MonoBehaviour
 {
@@ -35,6 +37,12 @@ public class VRMovement : MonoBehaviour
     public event OnButtonPressed notifySwitchButtonPressedObserver;
     
     private bool rotating;
+    
+    [SerializeField] private RemoteVR remoteVR;
+    [SerializeField] private bool _readjustBodyToCenter;
+    private bool _readjusted;
+    private bool temporaryIK;
+    
 
     private void Awake()
     {
@@ -58,6 +66,12 @@ public class VRMovement : MonoBehaviour
             rotateRight.AddOnStateDownListener(RotateRight,SteamVR_Input_Sources.Any);
             rotateLeft.AddOnStateUpListener(RotateZero, SteamVR_Input_Sources.Any);
             rotateRight.AddOnStateUpListener(RotateZero, SteamVR_Input_Sources.Any);
+        }
+
+
+        if (remoteVR == null)
+        {
+            _readjustBodyToCenter = false;
         }
         
     }
@@ -147,7 +161,48 @@ public class VRMovement : MonoBehaviour
 
     private void LateUpdate()
     {
+        /*if (_readjustBodyToCenter)
+        {
+            if (Vector3.Distance(Head.transform.position, remoteVR.RemoteFootPositon.transform.position) < 0.3f)
+            {
+                _readjusted=true;
+            }
+            
+            if (Vector3.Distance(Head.transform.position, remoteVR.RemoteFootPositon.transform.position) > 0.3f)
+            {
+                _readjusted=false;
+                //Debug.Log("readjust");
+                temporaryIKLocomotion(Head, remoteVR.RemoteFootPositon);
+                return;
+            }
+            
+        }*/
+        
         Head.transform.position = Body.transform.position;
+    }
+
+
+    private void temporaryIKLocomotion( GameObject Head, GameObject Body)
+    {
+        if (temporaryIK) return;
+        temporaryIK = true;
+        StartCoroutine(MoveBodyToHead(Head, Body));
+    }
+
+
+    private IEnumerator MoveBodyToHead(GameObject head, GameObject body)
+    {
+        while (!_readjusted)
+        {
+            Debug.Log("adjusting...");
+            GetComponent<HybridControl>().WeightIKLocomotion(1f);
+            
+            head.transform.position = Vector3.Lerp(head.transform.position, body.transform.position, 0.2f);
+
+            yield return new WaitForEndOfFrame();
+
+        }
+        GetComponent<HybridControl>().WeightIKLocomotion(0f);
     }
 
     public void RotateLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)

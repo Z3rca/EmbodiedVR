@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using RootMotion.FinalIK;
 using UnityEngine;
 using Valve.VR;
 
@@ -11,6 +12,7 @@ public class HybridControl : MonoBehaviour
     private CameraController cameraController;
     private PhysicalMovement physicalMovement;
     private ControllerRepresentations controllerRepresentations;
+    private VRIK puppetIK;
     [SerializeField] private bool ThirdPerson;
     [SerializeField] private bool ShowControllerHelp;
     
@@ -28,10 +30,14 @@ public class HybridControl : MonoBehaviour
     [Range(0f,1f)] public float SwitchFadeDuration;
     [Range(0f,1f)] public float SwitchFadeInDuration;
     [Range(0f, 1f)] public float MovementReductionDuringFirstPerson;
+    
 
     private bool _fadingInProgres;
+    private bool _temporaryLocomotion;
+    
     
     public EventHandler<SwitchPerspectiveEventArgs> NotifyPerspectiveSwitch;
+    
 
     private void Start()
     {
@@ -39,6 +45,11 @@ public class HybridControl : MonoBehaviour
         cameraController = GetComponent<CameraController>();
         physicalMovement = GetComponent<PhysicalMovement>();
         controllerRepresentations = GetComponent<ControllerRepresentations>();
+        if (InputController.Body.GetComponent<VRIK>() != null)
+        {
+            puppetIK = InputController.Body.GetComponent<VRIK>();
+        }
+        
 
 
         InputController.notifyLeftButtonPressedObserver += Fading;
@@ -66,6 +77,12 @@ public class HybridControl : MonoBehaviour
         cameraController.RotateCamera(InputController.GetRotation());
     }
 
+
+    public void WeightIKLocomotion(float value)
+    {
+        puppetIK.solver.locomotion.weight = value;
+    }
+    
 
 
     public void SwitchPerspective()

@@ -37,10 +37,19 @@ public class PhysicalMovement : MonoBehaviour
 
     private VRMovement vrMovement;
 
+    public RemoteVR remoteVR;
+
     private Vector3 outerMovementDirection; //a lift or platform applying additional movement to the character
     private float outerMovementVelocity;
 
     private HybridControl hybridControl;
+    
+    
+    [SerializeField] private bool _readjustBodyToCenter;
+    private bool _readjusted;
+    private bool temporaryIK;
+    
+    
     private void Start()
     {
         _speedFactor = 1f;
@@ -51,10 +60,39 @@ public class PhysicalMovement : MonoBehaviour
         vrMovement = GetComponent<VRMovement>();
         hybridControl = GetComponent<HybridControl>();
     }
-
+        
     private void LateUpdate()
     {
-        puppet.transform.position = feet.transform.position;
+        if (Vector3.Distance(feet.transform.position, remoteVR.RemoteFootPositon.transform.position) > 0.3f)
+        {
+            hybridControl.WeightIKLocomotion(1f);
+            
+            WaitUntilPositionShift();
+        }
+        else
+        {
+            hybridControl.WeightIKLocomotion(0f);
+            puppet.transform.position = feet.transform.position;
+        }
+        
+       
+    }
+
+    private void WaitUntilPositionShift()
+    {
+        if (temporaryIK) return;
+        temporaryIK = true;
+
+        StartCoroutine(WaitForPositionShift());
+    }
+    private IEnumerator WaitForPositionShift()
+    {
+        Debug.Log("hey");
+        while (temporaryIK)
+        {
+            puppet.transform.position= Vector3.Lerp(puppet.transform.position,remoteVR.RemoteFootPositon.transform.position, 0.3f);
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     public void SetSpeedFactor(float percentage)
