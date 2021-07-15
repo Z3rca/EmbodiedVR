@@ -135,7 +135,7 @@ public class HybridControl : MonoBehaviour
 
         yield return new WaitUntil(() => _isInThreshold);
         
-        //AdjustPuppetPosition(false);
+        AdjustPuppetPosition(false);
         
         //cameraController.AddOffset(remoteVR.RemoteFootPositon.transform.localPosition);
         //yield return new WaitForSeconds(2f);

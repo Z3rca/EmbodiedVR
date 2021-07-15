@@ -146,11 +146,12 @@ public class VRMovement : MonoBehaviour
         {
             
             targetRotation = transform.rotation;
-            targetRotation *= Quaternion.Euler(0,rotationImpuls,0);
+            //targetRotation *= Quaternion.Euler(0,rotationImpuls,0);
             Vector3 eulerRotation = new Vector3();
             eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
             eulerRotation.x = 0f;
-            eulerRotation += rotationImpuls*Vector3.forward;
+            //eulerRotation += rotationImpuls*Vector3.up;
+            Debug.Log(eulerRotation);
             targetRotation = Quaternion.Euler(eulerRotation);
             targetRotation *= Quaternion.Euler(0, rotationImpuls, 0);
             Body.transform.rotation = targetRotation;
