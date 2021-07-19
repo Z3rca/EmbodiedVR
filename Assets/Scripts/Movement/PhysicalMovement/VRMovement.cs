@@ -42,6 +42,8 @@ public class VRMovement : MonoBehaviour
     [SerializeField] private bool _readjustBodyToCenter;
     private bool _readjusted;
     private bool temporaryIK;
+
+    private bool _allowInput;
     
 
     private void Awake()
@@ -119,15 +121,7 @@ public class VRMovement : MonoBehaviour
             //Debug.Log("released input");
             rotating = false;
         }
-        
-        
-          
-            
-            
 
-
-           
-            
         if (rotationApplied&& SnapTurn)
         {
             rotationImpuls = 0f;
@@ -206,15 +200,23 @@ public class VRMovement : MonoBehaviour
         _allowRotation = state;
     }
 
-    public void AllowMovement(bool state)
+    public void AllowInput(bool state)
     {
-        
+        _allowInput = state;
     }
     
     
     public Vector2 GetCurrentInput()
     {
-        return movementInput;
+        if (_allowInput)
+        {
+            return movementInput;
+        }
+        else
+        {
+            return Vector2.zero;
+        }
+        
     }
     
 

@@ -42,7 +42,9 @@ public class HybridControl : MonoBehaviour
     private bool cooldown;
     
     [Header("Position Readjustment")][Range(0f, 1f)] public float ReadjustmentThreshold = 0.4f;
+    [Range(0f, 1f)]public float timeUntilRegainControl = 0.5f;
     private float currentPuppetToPlayerOffset;
+
     
     
     public EventHandler<SwitchPerspectiveEventArgs> NotifyPerspectiveSwitch;
@@ -76,7 +78,7 @@ public class HybridControl : MonoBehaviour
        }
        else
        {
-           ShowControllers(true);
+           ShowControllers(false);
        }
     }
 
@@ -134,6 +136,8 @@ public class HybridControl : MonoBehaviour
         AdjustPuppetPosition(true);
 
         yield return new WaitUntil(() => _isInThreshold);
+
+        yield return new WaitForSeconds(timeUntilRegainControl);
         
         AdjustPuppetPosition(false);
         
@@ -157,15 +161,16 @@ public class HybridControl : MonoBehaviour
         if (state)
         {
             puppetIK.solver.locomotion.weight = 1;
+            InputController.AllowInput(false);
+            
         }
         else
         {
             puppetIK.solver.locomotion.weight = 0;
+            InputController.AllowInput(true);
         }
         
         _temporaryIkLocomotion = state;
-        
-        
         InputController.SetAdjustmentStatus(state);
         physicalMovement.SetAdjustmentStatus(state);
         
