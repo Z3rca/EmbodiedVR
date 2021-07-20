@@ -73,7 +73,7 @@ public class ControllerRepresentations : MonoBehaviour
 
         while (highLightButton)
         {
-            Debug.Log("running " + renderer.material.color.r + " "  +renderer.material.color.g);
+//            Debug.Log("running " + renderer.material.color.r + " "  +renderer.material.color.g);
             if (switchDirection)
             {
                 renderer.material.color -= Color.yellow * 0.01f;
