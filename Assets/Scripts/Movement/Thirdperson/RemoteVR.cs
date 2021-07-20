@@ -10,16 +10,23 @@ public class RemoteVR : MonoBehaviour
     public Player Player;
     public GameObject LocalHMD;
     public GameObject LocalLeft;
+    public GameObject LocalLeftArm;
     public GameObject LocalRight;
+    public GameObject LocalRightArm;
+    public GameObject LocalHeadTarget;
     
     public GameObject RemoteHMD;
 
     public GameObject RemoteLeft;
+    public GameObject RemoteLeftArm;
 
     public GameObject RemoteRight;
+    public GameObject RemoteRightArm;
 
     public GameObject RemoteFootPositon;
 
+
+    public GameObject Hands;
 
     private bool isFirstPerson;
     // Start is called before the first frame update
@@ -55,5 +62,17 @@ public class RemoteVR : MonoBehaviour
     private void LateUpdate()
     {
         
+    }
+
+    public void SetLocalHands()
+    {
+        Hands.transform.parent = LocalHeadTarget.transform.parent.parent;
+        Hands.transform.localPosition =Vector3.zero;
+    }
+    
+    public void SetRemoteHands()
+    {
+        Hands.transform.parent = this.transform;
+        Hands.transform.localPosition =Vector3.zero;
     }
 }

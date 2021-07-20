@@ -15,7 +15,7 @@ public class HybridControl : MonoBehaviour
     private ControllerRepresentations controllerRepresentations;
     [SerializeField] private RemoteVR remoteVR;
     [SerializeField] private VRIK puppetIK;
-    [SerializeField] private bool ThirdPerson;
+    [SerializeField] private bool _thirdPerson;
     [SerializeField] private bool ShowControllerHelp;
     
     [Header("Rotation Settings")]
@@ -40,6 +40,8 @@ public class HybridControl : MonoBehaviour
     private bool _temporaryIkLocomotion;
 
     private bool cooldown;
+
+    private Vector3 RemoteVRPosition;
     
     [Header("Position Readjustment")][Range(0f, 1f)] public float ReadjustmentThreshold = 0.4f;
     [Range(0f, 1f)]public float timeUntilRegainControl = 0.5f;
@@ -69,7 +71,7 @@ public class HybridControl : MonoBehaviour
         InputController.notifySwitchButtonPressedObserver += SwitchPerspective;
         
         //cameraController = GetComponentInChildren<CameraController>();
-       if(!ThirdPerson)
+       if(!_thirdPerson)
             InputController.AllowRotation(AllowRotationDuringFirstperson);
 
        if (ShowControllerHelp)
@@ -86,13 +88,14 @@ public class HybridControl : MonoBehaviour
     private void Update()
     {
         isInsideThreshold();
-        
+
+        RemoteVRPosition = remoteVR.RemoteFootPositon.transform.position;
         
         cameraController.RotateCamera(InputController.GetRotation());
 
         if (_temporaryIkLocomotion)
         {
-            this.transform.position = remoteVR.RemoteFootPositon.transform.position;
+            this.transform.position =  RemoteVRPosition;
         }
         else
         {
@@ -101,9 +104,7 @@ public class HybridControl : MonoBehaviour
 
         
         
-       // Debug.Log(currentPuppetToPlayerOffset);
-        
-        if(!_isInThreshold)
+        if(!_isInThreshold||!_thirdPerson)
         {
             //Debug.Log( + " sad");
             AdjustPuppet();
@@ -147,7 +148,10 @@ public class HybridControl : MonoBehaviour
         cooldown = false;
     }
 
-
+    public Vector3 GetRemoteVRPosition()
+    {
+        return RemoteVRPosition;
+    }
     public void WeightIKLocomotion(float value)
     {
         puppetIK.solver.locomotion.weight = value;
@@ -157,24 +161,19 @@ public class HybridControl : MonoBehaviour
     {
         
         Debug.Log("need to adjust " + state);
-        
+        InputController.AllowInput(!state);
         if (state)
         {
             puppetIK.solver.locomotion.weight = 1;
-            InputController.AllowInput(false);
-            
         }
         else
         {
             puppetIK.solver.locomotion.weight = 0;
-            InputController.AllowInput(true);
         }
         
         _temporaryIkLocomotion = state;
         InputController.SetAdjustmentStatus(state);
         physicalMovement.SetAdjustmentStatus(state);
-        
-    
     }
     
     
@@ -189,25 +188,35 @@ public class HybridControl : MonoBehaviour
         
         if (_allowViewSwitch)
         {
-            ThirdPerson =!ThirdPerson;
+            _thirdPerson =!_thirdPerson;
             var eventArgs = new SwitchPerspectiveEventArgs
             {
-                switchToThirdPerson = this.ThirdPerson
+                switchToThirdPerson = this._thirdPerson
             };
             NotifyPerspectiveSwitch?.Invoke(this,eventArgs);    
             
             if(FadingBetweenViews)
                 StartCoroutine(FadeOutFadeIn(SwitchFadeOutDuration,SwitchFadeInDuration,SwitchFadeDuration));
        
-            cameraController.SetThirdPerson(ThirdPerson);
+            cameraController.SetThirdPerson(_thirdPerson);
             cameraController.SwitchPerspective();
-            if (!ThirdPerson)
+            if (!_thirdPerson)
             {
                 physicalMovement.SetSpeedFactor(MovementReductionDuringFirstPerson);
                 InputController.AllowRotation(AllowRotationDuringFirstperson);
+                puppetIK.solver.locomotion.weight = 0f;
+                puppetIK.solver.spine.headTarget = remoteVR.LocalHeadTarget.transform;
+                puppetIK.solver.leftArm.target = remoteVR.LocalLeftArm.transform;
+                puppetIK.solver.rightArm.target = remoteVR.LocalRightArm.transform;
+                remoteVR.SetLocalHands();
             }
             else
             {
+                puppetIK.solver.spine.headTarget = remoteVR.RemoteHMD.transform;
+                remoteVR.SetRemoteHands();
+                puppetIK.solver.leftArm.target = remoteVR.RemoteLeftArm.transform;
+                puppetIK.solver.rightArm.target = remoteVR.RemoteRightArm.transform;
+                puppetIK.solver.locomotion.weight = 1f;
                 physicalMovement.SetSpeedFactor(1);
                 InputController.AllowRotation(true);
             }
@@ -238,7 +247,7 @@ public class HybridControl : MonoBehaviour
 
     public bool GetThirdPerson()
     {
-        return ThirdPerson;
+        return _thirdPerson;
     }
 
 

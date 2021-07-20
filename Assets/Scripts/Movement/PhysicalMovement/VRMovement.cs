@@ -21,6 +21,9 @@ public class VRMovement : MonoBehaviour
     public SteamVR_Action_Boolean switchPerspective;
     public SteamVR_ActionSet actionSetEnable;
 
+
+    private HybridControl hybridControl;
+
     public bool SnapTurn;
 
     [Range(0.1f, 45)] public float SetRotationImpuls;
@@ -55,6 +58,7 @@ public class VRMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        hybridControl = GetComponent<HybridControl>();
         switchPerspective.AddOnStateDownListener(SwitchPerspective,SteamVR_Input_Sources.Any);
         
         if (SnapTurn)
@@ -145,7 +149,7 @@ public class VRMovement : MonoBehaviour
             eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
             eulerRotation.x = 0f;
             //eulerRotation += rotationImpuls*Vector3.up;
-            Debug.Log(eulerRotation);
+//            Debug.Log(eulerRotation);
             targetRotation = Quaternion.Euler(eulerRotation);
             targetRotation *= Quaternion.Euler(0, rotationImpuls, 0);
             Body.transform.rotation = targetRotation;

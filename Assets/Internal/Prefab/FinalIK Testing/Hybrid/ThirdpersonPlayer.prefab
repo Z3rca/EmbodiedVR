@@ -465,11 +465,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434354127821140643}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1642932106755794613}
-  m_RootOrder: 1
+  m_Father: {fileID: 8123214595988201357}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &489424833202738345
 GameObject:
@@ -9837,6 +9837,7 @@ Transform:
   m_Children:
   - {fileID: 8123214595733462772}
   - {fileID: 8123214595725632476}
+  - {fileID: 2309036516980082410}
   m_Father: {fileID: 8123214594929352962}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9879,8 +9880,6 @@ MonoBehaviour:
     m_Bits: 256
   groundCheckDistance: 0.4
   puppet: {fileID: 8123214595540638468}
-  remoteVR: {fileID: 0}
-  _readjustBodyToCenter: 0
 --- !u!114 &8123214595988201346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9945,6 +9944,7 @@ MonoBehaviour:
   SwitchFadeInDuration: 0.5
   MovementReductionDuringFirstPerson: 0
   ReadjustmentThreshold: 0.4
+  timeUntilRegainControl: 0.5
 --- !u!114 &1762552079244933549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9961,7 +9961,6 @@ MonoBehaviour:
   SteamVRPlayer: {fileID: 8123214595666851818}
   CameraArm: {fileID: 8123214596071251655}
   cameraDistance: 4.6
-  Offset: {fileID: 0}
   speed: 5
   stecilWallDectector: {fileID: 4067969024462031855}
 --- !u!114 &2809918810634526602
@@ -10677,7 +10676,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8123214594196751458}
-  - {fileID: 2309036516980082410}
   m_Father: {fileID: 8123214595725632476}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
