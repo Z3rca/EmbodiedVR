@@ -66,6 +66,7 @@ public class CameraController : MonoBehaviour
     }
     
     
+    
     public void RotateCamera(Quaternion rotation)
     {
         _targetRotation = rotation;

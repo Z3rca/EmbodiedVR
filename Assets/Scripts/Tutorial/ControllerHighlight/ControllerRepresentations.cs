@@ -110,17 +110,8 @@ public class ControllerRepresentations : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            HighLightPerspectiveChangeButton(true);
-        }
-        
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            HighLightPerspectiveChangeButton(false);
-        }
-        
-        
+
+
         LeftController.transform.localPosition=RemoteVR.LocalLeft.transform.localPosition;
         LeftController.transform.localRotation=RemoteVR.LocalLeft.transform.localRotation;
         

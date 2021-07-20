@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.XR.Daydream;
 using UnityEngine;
 using UnityEngine.Events;
 using Valve.VR;
+using Valve.VR.InteractionSystem;
 
 public class VRMovement : MonoBehaviour
 {
@@ -18,6 +20,9 @@ public class VRMovement : MonoBehaviour
     public SteamVR_Action_Boolean rotateRight;
     public SteamVR_Action_Boolean switchPerspective;
     public SteamVR_ActionSet actionSetEnable;
+
+
+    private HybridControl hybridControl;
 
     public bool SnapTurn;
 
@@ -35,6 +40,14 @@ public class VRMovement : MonoBehaviour
     public event OnButtonPressed notifySwitchButtonPressedObserver;
     
     private bool rotating;
+    
+    [SerializeField] private RemoteVR remoteVR;
+    [SerializeField] private bool _readjustBodyToCenter;
+    private bool _readjusted;
+    private bool temporaryIK;
+
+    private bool _allowInput;
+    
 
     private void Awake()
     {
@@ -45,6 +58,7 @@ public class VRMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        hybridControl = GetComponent<HybridControl>();
         switchPerspective.AddOnStateDownListener(SwitchPerspective,SteamVR_Input_Sources.Any);
         
         if (SnapTurn)
@@ -58,6 +72,12 @@ public class VRMovement : MonoBehaviour
             rotateRight.AddOnStateDownListener(RotateRight,SteamVR_Input_Sources.Any);
             rotateLeft.AddOnStateUpListener(RotateZero, SteamVR_Input_Sources.Any);
             rotateRight.AddOnStateUpListener(RotateZero, SteamVR_Input_Sources.Any);
+        }
+
+
+        if (remoteVR == null)
+        {
+            _readjustBodyToCenter = false;
         }
         
     }
@@ -105,15 +125,7 @@ public class VRMovement : MonoBehaviour
             //Debug.Log("released input");
             rotating = false;
         }
-        
-        
-          
-            
-            
 
-
-           
-            
         if (rotationApplied&& SnapTurn)
         {
             rotationImpuls = 0f;
@@ -132,11 +144,12 @@ public class VRMovement : MonoBehaviour
         {
             
             targetRotation = transform.rotation;
-            targetRotation *= Quaternion.Euler(0,rotationImpuls,0);
+            //targetRotation *= Quaternion.Euler(0,rotationImpuls,0);
             Vector3 eulerRotation = new Vector3();
             eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
             eulerRotation.x = 0f;
-            eulerRotation += rotationImpuls*Vector3.forward;
+            //eulerRotation += rotationImpuls*Vector3.up;
+//            Debug.Log(eulerRotation);
             targetRotation = Quaternion.Euler(eulerRotation);
             targetRotation *= Quaternion.Euler(0, rotationImpuls, 0);
             Body.transform.rotation = targetRotation;
@@ -144,11 +157,27 @@ public class VRMovement : MonoBehaviour
         }
     } 
     
-
+    public void SetAdjustmentStatus(bool state)
+    {
+        _readjustBodyToCenter = state;
+    }
     private void LateUpdate()
     {
-        Head.transform.position = Body.transform.position;
+        
+        
+        if (!_readjustBodyToCenter)
+        {
+            Head.transform.position = Body.transform.position;
+        }
+
     }
+
+
+    private void temporaryIKLocomotion( GameObject Head, GameObject Body)
+    {
+    }
+
+    
 
     public void RotateLeft(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
@@ -175,15 +204,23 @@ public class VRMovement : MonoBehaviour
         _allowRotation = state;
     }
 
-    public void AllowMovement(bool state)
+    public void AllowInput(bool state)
     {
-        
+        _allowInput = state;
     }
     
     
     public Vector2 GetCurrentInput()
     {
-        return movementInput;
+        if (_allowInput)
+        {
+            return movementInput;
+        }
+        else
+        {
+            return Vector2.zero;
+        }
+        
     }
     
 

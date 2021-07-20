@@ -25,22 +25,22 @@ public class PhysicalMovement : MonoBehaviour
 
     private bool isGrounded;
     private bool _movementIsAllowed=true;
- 
-
     private float currentSpeed;
     private Vector2 direction;
     private Quaternion orientation;
 
     public GameObject puppet;
     private CCAnimator ccAnimator;
-
-
     private VRMovement vrMovement;
-
     private Vector3 outerMovementDirection; //a lift or platform applying additional movement to the character
     private float outerMovementVelocity;
 
     private HybridControl hybridControl;
+    
+    private bool _readjustBodyToCenter;
+    private bool temporaryIK;
+    
+    
     private void Start()
     {
         _speedFactor = 1f;
@@ -51,11 +51,15 @@ public class PhysicalMovement : MonoBehaviour
         vrMovement = GetComponent<VRMovement>();
         hybridControl = GetComponent<HybridControl>();
     }
-
+        
     private void LateUpdate()
     {
-        puppet.transform.position = feet.transform.position;
+        //if(!_readjustBodyToCenter)
+            puppet.transform.position = feet.transform.position;
+        
     }
+    
+   
 
     public void SetSpeedFactor(float percentage)
     {
@@ -71,6 +75,8 @@ public class PhysicalMovement : MonoBehaviour
        
         return false;
     }
+
+    
     
     private void FixedUpdate()
     {
@@ -78,25 +84,11 @@ public class PhysicalMovement : MonoBehaviour
       
       
       verticalVelocityForce =isGrounded ?  -4f : verticalVelocityForce += Gravity * Time.deltaTime;
-       // rb.velocity = transform.up * (Gravity * Time.deltaTime);
-       
-       
-       isGrounded = GroundCheck(feet.position, groundCheckDistance);
-
-
-       direction = vrMovement.GetCurrentInput();
-
-
-       //orientation = vrMovement.GetRotation();
-        
-       velocity = Vector3.up * verticalVelocityForce;
-
-
+      isGrounded = GroundCheck(feet.position, groundCheckDistance);
+      direction = vrMovement.GetCurrentInput();
+      velocity = Vector3.up * verticalVelocityForce;
 //        Debug.Log(x + " " + z);
-
-
-
-       Vector3 move = (transform.right * (direction.x * sideWaySpeed*_speedFactor) + (direction.y>=0? transform.forward * (direction.y * speed*_speedFactor): transform.forward * (direction.y * sideWaySpeed*_speedFactor) ));
+        Vector3 move = (transform.right * (direction.x * sideWaySpeed*_speedFactor) + (direction.y>=0? transform.forward * (direction.y * speed*_speedFactor): transform.forward * (direction.y * sideWaySpeed*_speedFactor) ));
 
 
 
@@ -145,9 +137,8 @@ public class PhysicalMovement : MonoBehaviour
         set => _movementIsAllowed = value;
     }
 
-
-    public Transform GetParent()
+    public void SetAdjustmentStatus(bool state)
     {
-        return this.GetParent();
+        _readjustBodyToCenter = state;
     }
 }
