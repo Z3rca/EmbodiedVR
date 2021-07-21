@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 422718022}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.3573008, y: 14.31, z: -0.061962605}
+  m_LocalPosition: {x: 0, y: 1.74, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8123214594929352962}
@@ -555,7 +555,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434354127821140643}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8123214595988201357}
@@ -5804,7 +5804,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8123214594929352973}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -19}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8123214595988201357}
@@ -9883,7 +9883,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   remoteVR: {fileID: 8123214595725632477}
   puppetIK: {fileID: 8123214595540638488}
-  _thirdPerson: 1
+  _thirdPerson: 0
+  _readjustmentInFirstPersonRegulary: 0
   ShowControllerHelp: 0
   FadingDuringRotation: 1
   FadeOutDuration: 0.125
@@ -9895,7 +9896,7 @@ MonoBehaviour:
   SwitchFadeOutDuration: 0.5
   SwitchFadeDuration: 0.5
   SwitchFadeInDuration: 0.5
-  MovementReductionDuringFirstPerson: 0.083
+  MovementReductionDuringFirstPerson: 1
   ReadjustmentThreshold: 0.4
   timeUntilRegainControl: 0.5
 --- !u!114 &1762552079244933549

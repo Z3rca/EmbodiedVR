@@ -15,7 +15,9 @@ public class HybridControl : MonoBehaviour
     private ControllerRepresentations controllerRepresentations;
     [SerializeField] private RemoteVR remoteVR;
     [SerializeField] private VRIK puppetIK;
+    [Header("Perspective Related")]
     [SerializeField] private bool _thirdPerson;
+    [SerializeField] private bool _readjustmentInFirstPersonRegulary;
     [SerializeField] private bool ShowControllerHelp;
     
     [Header("Rotation Settings")]
@@ -82,6 +84,8 @@ public class HybridControl : MonoBehaviour
        {
            ShowControllers(false);
        }
+       
+       InputController.AllowInput(true);
     }
 
 
@@ -106,8 +110,12 @@ public class HybridControl : MonoBehaviour
         
         if(!_isInThreshold||!_thirdPerson)
         {
+            if (_readjustmentInFirstPersonRegulary)
+            {
+                AdjustPuppet();
+            }
             //Debug.Log( + " sad");
-            AdjustPuppet();
+           
         }
         
       
@@ -133,7 +141,6 @@ public class HybridControl : MonoBehaviour
 
     private IEnumerator puppetAdjusting()
     {
-        float distance = (Vector3.Distance(remoteVR.RemoteFootPositon.transform.position, physicalMovement.feet.transform.position));
         AdjustPuppetPosition(true);
 
         yield return new WaitUntil(() => _isInThreshold);
@@ -202,22 +209,32 @@ public class HybridControl : MonoBehaviour
             cameraController.SwitchPerspective();
             if (!_thirdPerson)
             {
+                //you switch to firstperson sooo:
                 physicalMovement.SetSpeedFactor(MovementReductionDuringFirstPerson);
                 InputController.AllowRotation(AllowRotationDuringFirstperson);
                 puppetIK.solver.locomotion.weight = 0f;
-                puppetIK.solver.spine.headTarget = remoteVR.LocalHeadTarget.transform;
-                puppetIK.solver.leftArm.target = remoteVR.LocalLeftArm.transform;
-                puppetIK.solver.rightArm.target = remoteVR.LocalRightArm.transform;
+                if (_readjustmentInFirstPersonRegulary)
+                {
+                    puppetIK.solver.spine.headTarget = remoteVR.LocalHeadTarget.transform;
+                    puppetIK.solver.leftArm.target = remoteVR.LocalLeftArm.transform;
+                    puppetIK.solver.rightArm.target = remoteVR.LocalRightArm.transform;
+                }
+
                 remoteVR.SetLocalHands();
             }
             else
             {
                 puppetIK.solver.spine.headTarget = remoteVR.RemoteHMD.transform;
                 remoteVR.SetRemoteHands();
+                
+                if (_readjustmentInFirstPersonRegulary)
+                {
                 puppetIK.solver.leftArm.target = remoteVR.RemoteLeftArm.transform;
                 puppetIK.solver.rightArm.target = remoteVR.RemoteRightArm.transform;
                 puppetIK.solver.locomotion.weight = 1f;
-                physicalMovement.SetSpeedFactor(1);
+                }
+
+                physicalMovement.SetSpeedFactor(MovementReductionDuringFirstPerson);
                 InputController.AllowRotation(true);
             }
         }
