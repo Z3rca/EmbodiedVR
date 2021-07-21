@@ -834,7 +834,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh18130
+  m_Name: pb_Mesh508794
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5353,6 +5353,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6753526153666976379, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6753526153666976379, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: f3ae42774e2a946d09a0ed798fa10406, type: 2}
     - target: {fileID: 8123214594929352962, guid: aa00c702eaf804246bef8c8e8640640a,
         type: 3}
       propertyPath: m_RootOrder
@@ -5412,6 +5422,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ThirdpersonPlayer (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123214595540638494, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123214595988201344, guid: aa00c702eaf804246bef8c8e8640640a,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa00c702eaf804246bef8c8e8640640a, type: 3}
@@ -5946,6 +5966,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60bcd0e2b02edd741a583279c73e1647, type: 3}
+--- !u!1 &2105298478 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8123214595733462775, guid: aa00c702eaf804246bef8c8e8640640a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1588721553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2105298479
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105298478}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 44aa53ee1de8f8c4e8ff583ab5f08892, type: 3}
+  m_Controller: {fileID: 9100000, guid: f3ae42774e2a946d09a0ed798fa10406, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1902989294259121454
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9436,7 +9481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &3201057282036645987
 MonoBehaviour:
   m_ObjectHideFlags: 0
