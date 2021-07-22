@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.XR.Daydream;
 using UnityEngine;
 using UnityEngine.Events;
 using Valve.VR;
