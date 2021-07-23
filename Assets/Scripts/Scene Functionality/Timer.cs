@@ -7,9 +7,9 @@ public class Timer : MonoBehaviour
 {
 
     public float timerInMinutes;
-    public PhysicalMovement player;
+    private PhysicalMovement player;
     public GameObject exit;
-    private AudioSource audioSource;
+    public AudioSource audioSource;
     public AudioClip firstWarning;
     public AudioClip secondWarning;
 
@@ -28,7 +28,7 @@ public class Timer : MonoBehaviour
     void OnExperimentStart(object sender, EventArgs eventArgs)
     {
         timeRemaining = timerInMinutes * 60;
-        audioSource = FindObjectOfType<AudioSource>();
+        // audioSource = FindObjectOfType<AudioSource>();
 
 
         player = ExperimentManager.Instance.SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
