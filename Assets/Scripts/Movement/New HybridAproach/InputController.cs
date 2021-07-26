@@ -38,10 +38,6 @@ public class InputController : MonoBehaviour
     
     private bool rotating;
     
-    [SerializeField] private RemoteVR remoteVR;
-    [SerializeField] private bool _readjustBodyToCenter;
-    private bool _readjusted;
-    private bool temporaryIK;
 
     private bool _allowInput;
     
@@ -70,10 +66,6 @@ public class InputController : MonoBehaviour
             rotateRight.AddOnStateUpListener(RotateZero, SteamVR_Input_Sources.Any);
         }
         
-        if (remoteVR == null)
-        {
-            _readjustBodyToCenter = false;
-        }
         
     }
 

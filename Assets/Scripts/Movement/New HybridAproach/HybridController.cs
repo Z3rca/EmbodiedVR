@@ -6,9 +6,12 @@ public class HybridController : MonoBehaviour
 {
 
     private InputController _inputController;
+
+    private HybridCharacterController _characterController;
     // Start is called before the first frame update
     void Start()
     {
+        _characterController = GetComponentInChildren<HybridCharacterController>();
         _inputController = GetComponent<InputController>();
         Debug.Log(_inputController);
 
@@ -20,8 +23,12 @@ public class HybridController : MonoBehaviour
 
     private void MoveCharacterController(Vector2 input)
     {
-        if(input!=Vector2.zero)
+        if (input != Vector2.zero)
+        {
+            Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
+            _characterController.MoveCharacter(MovementDirection);
             Debug.Log(input);
+        }
     }
 
     private void SwitchView()
