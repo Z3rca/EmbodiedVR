@@ -22,9 +22,7 @@ public class HybridCharacterController : MonoBehaviour
     {
         
     }
-
-
-
+    
     public void MoveCharacter(Vector3 movementDirection)
     {
         
@@ -51,5 +49,11 @@ public class HybridCharacterController : MonoBehaviour
     public void RotateCharacter(Quaternion rotation)
     {
         this.transform.rotation = rotation;
+    }
+
+
+    public Vector3 GetCharacterPosition()
+    {
+        return this.transform.position;
     }
 }
