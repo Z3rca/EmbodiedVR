@@ -27,6 +27,7 @@ public class HybridCharacterController : MonoBehaviour
 
     public void MoveCharacter(Vector3 movementDirection)
     {
+        
         var xDirection = transform.right;
         var zDirection = transform.forward;
         Vector3 move = (xDirection * (movementDirection.x * SideWaySpeed*_speedFactor) +
@@ -45,9 +46,10 @@ public class HybridCharacterController : MonoBehaviour
     {
         _speedFactor = percentage;
     }
-   
-    
-    
-    
-    
+
+
+    public void RotateCharacter(Quaternion rotation)
+    {
+        this.transform.rotation = rotation;
+    }
 }
