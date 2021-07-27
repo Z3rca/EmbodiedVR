@@ -63,10 +63,15 @@ public class HybridController : MonoBehaviour
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
 
         _currentCharacterSpeed = _characterController.GetCurrentSpeed();
+        
+        _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
+        
+       
 
     }
     
-    
+
+
     private void MoveAvatar(Vector2 input)
     {
         
@@ -81,7 +86,7 @@ public class HybridController : MonoBehaviour
             _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
             _puppetController.MovePuppet(MovementDirection);
             _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
-            
+            _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
         }
         
         _characterController.SetAdjustmentPosition(_currentRemoteFeetGuess);

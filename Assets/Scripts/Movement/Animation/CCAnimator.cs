@@ -24,8 +24,6 @@ public class CCAnimator : MonoBehaviour
 
     public void ApplyAnimation(Vector3 direction, float speed)
     {
-        Debug.Log(direction);
-        
         if(Mathf.Abs(direction.x) > 0.01f || Mathf.Abs(direction.z) > 0.01f)
         {
             
