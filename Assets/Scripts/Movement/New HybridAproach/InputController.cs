@@ -19,7 +19,7 @@ public class InputController : MonoBehaviour
 
     [Range(0.1f, 45)] public float SetRotationImpuls;
     [Range(0.0f, 1)] public float SetAutoRotationImpulsDuration = 0.5f;
-
+    public bool InvertRotation;
     private Vector2 movementInput;
     private Quaternion targetRotation;
     private bool rotationApplied;
@@ -40,6 +40,8 @@ public class InputController : MonoBehaviour
     
 
     private bool _allowInput;
+    
+    
     
 
     private void Awake()
@@ -150,7 +152,12 @@ public class InputController : MonoBehaviour
             eulerRotation= Vector3.ProjectOnPlane(targetRotation.eulerAngles, Vector3.forward);
             eulerRotation.x = 0f;
             targetRotation = Quaternion.Euler(eulerRotation);
-            targetRotation *= Quaternion.Euler(0, rotationImpuls, 0);
+            if(!InvertRotation)
+                targetRotation *= Quaternion.Euler(0, rotationImpuls, 0);
+            else
+            {
+                targetRotation *= Quaternion.Euler(0, -rotationImpuls, 0);
+            }
             OnNotifyRotationPerformed?.Invoke(targetRotation);
             yield return new WaitForSeconds(SetAutoRotationImpulsDuration);
         }

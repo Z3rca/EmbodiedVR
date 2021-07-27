@@ -15,12 +15,15 @@ public class HybridCharacterController : MonoBehaviour
     
     public float ForwardSpeed;
     public float SideWaySpeed;
+    public float BackwardSpeed;
     
     private float _speedFactor;
 
     private bool OrientationBasedOnCenter;
    
     private CharacterController _characterController;
+
+    private float _currentSpeed;
     
     void Start()
     {
@@ -38,6 +41,11 @@ public class HybridCharacterController : MonoBehaviour
         
     }
 
+    private void LateUpdate()
+    {
+        _currentSpeed = _characterController.velocity.magnitude;
+    }
+
     public void MoveCharacter(Vector3 movementDirection)
     {
         
@@ -46,7 +54,7 @@ public class HybridCharacterController : MonoBehaviour
         Vector3 move = (xDirection * (movementDirection.x * SideWaySpeed*_speedFactor) +
                         (movementDirection.y>=0? 
                             zDirection * (movementDirection.z * ForwardSpeed*_speedFactor): 
-                            zDirection * (movementDirection.z * SideWaySpeed*_speedFactor) ));
+                            zDirection * (movementDirection.z * BackwardSpeed*_speedFactor) ));
         
         _characterController.Move(move*Time.deltaTime);
     }
@@ -60,7 +68,7 @@ public class HybridCharacterController : MonoBehaviour
     public void SetAdjustmentPosition(Vector3 localPosition)
     {
         AdjustedPosition.transform.localPosition = localPosition;
-        _characterController.center = AdjustedPosition.localPosition;
+        _characterController.center = AdjustedPosition.localPosition+(Vector3.up*_characterController.height/2);
     }
 
     public Vector3 GetAdjustedPosition()
@@ -76,6 +84,11 @@ public class HybridCharacterController : MonoBehaviour
     public void SetSpeedFactor(float percentage)
     {
         _speedFactor = percentage;
+    }
+
+    public float GetCurrentSpeed()
+    {
+        return _currentSpeed;
     }
 
 
