@@ -8,7 +8,7 @@ public class HybridCharacterController : MonoBehaviour
     //GroundCheck Relevant
     public float Gravity = -9.81f;
     [SerializeField] private LayerMask groundMask;
-    [SerializeField]private Transform GroundCheckPosition;
+    [SerializeField]private Transform CharacterFeetPosition;
     private float groundCheckDistance= 0.4f;
     private float _verticalVelocityForce = 0;
     private bool isGrounded;
@@ -28,7 +28,7 @@ public class HybridCharacterController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        isGrounded = GroundCheck(GroundCheckPosition.position, groundCheckDistance);
+        isGrounded = GroundCheck(CharacterFeetPosition.position, groundCheckDistance);
         _verticalVelocityForce =isGrounded ?  -4f : _verticalVelocityForce += Gravity * Time.deltaTime;
         Vector3 verticalVelocity = Vector3.up * _verticalVelocityForce;
         _characterController.Move(verticalVelocity*Time.deltaTime);
@@ -60,7 +60,12 @@ public class HybridCharacterController : MonoBehaviour
     }
 
 
-    public Vector3 GetCharacterPosition()
+    public Vector3 GetCharacterFeetPosition()
+    {
+        return CharacterFeetPosition.transform.position;
+    }
+    
+    public Vector3 GetGeneralCharacterPosition()
     {
         return this.transform.position;
     }
