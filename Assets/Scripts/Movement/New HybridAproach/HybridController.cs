@@ -10,6 +10,7 @@ public class HybridController : MonoBehaviour
     private Vector3 _currentCharacterFeetPosition;
     private Vector3 _currentGeneralCharacterPosition;
     private Vector3 _currentRemoteFeetGuess;
+    private Quaternion _currentRemoteForwardGuess;
     private float _currentCharacterSpeed;
 
     private bool _isAdjustingToCamera;
@@ -24,6 +25,7 @@ public class HybridController : MonoBehaviour
 
 
     [SerializeField] private bool startWithThirdPerson;
+    [SerializeField] private bool changeRotationToHeadRotationAfterPerspectiveSwitch;
     [SerializeField] private bool rotationIsBasedOnAdjustedCharacterPosition;
     
     [Header("Position Readjustment")]
@@ -59,6 +61,8 @@ public class HybridController : MonoBehaviour
     private void LateUpdate()
     {
         _currentRemoteFeetGuess = _remoteTransformConroller.GetLocalRemoteFeetPositionGuess();
+
+        _currentRemoteForwardGuess = _remoteTransformConroller.GetRemoteFowardGuess();
 
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
 
@@ -105,7 +109,15 @@ public class HybridController : MonoBehaviour
         }
         else
         {
+            if (changeRotationToHeadRotationAfterPerspectiveSwitch)
+            {
+                var rot = _currentRemoteForwardGuess;
+                _cameraController.SetPosition(_currentGeneralCharacterPosition);
+                SetRotation(rot);
+            }
+            
             _cameraController.SwitchPerspective(true);
+            
         }
         
         _currentlyInThirdPerson = !_currentlyInThirdPerson;
@@ -113,18 +125,20 @@ public class HybridController : MonoBehaviour
     }
     
     
-    
-    
-
     private void RotateAvatar(Quaternion rotation)
     {
         _currentRotation *= rotation;
         _cameraController.SetPosition(_currentGeneralCharacterPosition);
-        _cameraController.RotateCamera(_currentRotation);
-        _characterController.RotateCharacter(_currentRotation);
-        _puppetController.RotateAvatar(_currentRotation);
-        _remoteTransformConroller.RotateRemoteTransforms(_currentRotation);
-        
+       SetRotation(_currentRotation);
+    }
+
+    private void SetRotation(Quaternion rotation)
+    {
+        _cameraController.RotateCamera(rotation);
+        _characterController.RotateCharacter(rotation);
+        _puppetController.RotateAvatar(rotation);
+        _remoteTransformConroller.RotateRemoteTransforms(rotation);
+
     }
 
 
