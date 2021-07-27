@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,12 +18,6 @@ public class HybridCharacterController : MonoBehaviour
         _characterController= GetComponent<CharacterController>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
     public void MoveCharacter(Vector3 movementDirection)
     {
         
@@ -35,11 +30,7 @@ public class HybridCharacterController : MonoBehaviour
         
         _characterController.Move(move*Time.deltaTime);
     }
-    
-    
-    
-    
-    
+
     public void SetSpeedFactor(float percentage)
     {
         _speedFactor = percentage;
@@ -56,4 +47,6 @@ public class HybridCharacterController : MonoBehaviour
     {
         return this.transform.position;
     }
+    
+    
 }

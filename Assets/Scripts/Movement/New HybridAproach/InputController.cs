@@ -69,9 +69,11 @@ public class InputController : MonoBehaviour
         
     }
 
-
-    private void Update()
+    
+    
+    private void FixedUpdate()
     {
+        
         movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.Any);
         OnNotifyControlStickMovedObservers?.Invoke(movementInput);
 
@@ -97,10 +99,7 @@ public class InputController : MonoBehaviour
                 StartCoroutine(PerformRotationImpuls());
             }
         }
-    }
-    
-    private void FixedUpdate()
-    {
+        
         if (rotateLeft.state || rotateRight.state)
         {
             if (rotateLeft.state)

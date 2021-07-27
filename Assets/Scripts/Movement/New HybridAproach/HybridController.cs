@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HybridController : MonoBehaviour
 {
-
+    private bool _currentlyInThirdPerson;
     private Quaternion _currentRotation;
     private Vector3 _currentCharacterPosition;
 
@@ -12,6 +12,9 @@ public class HybridController : MonoBehaviour
     private HybridCharacterController _characterController;
 
     private HybridCameraController _cameraController;
+
+
+    [SerializeField] private bool startWithThirdPerson;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +28,8 @@ public class HybridController : MonoBehaviour
         _inputController.OnNotifyRotationPerformed += RotateAvatar;
 
         _currentRotation = transform.rotation;
+
+        _currentlyInThirdPerson = startWithThirdPerson;
     }
     
     private void MoveAvatar(Vector2 input)
@@ -41,7 +46,19 @@ public class HybridController : MonoBehaviour
 
     private void SwitchView()
     {
-        Debug.Log("SwitchView");
+
+        if (_currentlyInThirdPerson)
+        {
+            _cameraController.SwitchPerspective(false);
+           
+        }
+        else
+        {
+            _cameraController.SwitchPerspective(true);
+        }
+        
+        _currentlyInThirdPerson = !_currentlyInThirdPerson;
+        
     }
 
     private void RotateAvatar(Quaternion rotation)
