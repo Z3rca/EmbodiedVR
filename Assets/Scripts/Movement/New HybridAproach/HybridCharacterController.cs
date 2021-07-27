@@ -48,6 +48,12 @@ public class HybridCharacterController : MonoBehaviour
         _characterController.Move(move*Time.deltaTime);
     }
 
+
+    public void SetCharacterPosition(Vector3 position)
+    {
+        this.transform.position = position;
+    }
+
     public void SetSpeedFactor(float percentage)
     {
         _speedFactor = percentage;

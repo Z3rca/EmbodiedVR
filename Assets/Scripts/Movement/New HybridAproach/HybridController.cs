@@ -9,16 +9,28 @@ public class HybridController : MonoBehaviour
     private Quaternion _currentRotation;
     private Vector3 _currentCharacterFeetPosition;
     private Vector3 _currentGeneralCharacterPosition;
+    private Vector3 _currentRemoteFeetGuess;
+
+    private bool _isAdjustingToCamera;
+    
+
 
     private InputController _inputController;
     private HybridCharacterController _characterController;
-
     private HybridCameraController _cameraController;
-
     private HybridRemoteTransformConroller _remoteTransformConroller;
 
 
     [SerializeField] private bool startWithThirdPerson;
+    
+    [Header("Position Readjustment")]
+    [Range(0f, 1f)] public float DistanceThresholdForAdjusting = 0.4f;
+    [Range(0f, 1f)]public float timeUntilRegainControl = 0.5f;
+    private float currentPuppetToPlayerOffset;
+    private bool _isInsideDistanceThreshold;
+    
+    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -40,22 +52,57 @@ public class HybridController : MonoBehaviour
 
     private void LateUpdate()
     {
+        _currentRemoteFeetGuess = _remoteTransformConroller.GetRemoteFeetPositionGuess();
+        if (isInsideDistanceThreshold())
+        {
+            
+         
+            _isInsideDistanceThreshold=true;
+        }
+        else
+        {
+           
+            _isInsideDistanceThreshold = false;
+            ReadjustPlayer();
+        }
+
         
+        if (_isAdjustingToCamera)
+        {
+            
+        }
+        else
+        {
+           
+        } 
+           
     }
     
     
-    private void isInsideThreshold()
+    private bool isInsideDistanceThreshold()
     {
         
-        //float distance = Vector3.Distance(_remoteTransformConroller.RemoteFeetPositionGuess.transform.position,_characterController);
-        //Debug.Log(distance);
+        float distance = Vector3.Distance(_remoteTransformConroller.RemoteFeetPositionGuess.transform.position,_currentCharacterFeetPosition);
         
-        //_isInThreshold= distance<ReadjustmentThreshold;
+        Debug.Log(distance);
+        
+        if (distance < DistanceThresholdForAdjusting)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+       
+        
 
     }
 
     private void MoveAvatar(Vector2 input)
     {
+        if (_isAdjustingToCamera) return;
+        
         if (input != Vector2.zero)
         {
             Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
@@ -64,9 +111,7 @@ public class HybridController : MonoBehaviour
         
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
         _currentCharacterFeetPosition= _characterController.GetCharacterFeetPosition();
-        
         _remoteTransformConroller.SetPosition(_currentCharacterFeetPosition);
-            
         _cameraController.SetPosition(_currentCharacterFeetPosition);
     }
 
@@ -89,8 +134,41 @@ public class HybridController : MonoBehaviour
 
     private void ReadjustPlayer()
     {
+        if (_isAdjustingToCamera) return;
         
+        _isAdjustingToCamera = true;
+        
+        Debug.Log("readjustment needed");
+        
+        StartCoroutine(CharacterAdjustment());
+        
+        
+       
     }
+    
+    
+    private IEnumerator CharacterAdjustment()
+    {
+        Debug.Log("waiting until again in threshold");
+        
+        _characterController.SetCharacterPosition(_currentRemoteFeetGuess);
+        _cameraController.SetPosition(_currentRemoteFeetGuess);
+        _remoteTransformConroller.SetPosition(_currentRemoteFeetGuess);
+        _remoteTransformConroller.ReadjustingState(true);
+        
+        yield return new WaitUntil(() => _isInsideDistanceThreshold);
+        _remoteTransformConroller.ReadjustingState(false);
+        Debug.Log("is In Threshold");
+        yield return new WaitForSeconds(timeUntilRegainControl);
+        Debug.Log("Regain Control");
+        
+        
+        //cameraController.AddOffset(remoteVR.RemoteFootPositon.transform.localPosition);
+        //yield return new WaitForSeconds(2f);
+        
+        _isAdjustingToCamera = false;
+    }
+    
 
     private void RotateAvatar(Quaternion rotation)
     {
