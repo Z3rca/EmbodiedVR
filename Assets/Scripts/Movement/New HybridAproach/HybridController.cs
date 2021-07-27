@@ -25,8 +25,21 @@ public class HybridController : MonoBehaviour
 
 
     [SerializeField] private bool startWithThirdPerson;
-    [SerializeField] private bool changeRotationToHeadRotationAfterPerspectiveSwitch;
+    
+    
+    
+    [Header("Rotation Settings")]
     [SerializeField] private bool rotationIsBasedOnAdjustedCharacterPosition;
+    public bool FadingDuringRotation;
+    [Range(0f,1f)] public float FadeOutDuration;
+    [Range(0f,1f)] public float FadeDuration;
+    [Range(0f,1f)] public float FadeInDuration;
+    [SerializeField]private bool AllowRotationDuringFirstperson;
+    [SerializeField] private bool changeRotationToHeadRotationAfterPerspectiveSwitch;
+    
+    
+    
+    
     
     [Header("Position Readjustment")]
     private float currentPuppetToPlayerOffset;
@@ -50,11 +63,13 @@ public class HybridController : MonoBehaviour
         _inputController.OnNotifyRotationPerformed += RotateAvatar;
 
         _currentRotation = transform.rotation;
-
-        _currentlyInThirdPerson = startWithThirdPerson;
-
         
-        _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
+        _currentlyInThirdPerson = startWithThirdPerson;
+        SwitchView(startWithThirdPerson);
+
+
+
+            _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
     }
 
 
@@ -125,8 +140,37 @@ public class HybridController : MonoBehaviour
     }
     
     
+    private void SwitchView(bool ToThirdPerson)
+    {
+        if (!ToThirdPerson)
+        {
+            _cameraController.SwitchPerspective(false);
+            _currentlyInThirdPerson = ToThirdPerson;
+        }
+        else
+        {
+            if (changeRotationToHeadRotationAfterPerspectiveSwitch)
+            {
+                var rot = _currentRemoteForwardGuess;
+                _cameraController.SetPosition(_currentGeneralCharacterPosition);
+                SetRotation(rot);
+            }
+            
+            _cameraController.SwitchPerspective(true);
+            _currentlyInThirdPerson = ToThirdPerson;
+        }
+    }
+    
+    
+    
+    
+    
     private void RotateAvatar(Quaternion rotation)
     {
+        Debug.Log(AllowRotationDuringFirstperson && !_currentlyInThirdPerson);
+        if (AllowRotationDuringFirstperson && !_currentlyInThirdPerson)
+            return;
+        
         _currentRotation *= rotation;
         _cameraController.SetPosition(_currentGeneralCharacterPosition);
        SetRotation(_currentRotation);

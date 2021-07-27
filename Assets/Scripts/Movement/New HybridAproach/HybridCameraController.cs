@@ -11,6 +11,8 @@ public class HybridCameraController : MonoBehaviour
     private Vector3 targetPosition;
     private bool _thirdPersonWasActivated;
     private float _cameraDistance;
+    
+    [SerializeField] private StencilWallDection stecilWallDectector;
 
     private void Start()
     {
@@ -34,10 +36,21 @@ public class HybridCameraController : MonoBehaviour
         if (toThirdPerson)
         {
             CameraArm.transform.localPosition = Vector3.forward * _cameraDistance;
+            
+            if (stecilWallDectector != null)
+            {
+                stecilWallDectector.IgnoreMask(false);
+            }
+           
         }
         else
         {
             CameraArm.transform.localPosition=Vector3.zero;
+            
+            if (stecilWallDectector != null)
+            {
+                stecilWallDectector.IgnoreMask(true);
+            }
         }
         
     }

@@ -59,10 +59,7 @@ public class RemoteVR : MonoBehaviour
         RemoteFootPositon.transform.localPosition = feetpositon;
     }
 
-    private void LateUpdate()
-    {
-        
-    }
+    
 
     public void SetLocalHands()
     {
