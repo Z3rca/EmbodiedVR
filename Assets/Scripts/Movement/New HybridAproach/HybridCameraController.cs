@@ -6,16 +6,17 @@ using UnityEngine;
 public class HybridCameraController : MonoBehaviour
 {
     [SerializeField] private float speed;
-    [SerializeField] private float cameraDistance;
+    
     [SerializeField] private GameObject CameraArm;
     private Vector3 targetPosition;
     private bool _thirdPersonWasActivated;
+    private float _cameraDistance;
 
     private void Start()
     {
         targetPosition = this.transform.position;
 
-        cameraDistance = CameraArm.transform.localPosition.z;
+        _cameraDistance = CameraArm.transform.localPosition.z;
     }
 
     public void RotateCamera(Quaternion rotation)
@@ -32,7 +33,7 @@ public class HybridCameraController : MonoBehaviour
     {
         if (toThirdPerson)
         {
-            CameraArm.transform.localPosition = Vector3.forward * cameraDistance;
+            CameraArm.transform.localPosition = Vector3.forward * _cameraDistance;
         }
         else
         {

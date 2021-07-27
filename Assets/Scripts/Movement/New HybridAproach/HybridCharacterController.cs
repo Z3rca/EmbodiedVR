@@ -5,17 +5,34 @@ using UnityEngine;
 
 public class HybridCharacterController : MonoBehaviour
 {
+    //GroundCheck Relevant
+    public float Gravity = -9.81f;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField]private Transform GroundCheckPosition;
+    private float groundCheckDistance= 0.4f;
+    private float _verticalVelocityForce = 0;
+    private bool isGrounded;
+    
     public float ForwardSpeed;
     public float SideWaySpeed;
     
     private float _speedFactor;
+   
     private CharacterController _characterController;
-    // Start is called before the first frame update
+    
     void Start()
     {
         _speedFactor = 1f;
-        
         _characterController= GetComponent<CharacterController>();
+    }
+
+    private void FixedUpdate()
+    {
+        isGrounded = GroundCheck(GroundCheckPosition.position, groundCheckDistance);
+        _verticalVelocityForce =isGrounded ?  -4f : _verticalVelocityForce += Gravity * Time.deltaTime;
+        Vector3 verticalVelocity = Vector3.up * _verticalVelocityForce;
+        _characterController.Move(verticalVelocity*Time.deltaTime);
+        
     }
 
     public void MoveCharacter(Vector3 movementDirection)
@@ -46,6 +63,17 @@ public class HybridCharacterController : MonoBehaviour
     public Vector3 GetCharacterPosition()
     {
         return this.transform.position;
+    }
+    
+    
+    
+    private bool GroundCheck(Vector3 position, float radius)
+    {
+        if (Physics.CheckSphere(position, radius,groundMask))
+        {
+            return true;
+        }
+        return false;
     }
     
     
