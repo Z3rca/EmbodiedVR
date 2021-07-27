@@ -8,6 +8,9 @@ public class Area4Elevator : MonoBehaviour
 
     public GameObject elevator;
 
+    public GameObject lowerDoor;
+    public GameObject upperDoor;
+
     public LinearMapping linearMapping;
     
     public float upperBoundary;
@@ -26,10 +29,12 @@ public class Area4Elevator : MonoBehaviour
         posX = elevator.transform.position.x;
         posZ = elevator.transform.position.z;
         
+        lowerDoor.SetActive(false);
+        lowerDoor.SetActive(false);
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (currentLinearMapping != linearMapping.value)
         {
@@ -49,25 +54,42 @@ public class Area4Elevator : MonoBehaviour
 
     public void MoveUpwards()
     {
-        if (elevator.transform.position.y <= upperBoundary)
+        if (elevator.transform.position.y != upperBoundary)
         {
+            lowerDoor.SetActive(true);
+            
             float posY = elevator.transform.position.y;
             
             posY += speed * Time.deltaTime;
+            
+            posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
 
             elevator.transform.position = new Vector3(posX, posY, posZ);
+        }
+        else
+        {
+            upperDoor.SetActive(false);
         }
     }
     
     public void MoveDownwards()
     {
-        if (elevator.transform.position.y >= lowerBoundary)
+        if (elevator.transform.position.y != lowerBoundary)
         {
+            upperDoor.SetActive(true);
+            
             float posY = elevator.transform.position.y;
             
             posY -= speed * Time.deltaTime;
+            
+            posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
 
             elevator.transform.position = new Vector3(posX, posY, posZ);
         }
+        else
+        {
+            lowerDoor.SetActive(false);
+        }
     }
+    
 }
