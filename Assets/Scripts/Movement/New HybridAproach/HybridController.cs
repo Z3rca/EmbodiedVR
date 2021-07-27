@@ -22,12 +22,13 @@ public class HybridController : MonoBehaviour
 
 
     [SerializeField] private bool startWithThirdPerson;
+    [SerializeField] private bool rotationIsBasedOnAdjustedCharacterPosition;
     
     [Header("Position Readjustment")]
-    [Range(0f, 1f)] public float DistanceThresholdForAdjusting = 0.4f;
-    [Range(0f, 1f)]public float timeUntilRegainControl = 0.5f;
     private float currentPuppetToPlayerOffset;
     private bool _isInsideDistanceThreshold;
+    
+    
     
     
     
@@ -38,7 +39,6 @@ public class HybridController : MonoBehaviour
         _characterController = GetComponentInChildren<HybridCharacterController>();
         _cameraController = GetComponentInChildren<HybridCameraController>();
         _inputController = GetComponent<InputController>();
-        Debug.Log(_inputController);
 
         _inputController.OnNotifyControlStickMovedObservers += MoveAvatar;
         _inputController.OnNotifySwitchButtonPressedObserver += SwitchView;
@@ -47,72 +47,42 @@ public class HybridController : MonoBehaviour
         _currentRotation = transform.rotation;
 
         _currentlyInThirdPerson = startWithThirdPerson;
+
+        
+        _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
     }
 
 
     private void LateUpdate()
     {
-        _currentRemoteFeetGuess = _remoteTransformConroller.GetRemoteFeetPositionGuess();
-        if (isInsideDistanceThreshold())
-        {
-            
-         
-            _isInsideDistanceThreshold=true;
-        }
-        else
-        {
-           
-            _isInsideDistanceThreshold = false;
-            ReadjustPlayer();
-        }
+        _currentRemoteFeetGuess = _remoteTransformConroller.GetLocalRemoteFeetPositionGuess();
 
+        _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
         
-        if (_isAdjustingToCamera)
-        {
-            
-        }
-        else
-        {
-           
-        } 
-           
     }
     
     
-    private bool isInsideDistanceThreshold()
-    {
-        
-        float distance = Vector3.Distance(_remoteTransformConroller.RemoteFeetPositionGuess.transform.position,_currentCharacterFeetPosition);
-        
-        Debug.Log(distance);
-        
-        if (distance < DistanceThresholdForAdjusting)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-       
-        
-
-    }
-
     private void MoveAvatar(Vector2 input)
     {
+        
+       
+        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         if (_isAdjustingToCamera) return;
         
         if (input != Vector2.zero)
         {
             Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
             _characterController.MoveCharacter(MovementDirection);
+            _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         }
         
+        _characterController.SetAdjustmentPosition(_currentRemoteFeetGuess);
+        
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
-        _currentCharacterFeetPosition= _characterController.GetCharacterFeetPosition();
-        _remoteTransformConroller.SetPosition(_currentCharacterFeetPosition);
-        _cameraController.SetPosition(_currentCharacterFeetPosition);
+
+        //_currentCharacterFeetPosition= _characterController.GetCharacterFeetPosition();
+        //_remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+        
     }
 
     private void SwitchView()
@@ -131,49 +101,15 @@ public class HybridController : MonoBehaviour
         _currentlyInThirdPerson = !_currentlyInThirdPerson;
         
     }
-
-    private void ReadjustPlayer()
-    {
-        if (_isAdjustingToCamera) return;
-        
-        _isAdjustingToCamera = true;
-        
-        Debug.Log("readjustment needed");
-        
-        StartCoroutine(CharacterAdjustment());
-        
-        
-       
-    }
     
     
-    private IEnumerator CharacterAdjustment()
-    {
-        Debug.Log("waiting until again in threshold");
-        
-        _characterController.SetCharacterPosition(_currentRemoteFeetGuess);
-        _cameraController.SetPosition(_currentRemoteFeetGuess);
-        _remoteTransformConroller.SetPosition(_currentRemoteFeetGuess);
-        _remoteTransformConroller.ReadjustingState(true);
-        
-        yield return new WaitUntil(() => _isInsideDistanceThreshold);
-        _remoteTransformConroller.ReadjustingState(false);
-        Debug.Log("is In Threshold");
-        yield return new WaitForSeconds(timeUntilRegainControl);
-        Debug.Log("Regain Control");
-        
-        
-        //cameraController.AddOffset(remoteVR.RemoteFootPositon.transform.localPosition);
-        //yield return new WaitForSeconds(2f);
-        
-        _isAdjustingToCamera = false;
-    }
+    
     
 
     private void RotateAvatar(Quaternion rotation)
     {
         _currentRotation *= rotation;
-        _cameraController.SetPosition(_currentCharacterFeetPosition);
+        _cameraController.SetPosition(_currentGeneralCharacterPosition);
         _cameraController.RotateCamera(_currentRotation);
         _characterController.RotateCharacter(_currentRotation);
         _remoteTransformConroller.RotateRemoteTransforms(_currentRotation);

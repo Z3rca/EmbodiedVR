@@ -8,7 +8,7 @@ public class HybridCharacterController : MonoBehaviour
     //GroundCheck Relevant
     public float Gravity = -9.81f;
     [SerializeField] private LayerMask groundMask;
-    [SerializeField]private Transform CharacterFeetPosition;
+    [SerializeField]private Transform AdjustedPosition;
     private float groundCheckDistance= 0.4f;
     private float _verticalVelocityForce = 0;
     private bool isGrounded;
@@ -17,6 +17,8 @@ public class HybridCharacterController : MonoBehaviour
     public float SideWaySpeed;
     
     private float _speedFactor;
+
+    private bool OrientationBasedOnCenter;
    
     private CharacterController _characterController;
     
@@ -28,10 +30,11 @@ public class HybridCharacterController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        isGrounded = GroundCheck(CharacterFeetPosition.position, groundCheckDistance);
+        isGrounded = GroundCheck(transform.position, groundCheckDistance);
         _verticalVelocityForce =isGrounded ?  -4f : _verticalVelocityForce += Gravity * Time.deltaTime;
         Vector3 verticalVelocity = Vector3.up * _verticalVelocityForce;
         _characterController.Move(verticalVelocity*Time.deltaTime);
+        
         
     }
 
@@ -54,6 +57,22 @@ public class HybridCharacterController : MonoBehaviour
         this.transform.position = position;
     }
 
+    public void SetAdjustmentPosition(Vector3 localPosition)
+    {
+        AdjustedPosition.transform.localPosition = localPosition;
+        _characterController.center = AdjustedPosition.localPosition;
+    }
+
+    public Vector3 GetAdjustedPosition()
+    {
+        return AdjustedPosition.transform.position;
+    }
+
+    public void AddLocalOffset(Vector3 offset)
+    {
+        this.transform.localPosition = offset;
+    }
+
     public void SetSpeedFactor(float percentage)
     {
         _speedFactor = percentage;
@@ -62,14 +81,24 @@ public class HybridCharacterController : MonoBehaviour
 
     public void RotateCharacter(Quaternion rotation)
     {
-        this.transform.rotation = rotation;
+        if (!OrientationBasedOnCenter)
+        {
+            this.transform.rotation = rotation;
+        }
+        else
+        {
+            AdjustedPosition.localRotation = rotation;
+        }
+
     }
 
-
-    public Vector3 GetCharacterFeetPosition()
+    public void SetOrientationBasedOnCharacter(bool state)
     {
-        return CharacterFeetPosition.transform.position;
+        OrientationBasedOnCenter = state;
     }
+
+
+   
     
     public Vector3 GetGeneralCharacterPosition()
     {

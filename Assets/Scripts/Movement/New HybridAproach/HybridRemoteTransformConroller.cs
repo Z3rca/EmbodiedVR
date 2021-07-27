@@ -24,16 +24,10 @@ public class HybridRemoteTransformConroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!readjusting)
-        {
-            Vector3 feetpositon = SteamVRplayer.transform.InverseTransformPoint(SteamVRplayer.feetPositionGuess);
-            RemoteFeetPositionGuess.transform.localPosition = feetpositon;
-        }
-        else
-        {
-            RemoteFeetPositionGuess.transform.localPosition = Vector3.zero;
-        }
         
+        Vector3 feetpositon = SteamVRplayer.transform.InverseTransformPoint(SteamVRplayer.feetPositionGuess);
+        RemoteFeetPositionGuess.transform.localPosition = feetpositon;
+
     }
 
     public void SetPosition(Vector3 position)
@@ -53,5 +47,10 @@ public class HybridRemoteTransformConroller : MonoBehaviour
     public Vector3 GetRemoteFeetPositionGuess()
     {
         return RemoteFeetPositionGuess.transform.position;
+    }
+    
+    public Vector3 GetLocalRemoteFeetPositionGuess()
+    {
+        return RemoteFeetPositionGuess.transform.localPosition;
     }
 }
