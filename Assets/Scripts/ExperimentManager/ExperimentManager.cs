@@ -91,6 +91,14 @@ public class ExperimentManager : MonoBehaviour
             
         }
 
+        foreach (var station in RemainingstationsStationSpawners)
+        {
+            if (station.ID == StationOrder[0])
+            {
+                ActiveStation = station;
+            }
+        }
+
         mainMenuCamera.gameObject.SetActive(false);
 
         
@@ -134,7 +142,7 @@ public class ExperimentManager : MonoBehaviour
     {
         RemainingstationsStationSpawners.Remove(ActiveStation);
             
-        if (!RemainingstationsStationSpawner.Any())
+        if (!RemainingstationsStationSpawners.Any())
         {
             Debug.Log("Finished condition");
         }

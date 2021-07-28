@@ -11,6 +11,9 @@ public class HybridCharacterController : MonoBehaviour
     [SerializeField]private Transform AdjustedPosition;
     private float groundCheckDistance= 0.4f;
     private float _verticalVelocityForce = 0;
+
+    private Vector3 _outerMovementDirection;
+    private float _outerMovementVelocity;
     private bool isGrounded;
     
     public float ForwardSpeed;
@@ -24,7 +27,8 @@ public class HybridCharacterController : MonoBehaviour
     private CharacterController _characterController;
 
     private float _currentSpeed;
-    
+    public delegate void OnImpactedByOuterfactor(Vector3 direction, float velocity);
+    public event OnImpactedByOuterfactor OnNotifyImpactObservers;
     void Start()
     {
         _speedFactor = 1f;
@@ -38,7 +42,25 @@ public class HybridCharacterController : MonoBehaviour
         Vector3 verticalVelocity = Vector3.up * _verticalVelocityForce;
         _characterController.Move(verticalVelocity*Time.deltaTime);
         
+        if (_outerMovementVelocity >= 0)
+        {
+            OnNotifyImpactObservers?.Invoke(_outerMovementDirection,_outerMovementVelocity);
+        }
         
+    }
+    
+    
+   
+    
+    public void AddOuterMovementImpact(Vector3 direction, float velocity)
+    {
+        _outerMovementDirection = direction;
+        _outerMovementVelocity = velocity;
+    }
+
+    public void ApplyOuterImpact(Vector3 direction, float velocity)
+    {
+        _characterController.Move(direction * velocity * Time.deltaTime);
     }
 
     private void LateUpdate()

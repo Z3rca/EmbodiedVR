@@ -73,6 +73,9 @@ public class HybridController : MonoBehaviour
 
         _cameraController.OnNotifyFadedCompletedObervers += FadingCompleted;
 
+
+        _characterController.OnNotifyImpactObservers += ApplyOuterImpact;
+
         _currentRotation = transform.rotation;
         
         _currentlyInThirdPerson = startWithThirdPerson;
@@ -120,9 +123,16 @@ public class HybridController : MonoBehaviour
         _controllerRepresentations.RightController.transform.localRotation =
             _remoteTransformConroller.LocalRight.localRotation;
     }
-   
-    
 
+
+    public void ApplyOuterImpact(Vector3 impactDirection, float velocity)
+    {
+        _characterController.ApplyOuterImpact(impactDirection,velocity);
+        _puppetController.SetPosition(_characterController.GetAdjustedPosition());
+        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+        
+    }
     private void MoveAvatar(Vector2 input)
     {
         

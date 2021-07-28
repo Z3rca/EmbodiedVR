@@ -13,7 +13,7 @@ public class RotatonElevator : MonoBehaviour
     private bool atTarget;
     public RotationAffector _rotationAffector;
     [SerializeField] private bool clockwise;
-    private PhysicalMovement physicalMovement;
+    private HybridCharacterController characterController;
 
     private GameObject physicalMovementPlayer;
 
@@ -29,15 +29,7 @@ public class RotatonElevator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            TurnPlatform();
-        }
         
-        if(Input.GetKeyDown(KeyCode.D))
-        {
-            TurnPlatform();
-        }
     }
 
 
@@ -105,15 +97,15 @@ public class RotatonElevator : MonoBehaviour
         _rotationAffector.speed = 0f;
         _rotationAffector.SetActive(false);
         door.SetActive(false);
-        physicalMovementPlayer.GetComponent<PhysicalMovement>().transform.SetParent(null);
+        physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.SetParent(null);
         running = false;
     }
 
     IEnumerator WaitForStart(GameObject other, float seconds)
     {
             yield return new WaitForSeconds(seconds);
-            physicalMovement = other.GetComponent<PhysicalMovement>();
-            _rotationAffector.SetPhysicalMovement(physicalMovement);
+            characterController = other.GetComponent<HybridCharacterController>();
+            _rotationAffector.SetPhysicalMovement(characterController);
             _rotationAffector.SetActive(true);
             door.SetActive(true);
             TurnPlatform();
@@ -121,7 +113,7 @@ public class RotatonElevator : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PhysicalMovement>())
+        if (other.GetComponent<HybridCharacterController>())
         {
             if (launchedStart)
                 return;
@@ -138,7 +130,7 @@ public class RotatonElevator : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         Debug.Log("true that");
-        if (other.GetComponent<PhysicalMovement>())
+        if (other.GetComponent<HybridCharacterController>())
         {
             _rotationAffector.SetActive(false);
         }

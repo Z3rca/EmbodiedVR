@@ -16,7 +16,7 @@ public class RotationAffector : MonoBehaviour
 
     private Vector3 velocity;
 
-    private PhysicalMovement movement;
+    private HybridCharacterController movement;
 
     private bool active;
     private bool movementAssigned;
@@ -49,7 +49,7 @@ public class RotationAffector : MonoBehaviour
     
 
 
-    public void SetPhysicalMovement(PhysicalMovement phyM)
+    public void SetPhysicalMovement(HybridCharacterController phyM)
     {
         movement = phyM;
         movementAssigned = true;

@@ -15,7 +15,7 @@ public class AutoLiftEntry : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PhysicalMovement>())
+        if (other.GetComponent<HybridCharacterController>())
         {
             agent = other.gameObject;
             StartWithDelay(delayUntilStart);

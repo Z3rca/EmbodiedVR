@@ -50,16 +50,16 @@ public class MovingPlatform : MonoBehaviour
     
     private void OnTriggerStay(Collider other)
     {
-        if (other.GetComponent<PhysicalMovement>())
+        if (other.GetComponent<HybridCharacterController>())
         {
-            other.GetComponent<PhysicalMovement>().AddOuterMovementImpact(direction,speed);
+            other.GetComponent<HybridCharacterController>().AddOuterMovementImpact(direction,speed);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         
-        if (other.GetComponent<PhysicalMovement>())
+        if (other.GetComponent<HybridCharacterController>())
         {
             agent = other.gameObject;
             if (StartOnTriggerEnter)
@@ -75,11 +75,11 @@ public class MovingPlatform : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         
-        if (other.GetComponent<PhysicalMovement>())
+        if (other.GetComponent<HybridCharacterController>())
         {
             agent = null;
             ExitEvents.Invoke();
-            other.GetComponent<PhysicalMovement>().AddOuterMovementImpact(Vector3.zero, 0f);
+            other.GetComponent<HybridCharacterController>().AddOuterMovementImpact(Vector3.zero, 0f);
         }
     }
 
@@ -88,7 +88,7 @@ public class MovingPlatform : MonoBehaviour
     {
         if (agent != null)
         {
-            agent.GetComponent<PhysicalMovement>().AddOuterMovementImpact(Vector3.zero, 0f);
+            agent.GetComponent<HybridCharacterController>().AddOuterMovementImpact(Vector3.zero, 0f);
         }
        
     }
