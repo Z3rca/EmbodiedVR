@@ -106,18 +106,7 @@ public class ControllerRepresentations : MonoBehaviour
 
     }
     
-
-
-    private void Update()
-    {
-
-
-        LeftController.transform.localPosition=RemoteVR.LocalLeft.transform.localPosition;
-        LeftController.transform.localRotation=RemoteVR.LocalLeft.transform.localRotation;
-        
-        RightController.transform.localPosition=RemoteVR.LocalRight.transform.localPosition;
-        RightController.transform.localRotation=RemoteVR.LocalRight.transform.localRotation;
-    }
+    
 
     private void OnDisable()
     {

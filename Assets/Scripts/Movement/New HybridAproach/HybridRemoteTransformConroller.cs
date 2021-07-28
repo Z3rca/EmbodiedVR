@@ -14,6 +14,11 @@ public class HybridRemoteTransformConroller : MonoBehaviour
 
     public Transform RemoteForwardGuess;
 
+    public Transform LocalLeft;
+    public Transform LocalRight;
+    public Transform RemoteLeft;
+    public Transform RemoteRight;
+
     private bool readjusting;
     // Start is called before the first frame update
     void Start()
@@ -28,7 +33,6 @@ public class HybridRemoteTransformConroller : MonoBehaviour
         RemoteForwardGuess.transform.localRotation = Quaternion.LookRotation(BodyRotation, Vector3.up);
         Vector3 feetpositon = SteamVRplayer.transform.InverseTransformPoint(SteamVRplayer.feetPositionGuess);
         RemoteFeetPositionGuess.transform.localPosition = feetpositon;
-
         
         
         RemoteHMD.transform.localPosition = LocalHMD.transform.localPosition;

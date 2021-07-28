@@ -45,6 +45,10 @@ public class HybridController : MonoBehaviour
     private float currentPuppetToPlayerOffset;
     private bool _isInsideDistanceThreshold;
     
+    [Header("Tutorials")] 
+    private ControllerRepresentations _controllerRepresentations;
+    [SerializeField] private bool ShowControllerHelp;
+    
     
     
     
@@ -57,7 +61,8 @@ public class HybridController : MonoBehaviour
         _cameraController = GetComponentInChildren<HybridCameraController>();
         _inputController = GetComponent<InputController>();
         _puppetController = GetComponentInChildren<PuppetController>();
-
+        _controllerRepresentations = GetComponent<ControllerRepresentations>();
+        
         _inputController.OnNotifyControlStickMovedObservers += MoveAvatar;
         _inputController.OnNotifySwitchButtonPressedObserver += SwitchView;
         _inputController.OnNotifyRotationPerformed += RotateAvatar;
@@ -66,10 +71,15 @@ public class HybridController : MonoBehaviour
         
         _currentlyInThirdPerson = startWithThirdPerson;
         SwitchView(startWithThirdPerson);
+        
+        _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
 
-
-
-            _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
+        if (ShowControllerHelp)
+        {
+            _controllerRepresentations.ShowController(true);
+        }
+        
+        
     }
 
 
@@ -84,12 +94,28 @@ public class HybridController : MonoBehaviour
         _currentCharacterSpeed = _characterController.GetCurrentSpeed();
         
         _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
-        
-       
 
+        if (ShowControllerHelp)
+        {
+            UpdateControllerTransforms();
+        }
+        
     }
     
+    void UpdateControllerTransforms()
+    {
+        _controllerRepresentations.LeftController.transform.localPosition =
+            _remoteTransformConroller.LocalLeft.localPosition;
+        _controllerRepresentations.RightController.transform.localPosition =
+            _remoteTransformConroller.LocalRight.localPosition;
 
+        _controllerRepresentations.LeftController.transform.localRotation =
+            _remoteTransformConroller.LocalLeft.localRotation;
+        _controllerRepresentations.RightController.transform.localRotation =
+            _remoteTransformConroller.LocalRight.localRotation;
+    }
+   
+    
 
     private void MoveAvatar(Vector2 input)
     {
@@ -138,6 +164,20 @@ public class HybridController : MonoBehaviour
         _currentlyInThirdPerson = !_currentlyInThirdPerson;
         
     }
+    
+    //Tutorial Related
+    public void ShowControllers(bool state)
+    {
+        _controllerRepresentations.ShowController(state);
+    }
+    
+    
+    public void HighLightControlSwitchButton(bool state)
+    {
+        _controllerRepresentations.HighLightPerspectiveChangeButton(state);
+    }
+
+    
     
     
     private void SwitchView(bool ToThirdPerson)
