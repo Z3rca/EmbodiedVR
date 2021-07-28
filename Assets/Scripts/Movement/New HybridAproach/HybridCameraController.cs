@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 
 public class HybridCameraController : MonoBehaviour
 {
@@ -10,9 +11,13 @@ public class HybridCameraController : MonoBehaviour
     [SerializeField] private GameObject CameraArm;
     private Vector3 targetPosition;
     private bool _thirdPersonWasActivated;
+    private bool _fadingInProgres;
     private float _cameraDistance;
     
     [SerializeField] private StencilWallDection stecilWallDectector;
+    
+    public delegate void OnFadingCompleted();
+    public event OnFadingCompleted OnNotifyFadedCompletedObervers;
 
     private void Start()
     {
@@ -54,6 +59,29 @@ public class HybridCameraController : MonoBehaviour
         }
         
     }
+    
+    public void Fading(float FadeOutDuration,float FadeInDuration, float FadeDuration)
+    {
+        
+        Debug.Log("fading");
+        _fadingInProgres = true;
+        StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
+        
+    }
+    private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)
+    {
+        SteamVR_Fade.Start(Color.black,FadeOut);
+        yield return new WaitForSeconds(FadeOut);
+        yield return new WaitForSeconds(FadeTime);
+        SteamVR_Fade.Start(Color.clear,FadeIn);
+        _fadingInProgres = false;
+        
+        OnNotifyFadedCompletedObervers.Invoke();
+    }
+    
+    
+    
+    
 
     private void FixedUpdate()
     {

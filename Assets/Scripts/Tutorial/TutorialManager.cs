@@ -51,9 +51,10 @@ public class TutorialManager : MonoBehaviour
         }
         
         audioController = GetComponent<TutorialAudioDialogController>();
-        StartFamilarization();
+        
         HybridController.OnNotifyPerspectiveSwitchObservers += PerspectiveSwitchWasPerformend;
         HybridController.ShowControllers(true);
+        StartFamilarization();
     }
 
     // Update is called once per frame
@@ -80,8 +81,8 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         HybridController.AllowViewSwitch(false);
         HybridController.AllowMovement(false);
-        //HybridController.Fading(0f,2f,2f);
-        //yield return new WaitUntil(() =>!HybridController.FadingInProgress);      //currently disabled
+        HybridController.Fading(0f,2f,2f);
+        yield return new WaitUntil(() =>!HybridController.IsFadingInProgress());   
         audioController.FamilarizationAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         Debug.Log("finished Introduction");
@@ -152,7 +153,6 @@ public class TutorialManager : MonoBehaviour
     private void PerspectiveSwitchWasPerformend(bool state)
     {
         _thirdPersonIsActive = state;
-        Debug.Log(_thirdPersonIsActive);
     }
 
     public void EnableInteractionArea()

@@ -12,9 +12,8 @@ public class HybridController : MonoBehaviour
     private Vector3 _currentRemoteFeetGuess;
     private Quaternion _currentRemoteForwardGuess;
     private float _currentCharacterSpeed;
-
-    private bool _isAdjustingToCamera;
     
+    private bool _fadingInProgress;
     
 
     private InputController _inputController;
@@ -41,6 +40,7 @@ public class HybridController : MonoBehaviour
 
     [Header("Perspective Switch Settings")] 
     private bool _switchingViewIsCurrentlyAllowed;
+    
     
     [Header("Position Readjustment")]
     private float currentPuppetToPlayerOffset;
@@ -71,19 +71,21 @@ public class HybridController : MonoBehaviour
         _inputController.OnNotifySwitchButtonPressedObserver += SwitchView;
         _inputController.OnNotifyRotationPerformed += RotateAvatar;
 
+        _cameraController.OnNotifyFadedCompletedObervers += FadingCompleted;
+
         _currentRotation = transform.rotation;
         
         _currentlyInThirdPerson = startWithThirdPerson;
         SwitchView(startWithThirdPerson);
         
         _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
+        
+        
+    }
 
-        if (ShowControllerHelp)
-        {
-            _controllerRepresentations.ShowController(true);
-        }
-        
-        
+    public HybridCharacterController GetHybridChracterController()
+    {
+        return _characterController;
     }
 
 
@@ -126,7 +128,10 @@ public class HybridController : MonoBehaviour
         
        
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
-        if (_isAdjustingToCamera) return;
+
+        if(!_movementIsCurrentlyAllowed)
+            return;
+        
         
         if (input != Vector2.zero)
         {
@@ -180,7 +185,7 @@ public class HybridController : MonoBehaviour
         
         _currentlyInThirdPerson = !_currentlyInThirdPerson;
         
-        OnNotifyPerspectiveSwitchObservers.Invoke(_currentlyInThirdPerson);
+        OnNotifyPerspectiveSwitchObservers?.Invoke(_currentlyInThirdPerson);
         
     }
     
@@ -197,7 +202,7 @@ public class HybridController : MonoBehaviour
     }
 
     
-    
+    //Perspective and Fading
     
     private void SwitchView(bool ToThirdPerson)
     {
@@ -219,6 +224,21 @@ public class HybridController : MonoBehaviour
             _currentlyInThirdPerson = ToThirdPerson;
         }
     }
+
+    public bool IsFadingInProgress()
+    {
+        return _fadingInProgress;
+    }
+    public void FadingCompleted()
+    {
+        _fadingInProgress=false;
+    }
+    public void Fading(float FadeOutDuration,float FadeInDuration, float FadeDuration)
+    {
+        _fadingInProgress = true;
+        _cameraController.Fading(FadeOutDuration,FadeInDuration,FadeDuration);
+    }
+
     
     
     
@@ -226,7 +246,7 @@ public class HybridController : MonoBehaviour
     
     private void RotateAvatar(Quaternion rotation)
     {
-        Debug.Log(AllowRotationDuringFirstperson && !_currentlyInThirdPerson);
+//        Debug.Log(AllowRotationDuringFirstperson && !_currentlyInThirdPerson);
         if (AllowRotationDuringFirstperson && !_currentlyInThirdPerson)
             return;
         
@@ -261,6 +281,7 @@ public class HybridController : MonoBehaviour
         this.transform.position = transform.position;
         _characterController.GetComponent<CharacterController>().enabled = true;
         SetRotation(transform.rotation);
+        
     }
 
 

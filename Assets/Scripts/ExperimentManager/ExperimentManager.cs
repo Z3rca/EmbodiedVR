@@ -14,6 +14,7 @@ public class ExperimentManager : MonoBehaviour
     public List<GameObject> Avatars;
     public GameObject SelectedAvatar;
     private HybridController _playerController;
+    public HybridCharacterController _playerCharacterController;
 
     public StationSpawner ActiveStation;
     private List<StationSpawner> RemainingstationsStationSpawners = new List<StationSpawner>();
@@ -105,6 +106,7 @@ public class ExperimentManager : MonoBehaviour
         if (_playerController == null)
         {
             _playerController = SelectedAvatar.GetComponent<HybridController>();
+            _playerCharacterController = _playerController.GetHybridChracterController();
         }
 
         yield return new  WaitUntil(() => _playerController !=null);
@@ -114,6 +116,11 @@ public class ExperimentManager : MonoBehaviour
         if (ActiveStation.ID == 0)
         {
             tutorialManager.StartTutorial();
+        }
+        else
+        {
+            _playerController.AllowViewSwitch(true);
+            _playerController.AllowMovement(true);
         }
         
         _playerController.TeleportToPosition(ActiveStation.gameObject.transform);
@@ -215,6 +222,7 @@ public class ExperimentManager : MonoBehaviour
         };
 
         var valX = x;
+        var valY = y;
         switch (_menuState)
         {
             case MenuState.IDAndOrderSelection:
@@ -394,21 +402,25 @@ public class ExperimentManager : MonoBehaviour
                 case MenuState.Running:
                     
                 valX = x;
+               
                 int buttonwidth =(int) (w * 2);
-                GUI.Box(new Rect(valX, 100, buttonwidth, 80), new GUIContent("ID: "+ participantId), boxStyle);
+                GUI.Box(new Rect(valX, valY, buttonwidth, 80), new GUIContent("ID: "+ participantId), boxStyle);
 
                 valX += buttonwidth+ 2;
-                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Order: "+ order), boxStyle);
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Order: "+ order), boxStyle);
                 
                 valX += buttonwidth +2;
-                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Station: "+ ActiveStation.ID), boxStyle);
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Station: "+ ActiveStation.ID), boxStyle);
+
+                valX = x;
+                valY = y + 100;
                 
                 valX += buttonwidth+ 2;
-                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Time Station: "+ ActiveStation.ID), boxStyle);
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Station: "+ ActiveStation.ID), boxStyle);
 
                 valX += buttonwidth+ 2;
                 TimeSpan time = TimeSpan.FromSeconds(totalTime);
-                GUI.Box(new Rect(valX , 100, buttonwidth, 80), new GUIContent("Time Total "+ time.ToString("mm':'ss")), boxStyle);
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Total "+ time.ToString("mm':'ss")), boxStyle);
 
                 break;
 
