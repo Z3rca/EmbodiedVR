@@ -235,6 +235,10 @@ public class HybridController : MonoBehaviour
         }
     }
 
+    public bool IsCurrentlyInThirdperson()
+    {
+        return _currentlyInThirdPerson;
+    }
     public bool IsFadingInProgress()
     {
         return _fadingInProgress;

@@ -9,16 +9,16 @@ public class BlobScript : MonoBehaviour
 {
     private int ModelCounter;
     public GameObject BlobModel;
-    public HybridControl hybridControl;
+    public HybridController hybridController;
     // Start is called before the first frame update
     void Start()
     {
-        hybridControl.NotifyPerspectiveSwitch += OnPerspectiveSwitch;
+        hybridController.OnNotifyPerspectiveSwitchObservers += OnPerspectiveSwitch;
         
         foreach (var hand in Player.instance.hands)
         {
             Debug.Log(hand);
-            if (hybridControl.GetThirdPerson())
+            if (hybridController.IsCurrentlyInThirdperson())
             {
                 hand.HideController();
                 
@@ -49,10 +49,10 @@ public class BlobScript : MonoBehaviour
             
         }
     }
-    private void OnPerspectiveSwitch(object sender, SwitchPerspectiveEventArgs switchPerspectiveEventArgs)
+    private void OnPerspectiveSwitch(bool state)
     {
         
-        if (switchPerspectiveEventArgs.switchToThirdPerson)
+        if (state)
         {
             BlobModel.GetComponent<MeshRenderer>().enabled = true;
             //BlobModel.SetActive(true);
