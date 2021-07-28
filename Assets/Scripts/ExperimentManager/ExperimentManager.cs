@@ -17,6 +17,7 @@ public class ExperimentManager : MonoBehaviour
     public HybridCharacterController _playerCharacterController;
 
     public StationSpawner ActiveStation;
+    private List<StationSpawner> AvaibleStationSpawners = new List<StationSpawner>();
     private List<StationSpawner> RemainingstationsStationSpawners = new List<StationSpawner>();
     private List<AreaManager> AreaManagers = new List<AreaManager>();
 
@@ -78,20 +79,23 @@ public class ExperimentManager : MonoBehaviour
 
         runningExperiment = true;
 
-        foreach (var stationSpawner in RemainingstationsStationSpawners)
+        foreach (var stationSpawner in AvaibleStationSpawners)
         {
-            if (stationSpawner.ID == StationOrder[0])
+            foreach (var id in StationOrder)
             {
-                ActiveStation = stationSpawner;
+                if (stationSpawner.ID == id)
+                {
+                    RemainingstationsStationSpawners.Add(stationSpawner);
+                }
             }
+            
         }
 
         mainMenuCamera.gameObject.SetActive(false);
 
         
-        startExperiment.Invoke(this, EventArgs.Empty);
-        
         InstantiatePlayerOnStation();
+        startExperiment.Invoke(this, EventArgs.Empty);
     }
 
     private void InstantiatePlayerOnStation()
@@ -129,7 +133,8 @@ public class ExperimentManager : MonoBehaviour
     public void TakeParticipantToNextStation()
     {
         RemainingstationsStationSpawners.Remove(ActiveStation);
-        if (!RemainingstationsStationSpawners.Any())
+            
+        if (!RemainingstationsStationSpawner.Any())
         {
             Debug.Log("Finished condition");
         }
@@ -161,7 +166,7 @@ public class ExperimentManager : MonoBehaviour
 
     public void RegisterSpawnerToList(StationSpawner spawner)
     {
-        RemainingstationsStationSpawners.Add(spawner);
+        AvaibleStationSpawners.Add(spawner);
     }
 
     public void RegisterAreaManager(AreaManager manager)
