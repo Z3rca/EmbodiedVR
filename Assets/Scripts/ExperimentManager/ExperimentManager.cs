@@ -13,7 +13,7 @@ public class ExperimentManager : MonoBehaviour
 
     public List<GameObject> Avatars;
     public GameObject SelectedAvatar;
-    private PhysicalMovement _playerMovement;
+    private HybridController _playerController;
 
     public StationSpawner ActiveStation;
     private List<StationSpawner> RemainingstationsStationSpawners = new List<StationSpawner>();
@@ -85,13 +85,8 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
-        
-        
         mainMenuCamera.gameObject.SetActive(false);
 
-        
-        
-       
         
         startExperiment.Invoke(this, EventArgs.Empty);
         
@@ -107,21 +102,21 @@ public class ExperimentManager : MonoBehaviour
     {
         SelectedAvatar.gameObject.SetActive(true);
         
-        if (_playerMovement == null)
+        if (_playerController == null)
         {
-            _playerMovement = SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
+            _playerController = SelectedAvatar.GetComponent<HybridController>();
         }
 
-        yield return new  WaitUntil(() => _playerMovement !=null);
+        yield return new  WaitUntil(() => _playerController !=null);
         
-        SelectedAvatar.GetComponentInChildren<HybridControl>().ShowControllers(false);
+        _playerController.ShowControllers(false);
         
         if (ActiveStation.ID == 0)
         {
             tutorialManager.StartTutorial();
         }
         
-        _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
+        _playerController.TeleportToPosition(ActiveStation.gameObject.transform);
     }
 
     public void TakeParticipantToNextStation()
@@ -147,13 +142,13 @@ public class ExperimentManager : MonoBehaviour
             }
         }
 
-        if (_playerMovement == null)
+        if (_playerController == null)
         {
-            _playerMovement = SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
-            
+            _playerController = SelectedAvatar.GetComponent<HybridController>();
+
         }
 
-        _playerMovement.TeleportToPosition(ActiveStation.gameObject.transform.position);
+        _playerController.TeleportToPosition(ActiveStation.gameObject.transform);
     }
 
 
