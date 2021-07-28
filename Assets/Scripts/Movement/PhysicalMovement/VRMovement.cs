@@ -162,12 +162,12 @@ public class VRMovement : MonoBehaviour
     private void LateUpdate()
     {
         
-        
-        if (!_readjustBodyToCenter)
+        Head.transform.position = Body.transform.position;
+        if (_readjustBodyToCenter)
         {
-            Head.transform.position = Body.transform.position;
+            Head.transform.position = hybridControl.GetRemoteVRPosition();
+            //Body.transform.position = hybridControl.GetRemoteVRPosition();
         }
-
     }
 
 

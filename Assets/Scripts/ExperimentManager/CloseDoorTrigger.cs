@@ -8,7 +8,7 @@ public class CloseDoorTrigger : MonoBehaviour
 {
     private ExperimentManager experimentManager;
     
-    private PhysicalMovement playerBody;
+    private HybridCharacterController playerBody;
 
     public UnityEvent OnExitTrigger;
 
@@ -28,7 +28,7 @@ public class CloseDoorTrigger : MonoBehaviour
 
     private void OnExperimentStart(object sender, EventArgs eventArgs)
     {
-        playerBody = experimentManager.SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
+        playerBody = experimentManager._playerCharacterController;
         if (playerBody == null)
         {
             Debug.Log("Player body couln't be assigned");
@@ -38,7 +38,7 @@ public class CloseDoorTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject == playerBody.gameObject)
+        if (other.gameObject.GetComponent<HybridCharacterController>()==playerBody)
         {
             OnExitTrigger.Invoke();   
         }

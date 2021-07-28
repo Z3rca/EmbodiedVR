@@ -10,8 +10,9 @@ public class TutorialInteractionTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PhysicalMovement>())
+        if (other.GetComponent<HybridCharacterController>())
         {
+            Debug.Log("reached area");
             TutorialManager.Instance.ReachedInteractionArea();
         }
         

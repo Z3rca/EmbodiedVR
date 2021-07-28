@@ -54,8 +54,14 @@ public class PhysicalMovement : MonoBehaviour
         
     private void LateUpdate()
     {
-        //if(!_readjustBodyToCenter)
+        if(!_readjustBodyToCenter)
             puppet.transform.position = feet.transform.position;
+        else
+        {
+            puppet.transform.position = hybridControl.GetRemoteVRPosition();
+            transform.position = hybridControl.GetRemoteVRPosition();
+            //hybridControl.transform.GetComponent<CameraController>().transform.position = hybridControl.GetRemoteVRPosition();
+        }
         
     }
     
@@ -81,16 +87,16 @@ public class PhysicalMovement : MonoBehaviour
     private void FixedUpdate()
     {
         transform.rotation = vrMovement.GetRotation();
-      
-      
+        puppet.transform.rotation = vrMovement.GetRotation();
       verticalVelocityForce =isGrounded ?  -4f : verticalVelocityForce += Gravity * Time.deltaTime;
       isGrounded = GroundCheck(feet.position, groundCheckDistance);
       direction = vrMovement.GetCurrentInput();
       velocity = Vector3.up * verticalVelocityForce;
 //        Debug.Log(x + " " + z);
         Vector3 move = (transform.right * (direction.x * sideWaySpeed*_speedFactor) + (direction.y>=0? transform.forward * (direction.y * speed*_speedFactor): transform.forward * (direction.y * sideWaySpeed*_speedFactor) ));
-
-
+        
+        
+        
 
        if (_movementIsAllowed)
        {
