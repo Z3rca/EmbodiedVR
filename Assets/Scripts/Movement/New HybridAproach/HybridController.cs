@@ -15,7 +15,7 @@ public class HybridController : MonoBehaviour
 
     private bool _isAdjustingToCamera;
     
-
+    
 
     private InputController _inputController;
     private HybridCharacterController _characterController;
@@ -36,10 +36,11 @@ public class HybridController : MonoBehaviour
     [Range(0f,1f)] public float FadeInDuration;
     [SerializeField]private bool AllowRotationDuringFirstperson;
     [SerializeField] private bool changeRotationToHeadRotationAfterPerspectiveSwitch;
-    
-    
-    
-    
+
+
+
+    [Header("Perspective Switch Settings")] 
+    private bool _switchingViewIsCurrentlyAllowed;
     
     [Header("Position Readjustment")]
     private float currentPuppetToPlayerOffset;
@@ -48,9 +49,12 @@ public class HybridController : MonoBehaviour
     [Header("Tutorials")] 
     private ControllerRepresentations _controllerRepresentations;
     [SerializeField] private bool ShowControllerHelp;
+
+    private bool _movementIsCurrentlyAllowed;
     
     
-    
+    public delegate void OnPerspectiveSwitchPerformed(bool state);
+    public event OnPerspectiveSwitchPerformed OnNotifyPerspectiveSwitchObservers;
     
     
     // Start is called before the first frame update
@@ -140,8 +144,20 @@ public class HybridController : MonoBehaviour
 
     }
 
+    public void AllowMovement(bool state)
+    {
+        _movementIsCurrentlyAllowed = state;
+    }
+    public void AllowViewSwitch(bool state)
+    {
+        _switchingViewIsCurrentlyAllowed = state;
+    }
+
     private void SwitchView()
     {
+        if (!_switchingViewIsCurrentlyAllowed)
+            return;
+        
 
         if (_currentlyInThirdPerson)
         {
@@ -161,7 +177,10 @@ public class HybridController : MonoBehaviour
             
         }
         
+        
         _currentlyInThirdPerson = !_currentlyInThirdPerson;
+        
+        OnNotifyPerspectiveSwitchObservers.Invoke(_currentlyInThirdPerson);
         
     }
     
@@ -223,6 +242,25 @@ public class HybridController : MonoBehaviour
         _puppetController.RotateAvatar(rotation);
         _remoteTransformConroller.RotateRemoteTransforms(rotation);
 
+    }
+
+
+    private void SetPosition(Vector3 position)
+    {
+        _characterController.transform.position = position;
+        _remoteTransformConroller.transform.position = position;
+        _cameraController.transform.position = position;
+        _puppetController.transform.position = position;
+    }
+
+
+    public void TeleportToPosition(Transform transform)
+    {
+        //ugliest Teleport ever
+        _characterController.GetComponent<CharacterController>().enabled = false;
+        this.transform.position = transform.position;
+        _characterController.GetComponent<CharacterController>().enabled = true;
+        SetRotation(transform.rotation);
     }
 
 
