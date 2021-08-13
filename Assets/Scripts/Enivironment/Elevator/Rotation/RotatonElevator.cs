@@ -129,7 +129,7 @@ public class RotatonElevator : MonoBehaviour
     
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("true that");
+//        Debug.Log("true that");
         if (other.GetComponent<HybridCharacterController>())
         {
             _rotationAffector.SetActive(false);

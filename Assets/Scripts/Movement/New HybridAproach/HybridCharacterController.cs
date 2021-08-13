@@ -42,11 +42,11 @@ public class HybridCharacterController : MonoBehaviour
         Vector3 verticalVelocity = Vector3.up * _verticalVelocityForce;
         _characterController.Move(verticalVelocity*Time.deltaTime);
         
-        if (_outerMovementVelocity >= 0)
+        if (_outerMovementVelocity > 0)
         {
             OnNotifyImpactObservers?.Invoke(_outerMovementDirection,_outerMovementVelocity);
         }
-        
+
     }
     
     

@@ -28,6 +28,7 @@ public class HybridController : MonoBehaviour
     [SerializeField] private bool startWithThirdPerson;
     [SerializeField]private bool AllowMovementDuringFirstperson;
     [SerializeField]private bool AllowRotationDuringFirstperson;
+    [SerializeField]private bool AllowViewSwitdch;
     
     
     [Header("Rotation Settings")]
@@ -130,7 +131,9 @@ public class HybridController : MonoBehaviour
 
     public void ApplyOuterImpact(Vector3 impactDirection, float velocity)
     {
+        Debug.Log(impactDirection +  " " + velocity);
         _characterController.ApplyOuterImpact(impactDirection,velocity);
+        _puppetController.SetForcedAnimationForSeconds(0.25f);
         _puppetController.SetPosition(_characterController.GetAdjustedPosition());
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
@@ -226,6 +229,8 @@ public class HybridController : MonoBehaviour
     
     private void SwitchView(bool ToThirdPerson)
     {
+        if(AllowViewSwitdch)
+        
         if (!ToThirdPerson)
         {
             _cameraController.SwitchPerspective(false);

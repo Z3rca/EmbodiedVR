@@ -21,6 +21,8 @@ public class PuppetController : MonoBehaviour
     
 
     private Vector3 _currentDirection;
+
+    private bool _forcedAnimation;
     
 
     private void Start()
@@ -45,12 +47,37 @@ public class PuppetController : MonoBehaviour
         {
             avatar.transform.localEulerAngles = Vector3.zero;
             ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
+            
         }
         //locomotion Effect for standing and readjustment.
-        vriK.solver.locomotion.weight =1-  _currentSpeed / _maximumSpeed;
+        if (!_forcedAnimation)
+        {
+            vriK.solver.locomotion.weight =1-  _currentSpeed / _maximumSpeed;
+        }
+        else
+        {
+            vriK.solver.locomotion.weight = 0;
+            _currentDirection = Vector3.zero;
+            _currentSpeed = 0f;
+        }
+        
 
     }
-    
+
+
+    public void SetForcedAnimationForSeconds(float time)
+    {
+        if (_forcedAnimation)
+            return;
+        StartCoroutine(ForcedAnimationCooldown(time));
+    }
+
+    private IEnumerator ForcedAnimationCooldown(float time)
+    {
+        _forcedAnimation = true;
+        yield return new WaitForSeconds(time);
+        _forcedAnimation = false;
+    }
 
 
     public void SetPosition(Vector3 position)
