@@ -24,7 +24,7 @@ public class HybridController : MonoBehaviour
 
 
     [SerializeField] private bool startWithThirdPerson;
-    
+    [SerializeField]private bool AllowMovementDuringFirstperson;
     
     
     [Header("Rotation Settings")]
@@ -137,10 +137,15 @@ public class HybridController : MonoBehaviour
     {
         
        
-        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        
 
         if(!_movementIsCurrentlyAllowed)
             return;
+
+        if (!_currentlyInThirdPerson&& !AllowMovementDuringFirstperson)
+        {
+            return;
+        }
         
         
         if (input != Vector2.zero)
@@ -153,12 +158,14 @@ public class HybridController : MonoBehaviour
             _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
         }
         
+        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        
         _characterController.SetAdjustmentPosition(_currentRemoteFeetGuess);
         _puppetController.SetPosition(_characterController.GetAdjustedPosition());
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
 
     }
-
+    
     public void AllowMovement(bool state)
     {
         _movementIsCurrentlyAllowed = state;
@@ -260,6 +267,14 @@ public class HybridController : MonoBehaviour
     
     private void RotateAvatar(Quaternion rotation)
     {
+
+        if (!_currentlyInThirdPerson)
+        {
+            if (!AllowRotationDuringFirstperson)
+            {
+                return;
+            }
+        }
 //        Debug.Log(AllowRotationDuringFirstperson && !_currentlyInThirdPerson);
         if (AllowRotationDuringFirstperson && !_currentlyInThirdPerson)
             return;
