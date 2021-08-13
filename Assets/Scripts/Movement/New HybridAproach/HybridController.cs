@@ -23,8 +23,11 @@ public class HybridController : MonoBehaviour
     private PuppetController _puppetController;
 
 
+   
+    [Header("General Settings Settings")]
     [SerializeField] private bool startWithThirdPerson;
     [SerializeField]private bool AllowMovementDuringFirstperson;
+    [SerializeField]private bool AllowRotationDuringFirstperson;
     
     
     [Header("Rotation Settings")]
@@ -33,7 +36,7 @@ public class HybridController : MonoBehaviour
     [Range(0f,1f)] public float FadeOutDuration;
     [Range(0f,1f)] public float FadeDuration;
     [Range(0f,1f)] public float FadeInDuration;
-    [SerializeField]private bool AllowRotationDuringFirstperson;
+    
     [SerializeField] private bool changeRotationToHeadRotationAfterPerspectiveSwitch;
 
 
@@ -275,10 +278,7 @@ public class HybridController : MonoBehaviour
                 return;
             }
         }
-//        Debug.Log(AllowRotationDuringFirstperson && !_currentlyInThirdPerson);
-        if (AllowRotationDuringFirstperson && !_currentlyInThirdPerson)
-            return;
-        
+
         _currentRotation *= rotation;
         _cameraController.SetPosition(_currentGeneralCharacterPosition);
        SetRotation(_currentRotation);
