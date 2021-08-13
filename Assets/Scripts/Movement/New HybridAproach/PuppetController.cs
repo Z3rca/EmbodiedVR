@@ -57,8 +57,8 @@ public class PuppetController : MonoBehaviour
         else
         {
             vriK.solver.locomotion.weight = 0;
-            _currentDirection = Vector3.zero;
-            _currentSpeed = 0f;
+            
+           //ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
         }
         
 

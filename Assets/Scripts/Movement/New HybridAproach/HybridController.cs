@@ -113,6 +113,9 @@ public class HybridController : MonoBehaviour
             UpdateControllerTransforms();
         }
         
+        
+        _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
     }
     
     void UpdateControllerTransforms()
@@ -134,16 +137,16 @@ public class HybridController : MonoBehaviour
         Debug.Log(impactDirection +  " " + velocity);
         _characterController.ApplyOuterImpact(impactDirection,velocity);
         _puppetController.SetForcedAnimationForSeconds(0.25f);
-        _puppetController.SetPosition(_characterController.GetAdjustedPosition());
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+        _puppetController.SetPosition(_characterController.GetAdjustedPosition());
         
     }
     private void MoveAvatar(Vector2 input)
     {
         
        
-        
+        //_cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
 
         if(!_movementIsCurrentlyAllowed)
             return;
@@ -153,19 +156,19 @@ public class HybridController : MonoBehaviour
             return;
         }
         
-        
+        Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
         if (input != Vector2.zero)
         {
-            Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
+           
             _characterController.MoveCharacter(MovementDirection);
             _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
-            _puppetController.MovePuppet(MovementDirection);
-            _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
-            _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+            
+            
         }
+        _puppetController.MovePuppet(MovementDirection);
         
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
-        
+        _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
         _characterController.SetAdjustmentPosition(_currentRemoteFeetGuess);
         _puppetController.SetPosition(_characterController.GetAdjustedPosition());
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
