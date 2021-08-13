@@ -22,6 +22,7 @@ public class HybridCameraController : MonoBehaviour
     private void Start()
     {
         targetPosition = this.transform.position;
+        _cameraDistance = 5f;
     }
 
     public void RotateCamera(Quaternion rotation)
@@ -33,6 +34,7 @@ public class HybridCameraController : MonoBehaviour
     {
         targetPosition = position;
     }
+    
 
     public void SwitchPerspective(bool toThirdPerson)
     {
@@ -75,6 +77,14 @@ public class HybridCameraController : MonoBehaviour
         _fadingInProgres = false;
         
         OnNotifyFadedCompletedObervers.Invoke();
+    }
+
+    public void SetCameraDistance(float distance)
+    {
+        _cameraDistance = distance;
+        var newlocalPosition = CameraArm.transform.localPosition;
+        newlocalPosition = new Vector3(newlocalPosition.x,newlocalPosition.y,newlocalPosition.z -distance);
+        CameraArm.transform.localPosition = newlocalPosition;
     }
     
     

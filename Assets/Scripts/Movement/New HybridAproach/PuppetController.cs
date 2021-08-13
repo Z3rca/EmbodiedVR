@@ -60,7 +60,15 @@ public class PuppetController : MonoBehaviour
             
            //ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
         }
-        
+
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("scale");
+            float scaleMlp = 1.03f;
+            float sizeF = (vriK.solver.spine.headTarget.position.y - vriK.references.root.position.y) / (vriK.references.head.position.y - vriK.references.root.position.y);
+            vriK.references.root.localScale *= sizeF * scaleMlp;
+        }
 
     }
 

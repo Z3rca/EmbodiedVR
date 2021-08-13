@@ -28,8 +28,10 @@ public class HybridController : MonoBehaviour
     [SerializeField] private bool startWithThirdPerson;
     [SerializeField]private bool AllowMovementDuringFirstperson;
     [SerializeField]private bool AllowRotationDuringFirstperson;
-    [SerializeField]private bool AllowViewSwitdch;
+    [SerializeField]private bool AllowSwitchingViews;
     
+    [Header("Camera Settings")]
+    [Range(0f,10f)] [SerializeField] private float CameraDistance;
     
     [Header("Rotation Settings")]
     [SerializeField] private bool rotationIsBasedOnAdjustedCharacterPosition;
@@ -76,7 +78,9 @@ public class HybridController : MonoBehaviour
         _inputController.OnNotifyRotationPerformed += RotateAvatar;
 
         _cameraController.OnNotifyFadedCompletedObervers += FadingCompleted;
-
+        
+        
+        //_cameraController.SetCameraDistance(CameraDistance);
 
         _characterController.OnNotifyImpactObservers += ApplyOuterImpact;
 
@@ -95,6 +99,12 @@ public class HybridController : MonoBehaviour
         return _characterController;
     }
 
+    private void Update()
+    {
+        _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        
+    }
 
     private void LateUpdate()
     {
@@ -114,8 +124,7 @@ public class HybridController : MonoBehaviour
         }
         
         
-        _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
-        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        
     }
     
     void UpdateControllerTransforms()
@@ -232,7 +241,8 @@ public class HybridController : MonoBehaviour
     
     private void SwitchView(bool ToThirdPerson)
     {
-        if(AllowViewSwitdch)
+        if (!AllowSwitchingViews)
+            return;
         
         if (!ToThirdPerson)
         {
@@ -327,9 +337,4 @@ public class HybridController : MonoBehaviour
         return _currentRotation;
     }
     
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
