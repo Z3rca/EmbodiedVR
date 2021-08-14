@@ -12,7 +12,7 @@ public class HybridCameraController : MonoBehaviour
     private Vector3 targetPosition;
     private bool _thirdPersonWasActivated;
     private bool _fadingInProgres;
-    private float _cameraDistance;
+    [SerializeField] private float _cameraDistance;
     
     [SerializeField] private StencilWallDection stecilWallDectector;
     
@@ -22,8 +22,7 @@ public class HybridCameraController : MonoBehaviour
     private void Start()
     {
         targetPosition = this.transform.position;
-
-        _cameraDistance = CameraArm.transform.localPosition.z;
+        _cameraDistance = 5f;
     }
 
     public void RotateCamera(Quaternion rotation)
@@ -35,12 +34,13 @@ public class HybridCameraController : MonoBehaviour
     {
         targetPosition = position;
     }
+    
 
     public void SwitchPerspective(bool toThirdPerson)
     {
         if (toThirdPerson)
         {
-            CameraArm.transform.localPosition = Vector3.forward * _cameraDistance;
+            CameraArm.transform.localPosition = Vector3.forward * -_cameraDistance;
             
             if (stecilWallDectector != null)
             {
@@ -77,6 +77,14 @@ public class HybridCameraController : MonoBehaviour
         _fadingInProgres = false;
         
         OnNotifyFadedCompletedObervers.Invoke();
+    }
+
+    public void SetCameraDistance(float distance)
+    {
+        _cameraDistance = distance;
+        var newlocalPosition = CameraArm.transform.localPosition;
+        newlocalPosition = new Vector3(newlocalPosition.x,newlocalPosition.y,newlocalPosition.z -distance);
+        CameraArm.transform.localPosition = newlocalPosition;
     }
     
     

@@ -23,9 +23,15 @@ public class HybridController : MonoBehaviour
     private PuppetController _puppetController;
 
 
+   
+    [Header("General Settings Settings")]
     [SerializeField] private bool startWithThirdPerson;
+    [SerializeField]private bool AllowMovementDuringFirstperson;
+    [SerializeField]private bool AllowRotationDuringFirstperson;
+    [SerializeField]private bool AllowSwitchingViews;
     
-    
+    [Header("Camera Settings")]
+    [Range(0f,10f)] [SerializeField] private float CameraDistance;
     
     [Header("Rotation Settings")]
     [SerializeField] private bool rotationIsBasedOnAdjustedCharacterPosition;
@@ -33,7 +39,7 @@ public class HybridController : MonoBehaviour
     [Range(0f,1f)] public float FadeOutDuration;
     [Range(0f,1f)] public float FadeDuration;
     [Range(0f,1f)] public float FadeInDuration;
-    [SerializeField]private bool AllowRotationDuringFirstperson;
+    
     [SerializeField] private bool changeRotationToHeadRotationAfterPerspectiveSwitch;
 
 
@@ -72,7 +78,9 @@ public class HybridController : MonoBehaviour
         _inputController.OnNotifyRotationPerformed += RotateAvatar;
 
         _cameraController.OnNotifyFadedCompletedObervers += FadingCompleted;
-
+        
+        
+        //_cameraController.SetCameraDistance(CameraDistance);
 
         _characterController.OnNotifyImpactObservers += ApplyOuterImpact;
 
@@ -91,6 +99,20 @@ public class HybridController : MonoBehaviour
         return _characterController;
     }
 
+    private void Update()
+    {
+        _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        
+        
+    }
+
+
+    private void FixedUpdate()
+    {
+        _currentCharacterSpeed = _characterController.GetCurrentSpeed();
+        _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
+    }
 
     private void LateUpdate()
     {
@@ -100,14 +122,16 @@ public class HybridController : MonoBehaviour
 
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
 
-        _currentCharacterSpeed = _characterController.GetCurrentSpeed();
         
-        _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
+        
+        
 
         if (ShowControllerHelp)
         {
             UpdateControllerTransforms();
         }
+        
+        
         
     }
     
@@ -127,38 +151,47 @@ public class HybridController : MonoBehaviour
 
     public void ApplyOuterImpact(Vector3 impactDirection, float velocity)
     {
+        Debug.Log(impactDirection +  " " + velocity);
         _characterController.ApplyOuterImpact(impactDirection,velocity);
-        _puppetController.SetPosition(_characterController.GetAdjustedPosition());
+        _puppetController.SetForcedAnimationForSeconds(0.25f);
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+        _puppetController.SetPosition(_characterController.GetAdjustedPosition());
         
     }
     private void MoveAvatar(Vector2 input)
     {
         
        
-        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        //_cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
 
         if(!_movementIsCurrentlyAllowed)
             return;
-        
-        
-        if (input != Vector2.zero)
+
+        if (!_currentlyInThirdPerson&& !AllowMovementDuringFirstperson)
         {
-            Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
-            _characterController.MoveCharacter(MovementDirection);
-            _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
-            _puppetController.MovePuppet(MovementDirection);
-            _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
-            _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
+            return;
         }
         
+        Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
+        if (input != Vector2.zero)
+        {
+           
+            _characterController.MoveCharacter(MovementDirection);
+            _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
+            
+            
+        }
+        _puppetController.MovePuppet(MovementDirection);
+        
+        _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
+        _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
         _characterController.SetAdjustmentPosition(_currentRemoteFeetGuess);
         _puppetController.SetPosition(_characterController.GetAdjustedPosition());
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
 
     }
-
+    
     public void AllowMovement(bool state)
     {
         _movementIsCurrentlyAllowed = state;
@@ -172,7 +205,9 @@ public class HybridController : MonoBehaviour
     {
         if (!_switchingViewIsCurrentlyAllowed)
             return;
-        
+
+        if (!AllowSwitchingViews)
+            return;
 
         if (_currentlyInThirdPerson)
         {
@@ -216,6 +251,9 @@ public class HybridController : MonoBehaviour
     
     private void SwitchView(bool ToThirdPerson)
     {
+        if (!AllowSwitchingViews)
+            return;
+        
         if (!ToThirdPerson)
         {
             _cameraController.SwitchPerspective(false);
@@ -260,10 +298,15 @@ public class HybridController : MonoBehaviour
     
     private void RotateAvatar(Quaternion rotation)
     {
-//        Debug.Log(AllowRotationDuringFirstperson && !_currentlyInThirdPerson);
-        if (AllowRotationDuringFirstperson && !_currentlyInThirdPerson)
-            return;
-        
+
+        if (!_currentlyInThirdPerson)
+        {
+            if (!AllowRotationDuringFirstperson)
+            {
+                return;
+            }
+        }
+
         _currentRotation *= rotation;
         _cameraController.SetPosition(_currentGeneralCharacterPosition);
        SetRotation(_currentRotation);
@@ -304,9 +347,4 @@ public class HybridController : MonoBehaviour
         return _currentRotation;
     }
     
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

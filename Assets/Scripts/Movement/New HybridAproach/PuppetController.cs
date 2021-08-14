@@ -21,6 +21,10 @@ public class PuppetController : MonoBehaviour
     
 
     private Vector3 _currentDirection;
+
+    private bool _forcedAnimation;
+
+    private float _AnimationRatio;
     
 
     private void Start()
@@ -35,22 +39,61 @@ public class PuppetController : MonoBehaviour
     
     private void FixedUpdate()
     {
+        vriK.solver.locomotion.weight =1- _AnimationRatio;
+    }
+
+    private void Update()
+    {
         avatar.transform.localPosition = Vector3.zero;
 
         if (_currentSpeed < 0.01f)
         {
-          //  ccAnimator.ApplyAnimation(Vector3.zero, 0f);
+            //  ccAnimator.ApplyAnimation(Vector3.zero, 0f);
         }
         else
         {
             avatar.transform.localEulerAngles = Vector3.zero;
-            ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
+            //ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
+            
         }
         //locomotion Effect for standing and readjustment.
-        vriK.solver.locomotion.weight =1-  _currentSpeed / _maximumSpeed;
+        if (!_forcedAnimation)
+        {
+            Debug.Log(_currentSpeed + " " +_maximumSpeed);
+            _AnimationRatio =  (_currentSpeed / _maximumSpeed);
+            
+
+        }
+        else
+        {
+            _AnimationRatio = 1;
+            
+            
+        }
+
+        ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
 
     }
-    
+
+    private void LateUpdate()
+    {
+        
+    }
+
+
+    public void SetForcedAnimationForSeconds(float time)
+    {
+        if (_forcedAnimation)
+            return;
+        StartCoroutine(ForcedAnimationCooldown(time));
+    }
+
+    private IEnumerator ForcedAnimationCooldown(float time)
+    {
+        _forcedAnimation = true;
+        yield return new WaitForSeconds(time);
+        _forcedAnimation = false;
+    }
 
 
     public void SetPosition(Vector3 position)
