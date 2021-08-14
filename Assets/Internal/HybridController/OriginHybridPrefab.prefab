@@ -4190,7 +4190,7 @@ GameObject:
   - component: {fileID: 8857710912564323589}
   - component: {fileID: 689633547}
   m_Layer: 9
-  m_Name: HybridPlayer
+  m_Name: OriginHybridPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4227,12 +4227,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startWithThirdPerson: 1
+  AllowMovementDuringFirstperson: 0
+  AllowRotationDuringFirstperson: 0
+  AllowSwitchingViews: 1
+  CameraDistance: 5
   rotationIsBasedOnAdjustedCharacterPosition: 0
   FadingDuringRotation: 0
   FadeOutDuration: 0
   FadeDuration: 0
   FadeInDuration: 0
-  AllowRotationDuringFirstperson: 1
   changeRotationToHeadRotationAfterPerspectiveSwitch: 0
   ShowControllerHelp: 1
 --- !u!114 &8857710912564323589
@@ -6279,7 +6282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlobModel: {fileID: 8515604259863677717}
-  hybridControl: {fileID: 0}
+  hybridController: {fileID: 0}
 --- !u!1 &8857710913345211763
 GameObject:
   m_ObjectHideFlags: 0
@@ -6298,7 +6301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8857710913345211760
 Transform:
   m_ObjectHideFlags: 0
@@ -6419,6 +6422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 500
   CameraArm: {fileID: 8857710912998660986}
+  _cameraDistance: 0
   stecilWallDectector: {fileID: 1296985446}
 --- !u!1 &8857710913866232636
 GameObject:

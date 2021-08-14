@@ -205,7 +205,9 @@ public class HybridController : MonoBehaviour
     {
         if (!_switchingViewIsCurrentlyAllowed)
             return;
-        
+
+        if (!AllowSwitchingViews)
+            return;
 
         if (_currentlyInThirdPerson)
         {
