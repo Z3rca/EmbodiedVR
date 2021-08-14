@@ -37,6 +37,8 @@ public class HybridCharacterController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        _currentSpeed = _characterController.velocity.magnitude;
+        
         isGrounded = GroundCheck(transform.position, groundCheckDistance);
         _verticalVelocityForce =isGrounded ?  -4f : _verticalVelocityForce += Gravity * Time.deltaTime;
         Vector3 verticalVelocity = Vector3.up * _verticalVelocityForce;
@@ -65,7 +67,7 @@ public class HybridCharacterController : MonoBehaviour
 
     private void LateUpdate()
     {
-        _currentSpeed = _characterController.velocity.magnitude;
+        
     }
 
     public void MoveCharacter(Vector3 movementDirection)

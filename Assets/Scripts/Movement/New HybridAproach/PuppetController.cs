@@ -23,6 +23,8 @@ public class PuppetController : MonoBehaviour
     private Vector3 _currentDirection;
 
     private bool _forcedAnimation;
+
+    private float _AnimationRatio;
     
 
     private void Start()
@@ -37,39 +39,45 @@ public class PuppetController : MonoBehaviour
     
     private void FixedUpdate()
     {
+        vriK.solver.locomotion.weight =1- _AnimationRatio;
+    }
+
+    private void Update()
+    {
         avatar.transform.localPosition = Vector3.zero;
 
         if (_currentSpeed < 0.01f)
         {
-          //  ccAnimator.ApplyAnimation(Vector3.zero, 0f);
+            //  ccAnimator.ApplyAnimation(Vector3.zero, 0f);
         }
         else
         {
             avatar.transform.localEulerAngles = Vector3.zero;
-            ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
+            //ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
             
         }
         //locomotion Effect for standing and readjustment.
         if (!_forcedAnimation)
         {
-            vriK.solver.locomotion.weight =1-  _currentSpeed / _maximumSpeed;
+            Debug.Log(_currentSpeed + " " +_maximumSpeed);
+            _AnimationRatio =  (_currentSpeed / _maximumSpeed);
+            
+
         }
         else
         {
-            vriK.solver.locomotion.weight = 0;
+            _AnimationRatio = 1;
             
-           //ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
+            
         }
 
+        ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Debug.Log("scale");
-            float scaleMlp = 1.03f;
-            float sizeF = (vriK.solver.spine.headTarget.position.y - vriK.references.root.position.y) / (vriK.references.head.position.y - vriK.references.root.position.y);
-            vriK.references.root.localScale *= sizeF * scaleMlp;
-        }
+    }
 
+    private void LateUpdate()
+    {
+        
     }
 
 

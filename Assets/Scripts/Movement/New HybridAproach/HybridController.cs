@@ -104,6 +104,14 @@ public class HybridController : MonoBehaviour
         _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         
+        
+    }
+
+
+    private void FixedUpdate()
+    {
+        _currentCharacterSpeed = _characterController.GetCurrentSpeed();
+        _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
     }
 
     private void LateUpdate()
@@ -114,9 +122,9 @@ public class HybridController : MonoBehaviour
 
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
 
-        _currentCharacterSpeed = _characterController.GetCurrentSpeed();
         
-        _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
+        
+        
 
         if (ShowControllerHelp)
         {
