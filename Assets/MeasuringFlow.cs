@@ -1,42 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class MeasuringFlow : MonoBehaviour
 {
     public UnityEvent whenMeasuringComplete;
+
+    public UnityEvent whenSicknessButtonPressed;
     
     public GameObject audioMeasuringTool;
     public GameObject motionSicknessMeasuringTool;
     public GameObject posturalStabilityMeasuringTool;
+
+    public TMP_Text audioRunningText;
     
     private bool recordingStarted = false;
     private bool audioMeasured = false;
 
-    private bool sicknessMeasured = false;
+    public bool sicknessMeasured { get; set; } = false;
     
-    private bool stabilityMeasured = true;
+    private bool stabilityMeasured = false;
     
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        startDataGathering();
+        StartDataGathering();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void StartDataGathering()
     {
-        
-    }
-
-    public void startDataGathering()
-    {
-        StartCoroutine(flow());
+        StartCoroutine(Flow());
 
     }
 
-    IEnumerator flow()
+    private IEnumerator Flow()
     {
         audioMeasuringTool.SetActive(true);
         motionSicknessMeasuringTool.SetActive(false);
@@ -62,7 +61,7 @@ public class MeasuringFlow : MonoBehaviour
         
         while(!stabilityMeasured)
         {
-            stabilityFlow();
+            StabilityFlow();
             yield return null;
         }
         
@@ -73,10 +72,10 @@ public class MeasuringFlow : MonoBehaviour
     }
 
 
-    public void audioButton()
+    private void AudioButton()
     {
         
-        if (recordingStarted == true)
+        if (recordingStarted)
         {
             //TODO stop recording
             audioMeasured = true;
@@ -84,19 +83,35 @@ public class MeasuringFlow : MonoBehaviour
         else
         {
             recordingStarted = true;
+            audioRunningText.text = "Audio recording is in progress.";
             //TODO start recording
         }
     }
 
-    public void sicknessButton()
+    private void SicknessButton()
     {
-        sicknessMeasured = true;
+        whenSicknessButtonPressed.Invoke();
     }
-    
-    public void stabilityFlow()
+
+    private void StabilityFlow()
     {
-        
+        stabilityMeasured = true;
+        //TODO Start Postural stability test
     }
-    
+
+    public void OkayButton()
+    {
+        if (audioMeasuringTool.activeSelf)
+        {
+            AudioButton();
+        } else if (motionSicknessMeasuringTool.activeSelf)
+        {
+            SicknessButton();
+        } else if (posturalStabilityMeasuringTool.activeSelf)
+        {
+            StabilityFlow();
+        }
+
+    }
     
 }
