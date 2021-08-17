@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class RatingSystem : MonoBehaviour
@@ -22,6 +23,7 @@ public class RatingSystem : MonoBehaviour
    private bool readyToAccept;
 
 
+   public UnityEvent whenRatingFinished;
 
    private void Start()
    {
@@ -35,7 +37,7 @@ public class RatingSystem : MonoBehaviour
       SetText(_value);
       ResetColors();
       readyToAccept = true;
-      SetButtonColored(RatingButtons[val-1]);
+      SetButtonColored(RatingButtons[val]);
       UnlockAcceptButton();
       
    }
@@ -93,6 +95,8 @@ public class RatingSystem : MonoBehaviour
          readyToAccept = false;
          LockAcceptButton();
          Restart();
+
+         whenRatingFinished.Invoke();
       }
    }
 
