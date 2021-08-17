@@ -167,7 +167,6 @@ public class HybridController : MonoBehaviour
 
     public void ApplyOuterImpact(Vector3 impactDirection, float velocity)
     {
-        Debug.Log(impactDirection +  " " + velocity);
         _characterController.ApplyOuterImpact(impactDirection,velocity);
         _puppetController.SetForcedAnimationForSeconds(0.25f);
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
