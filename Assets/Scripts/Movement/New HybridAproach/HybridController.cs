@@ -25,6 +25,7 @@ public class HybridController : MonoBehaviour
 
    
     [Header("General Settings Settings")]
+    [SerializeField] private bool EmbodiedCondition;
     [SerializeField] private bool startWithThirdPerson;
     [SerializeField]private bool AllowMovementDuringFirstperson;
     [SerializeField]private bool AllowRotationDuringFirstperson;
@@ -57,6 +58,8 @@ public class HybridController : MonoBehaviour
     [SerializeField] private bool ShowControllerHelp;
 
     private bool _movementIsCurrentlyAllowed;
+
+    private BlobController _blobController;
     
     
     public delegate void OnPerspectiveSwitchPerformed(bool state);
@@ -87,9 +90,22 @@ public class HybridController : MonoBehaviour
         _currentRotation = transform.rotation;
         
         _currentlyInThirdPerson = startWithThirdPerson;
-        SwitchView(startWithThirdPerson);
+        
+
+        if (_puppetController.transform.GetComponent<BlobController>()!=null)
+        {
+            _blobController = _puppetController.transform.GetComponent<BlobController>();
+        }
+        
+        _puppetController.IsEmobdiedCondition(EmbodiedCondition);
         
         _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
+        SwitchView(startWithThirdPerson);
+        if (!EmbodiedCondition&& _blobController!=null)
+        {
+            _blobController.DeactivateHandsOnStartWorkaround();
+        }
+        
         
         
     }

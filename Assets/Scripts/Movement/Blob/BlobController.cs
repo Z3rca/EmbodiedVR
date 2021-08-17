@@ -5,7 +5,7 @@ using UnityEngine;
 using Valve.VR;
 using Valve.VR.InteractionSystem;
 
-public class BlobScript : MonoBehaviour
+public class BlobController : MonoBehaviour
 {
     private int ModelCounter;
     public GameObject BlobModel;
@@ -14,24 +14,6 @@ public class BlobScript : MonoBehaviour
     void Start()
     {
         hybridController.OnNotifyPerspectiveSwitchObservers += OnPerspectiveSwitch;
-        
-        foreach (var hand in Player.instance.hands)
-        {
-            Debug.Log(hand);
-            if (hybridController.IsCurrentlyInThirdperson())
-            {
-                hand.HideController();
-                
-                hand.HideSkeleton(); 
-            }
-            else
-            {
-                hand.ShowController();
-                
-                hand.HideSkeleton();
-            }
-            
-        }
         
     }
     // Update is called once per frame
@@ -49,29 +31,55 @@ public class BlobScript : MonoBehaviour
             
         }
     }
-    private void OnPerspectiveSwitch(bool state)
+
+
+    public void DeactivateHandsOnStartWorkaround()
     {
-        
+        StartCoroutine(DeactivateHandsWithFade());
+    }
+
+    private IEnumerator DeactivateHandsWithFade()
+    {
+        Debug.Log("got here");
+        yield return new WaitForSeconds(2f);
+        foreach (var hand in Player.instance.hands)
+        {
+            hand.HideSkeleton();
+        }
+
+    }
+    
+    public void EnabledControllers(bool state)
+    {
         if (state)
         {
-            BlobModel.GetComponent<MeshRenderer>().enabled = true;
-            //BlobModel.SetActive(true);
-            
-            foreach (var hand in Player.instance.hands)
-            {
-                hand.HideController();
-                
-                hand.HideSkeleton();
-            }
-        }
-        else
-        {
-            BlobModel.GetComponent<MeshRenderer>().enabled = false;
             foreach (var hand in Player.instance.hands)
             {
                 hand.ShowController();
                 hand.HideSkeleton();
             }
+        }
+        else
+        {
+            foreach (var hand in Player.instance.hands)
+            {
+                hand.HideController();
+                hand.HideSkeleton();
+            }
+        }
+       
+    }
+    private void OnPerspectiveSwitch(bool state)
+    {
+        if (state)
+        {
+            BlobModel.GetComponent<MeshRenderer>().enabled = true;
+            EnabledControllers(!state);
+        }
+        else
+        {
+            BlobModel.GetComponent<MeshRenderer>().enabled = false;
+            EnabledControllers(!state);
         }
     }
     

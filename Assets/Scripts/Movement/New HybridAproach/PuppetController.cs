@@ -24,6 +24,8 @@ public class PuppetController : MonoBehaviour
 
     private bool _forcedAnimation;
 
+    private bool _isEmbodiedCondition;
+
     private float _AnimationRatio;
     
 
@@ -36,6 +38,12 @@ public class PuppetController : MonoBehaviour
         _maximumSpeed = ccAnimator.maximumForward;
 
     }
+
+
+    public void IsEmobdiedCondition(bool state)
+    {
+        _isEmbodiedCondition = state;
+    }
     
     private void FixedUpdate()
     {
@@ -44,6 +52,11 @@ public class PuppetController : MonoBehaviour
 
     private void Update()
     {
+        if (!_isEmbodiedCondition)
+        {
+            return;
+        }
+        
         avatar.transform.localPosition = Vector3.zero;
 
         if (_currentSpeed < 0.01f)
@@ -59,7 +72,7 @@ public class PuppetController : MonoBehaviour
         //locomotion Effect for standing and readjustment.
         if (!_forcedAnimation)
         {
-            Debug.Log(_currentSpeed + " " +_maximumSpeed);
+//            Debug.Log(_currentSpeed + " " +_maximumSpeed);
             _AnimationRatio =  (_currentSpeed / _maximumSpeed);
             
 
@@ -70,7 +83,7 @@ public class PuppetController : MonoBehaviour
             
             
         }
-
+        
         ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
 
     }
