@@ -33,19 +33,25 @@ public class BlobController : MonoBehaviour
     }
 
 
-    public void DeactivateHandsOnStartWorkaround()
+    public void DeactivateHandsOnStartWorkaround(bool thirdperson)
     {
-        StartCoroutine(DeactivateHandsWithFade());
+        StartCoroutine(DeactivateHandsWithFade(thirdperson));
     }
 
-    private IEnumerator DeactivateHandsWithFade()
+    private IEnumerator DeactivateHandsWithFade(bool thirdperson)
     {
         Debug.Log("got here");
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         foreach (var hand in Player.instance.hands)
         {
             hand.HideSkeleton();
+            if (!thirdperson)
+            {
+                hand.ShowController();
+            }
         }
+        
+        
 
     }
     

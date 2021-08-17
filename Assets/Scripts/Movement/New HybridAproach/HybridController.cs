@@ -101,9 +101,10 @@ public class HybridController : MonoBehaviour
         
         _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
         SwitchView(startWithThirdPerson);
+        
         if (!EmbodiedCondition&& _blobController!=null)
         {
-            _blobController.DeactivateHandsOnStartWorkaround();
+            _blobController.DeactivateHandsOnStartWorkaround(startWithThirdPerson);
         }
         
         
