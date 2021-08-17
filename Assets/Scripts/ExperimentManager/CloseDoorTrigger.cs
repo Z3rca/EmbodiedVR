@@ -26,9 +26,9 @@ public class CloseDoorTrigger : MonoBehaviour
     }
 
 
-    private void OnExperimentStart(object sender, EventArgs eventArgs)
+    private void OnExperimentStart(object sender, StartExperimentArgs eventArgs)
     {
-        playerBody = experimentManager._playerCharacterController;
+        playerBody = eventArgs.CharacterController;
         if (playerBody == null)
         {
             Debug.Log("Player body couln't be assigned");

@@ -21,12 +21,14 @@ public class AutoElevator : MonoBehaviour
     void Start()
     {
         Door.SetActive(false);
+        _boundedPosition = elevator.transform.position;
     }
 
     // Update is called once per frame
-    void Update()
+
+    void FixedUpdate()
     {
-        
+        elevator.transform.position = _boundedPosition;
     }
 
     
@@ -54,7 +56,7 @@ public class AutoElevator : MonoBehaviour
     {
         while (!reachedPosition)
         {
-            float posY=elevator.transform.position.y;
+            float posY=_boundedPosition.y;
 
             if (upward)
             {
@@ -67,7 +69,7 @@ public class AutoElevator : MonoBehaviour
 
             _boundedPosition = new Vector3(LowerBoundary.transform.position.x, posY, LowerBoundary.transform.position.z);
 
-           elevator.transform.position = _boundedPosition;
+         
 
             if (posY >= targetPosition.y)
             {

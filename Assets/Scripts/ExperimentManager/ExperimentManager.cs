@@ -27,8 +27,7 @@ public class ExperimentManager : MonoBehaviour
     public TutorialManager tutorialManager;
 
 
-    public EventHandler startExperiment;
-    
+    public event EventHandler<StartExperimentArgs> startExperiment;
 
 
     private enum MenuState
@@ -67,6 +66,8 @@ public class ExperimentManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
+        
     }
 
     private void Start()
@@ -76,7 +77,7 @@ public class ExperimentManager : MonoBehaviour
 
     private void StartExperiment()
     {
-
+        
         runningExperiment = true;
 
         foreach (var stationSpawner in AvaibleStationSpawners)
@@ -103,7 +104,7 @@ public class ExperimentManager : MonoBehaviour
 
         
         InstantiatePlayerOnStation();
-        startExperiment.Invoke(this, EventArgs.Empty);
+        
     }
 
     private void InstantiatePlayerOnStation()
@@ -114,14 +115,15 @@ public class ExperimentManager : MonoBehaviour
     private IEnumerator PlayerInstantiation()
     {
         SelectedAvatar.gameObject.SetActive(true);
-        
-        if (_playerController == null)
-        {
-            _playerController = SelectedAvatar.GetComponent<HybridController>();
-            _playerCharacterController = _playerController.GetHybridChracterController();
-        }
 
-        yield return new  WaitUntil(() => _playerController !=null);
+
+        yield return new WaitUntil(() => SelectedAvatar.GetComponent<HybridController>() != null);
+        Debug.Log("finished establishing character");
+        _playerController = SelectedAvatar.GetComponent<HybridController>();
+        _playerCharacterController = _playerController.GetHybridChracterController();
+        
+
+        
         
         _playerController.ShowControllers(false);
         
@@ -135,7 +137,19 @@ public class ExperimentManager : MonoBehaviour
             _playerController.AllowMovement(true);
         }
         
+        StartExperimentArgs experimentargs = new StartExperimentArgs();
+        experimentargs.CharacterController = _playerCharacterController;
+
+        startExperiment?.Invoke(this, experimentargs);
+
+
+        yield return new WaitForFixedUpdate();
+        
         _playerController.TeleportToPosition(ActiveStation.gameObject.transform);
+        
+        
+        _playerController.Fading(0.5f,0.5f,0.5f);
+        
     }
 
     public void TakeParticipantToNextStation()
@@ -436,12 +450,13 @@ public class ExperimentManager : MonoBehaviour
                 GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Total "+ time.ToString("mm':'ss")), boxStyle);
 
                 break;
-
-
-
-
-
-
+                
         }
     }
+}
+
+
+public class StartExperimentArgs : EventArgs
+{
+    public HybridCharacterController CharacterController;
 }

@@ -15,8 +15,13 @@ public class CCAnimator : MonoBehaviour
 
     private float animationSpeed;
 
+    private bool _isEmbodiedCondition;
 
 
+    public void SetIsEmbodiedCondition(bool state)
+    {
+        _isEmbodiedCondition = state;
+    }
     public void SetAnimator(Animator animator)
     {
         _animator = animator;
