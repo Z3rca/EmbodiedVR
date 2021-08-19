@@ -1,13 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
 
 public class Area4Elevator : MonoBehaviour
 {
-
-    public GameObject elevator;
-
     public GameObject lowerDoor;
     public GameObject upperDoor;
 
@@ -22,19 +20,20 @@ public class Area4Elevator : MonoBehaviour
     private float posZ;
     
     private float currentLinearMapping = float.NaN;
-    
+
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        posX = elevator.transform.position.x;
-        posZ = elevator.transform.position.z;
+        posX = gameObject.transform.position.x;
+        posZ = gameObject.transform.position.z;
         
         lowerDoor.SetActive(false);
-        lowerDoor.SetActive(false);
+        upperDoor.SetActive(false);
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (currentLinearMapping != linearMapping.value)
         {
@@ -52,39 +51,39 @@ public class Area4Elevator : MonoBehaviour
         }
     }
 
-    public void MoveUpwards()
+    private void MoveUpwards()
     {
-        if (elevator.transform.position.y != upperBoundary)
+        if (gameObject.transform.position.y < upperBoundary - 0.58)
         {
             lowerDoor.SetActive(true);
             
-            float posY = elevator.transform.position.y;
+            var posY = gameObject.transform.position.y;
             
             posY += speed * Time.deltaTime;
             
-            posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
+            // posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
 
-            elevator.transform.position = new Vector3(posX, posY, posZ);
+            gameObject.transform.position = new Vector3(posX, posY, posZ);
         }
         else
         {
             upperDoor.SetActive(false);
         }
     }
-    
-    public void MoveDownwards()
+
+    private void MoveDownwards()
     {
-        if (elevator.transform.position.y != lowerBoundary)
+        if (gameObject.transform.position.y > lowerBoundary - 0.58)
         {
             upperDoor.SetActive(true);
             
-            float posY = elevator.transform.position.y;
+            var posY = gameObject.transform.position.y;
             
             posY -= speed * Time.deltaTime;
             
-            posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
+            // posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
 
-            elevator.transform.position = new Vector3(posX, posY, posZ);
+            gameObject.transform.position = new Vector3(posX, posY, posZ);
         }
         else
         {
