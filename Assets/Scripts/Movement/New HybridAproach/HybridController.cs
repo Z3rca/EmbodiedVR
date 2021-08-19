@@ -57,7 +57,7 @@ public class HybridController : MonoBehaviour
     private ControllerRepresentations _controllerRepresentations;
     [SerializeField] private bool ShowControllerHelp;
 
-    private bool _movementIsCurrentlyAllowed;
+    private bool _inputIsAllowed;
 
     private BlobController _blobController;
     
@@ -181,24 +181,22 @@ public class HybridController : MonoBehaviour
        
         //_cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
 
-        if(!_movementIsCurrentlyAllowed)
-            return;
+        
 
-        if (!_currentlyInThirdPerson&& !AllowMovementDuringFirstperson)
-        {
-            return;
+       
+
+        Vector3 MovementDirection = new Vector3();
+        if (_inputIsAllowed&& !(!AllowMovementDuringFirstperson&& !_currentlyInThirdPerson))
+        { 
+            MovementDirection = new Vector3(input.x, 0f, input.y);
         }
         
-        Vector3 MovementDirection = new Vector3(input.x, 0f, input.y);
-        if (input != Vector2.zero)
-        {
+        
            
-            _characterController.MoveCharacter(MovementDirection);
-            _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
-            
-            
-        }
+        _characterController.MoveCharacter(MovementDirection);
+        _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
         _puppetController.MovePuppet(MovementDirection);
+        
         
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
@@ -208,9 +206,9 @@ public class HybridController : MonoBehaviour
 
     }
     
-    public void AllowMovement(bool state)
+    public void AllowInput(bool state)
     {
-        _movementIsCurrentlyAllowed = state;
+        _inputIsAllowed = state;
     }
     public void AllowViewSwitch(bool state)
     {
@@ -259,8 +257,24 @@ public class HybridController : MonoBehaviour
     
     public void HighLightControlSwitchButton(bool state)
     {
-        _controllerRepresentations.HighLightPerspectiveChangeButton(state);
+        _controllerRepresentations.HighLightPerspectiveChangeButtons(state);
     }
+    
+    public void HighLightMovementButton(bool state)
+    {
+        _controllerRepresentations.HighlightMovementStick(state);
+    }
+
+    public void HighLightRotationButton(bool state)
+    {
+        _controllerRepresentations.HighlightRotationStick(state);
+    }
+    
+    public void HighLightGraspButtons(bool state)
+    {
+        _controllerRepresentations.HighLightGraspButtons(state);
+    }
+
 
     
     //Perspective and Fading
@@ -314,7 +328,7 @@ public class HybridController : MonoBehaviour
     
     private void RotateAvatar(Quaternion rotation)
     {
-
+        
         if (!_currentlyInThirdPerson)
         {
             if (!AllowRotationDuringFirstperson)
@@ -328,13 +342,13 @@ public class HybridController : MonoBehaviour
        SetRotation(_currentRotation);
     }
 
-    private void SetRotation(Quaternion rotation)
+    private void SetRotation(Quaternion rotation,bool isTeleport=false)
     {
-        _cameraController.RotateCamera(rotation);
-        _characterController.RotateCharacter(rotation);
-        _puppetController.RotateAvatar(rotation);
-        _remoteTransformConroller.RotateRemoteTransforms(rotation);
-
+       
+            _cameraController.RotateCamera(rotation);
+            _characterController.RotateCharacter(rotation);
+            _puppetController.RotateAvatar(rotation);
+            _remoteTransformConroller.RotateRemoteTransforms(rotation);
     }
 
 
@@ -347,14 +361,33 @@ public class HybridController : MonoBehaviour
     }
 
 
-    public void TeleportToPosition(Transform transform)
+    public bool IsSwitchingViewAllowed()
+    {
+        return AllowSwitchingViews;
+    }
+    
+    public void TeleportToPosition(Transform TeleportTransform)
+    {
+        StartCoroutine(TeleportProcess(TeleportTransform));
+    }
+
+    private IEnumerator TeleportProcess(Transform TeleportTransform)
     {
         //ugliest Teleport ever
         _characterController.GetComponent<CharacterController>().enabled = false;
-        this.transform.position = transform.position;
-        _characterController.GetComponent<CharacterController>().enabled = true;
-        SetRotation(transform.rotation);
+        _characterController.transform.localPosition = Vector3.zero;
+        _remoteTransformConroller.transform.localPosition = Vector3.zero;
+        _puppetController.transform.localPosition = Vector3.zero;
+        _cameraController.transform.localPosition = Vector3.zero;
+        this.transform.position = TeleportTransform.position;
+        _currentRotation = TeleportTransform.rotation;
+
+        SetRotation(_currentRotation, true);
+        //_cameraController.transform.rotation = Quaternion.identity;
+
+        yield return new WaitForSeconds(1);
         
+        _characterController.GetComponent<CharacterController>().enabled = true;
     }
 
 

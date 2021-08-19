@@ -15,12 +15,18 @@ public class TutorialManager : MonoBehaviour
     public GameObject ExitAreaShine;
     public GameObject Ball;
 
+
+    private bool _isFirstPersonCondition;
+    
     private bool FamilarizationIsRunning;
     private bool MovmentIntroIsRunning;
 
     private bool _thirdPersonIsActive;
 
     private bool ThirdPersonIsActive;
+    
+    
+    
 
     public GameObject Door;
     public GameObject Door2;
@@ -48,6 +54,13 @@ public class TutorialManager : MonoBehaviour
         if (ExperimentManager.Instance != null)
         {
             HybridController = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>();
+        }
+
+
+        if (ExperimentManager.Instance.GetCondition() == ExperimentManager.Condition.FirstPerson ||
+            ExperimentManager.Instance.GetCondition() == ExperimentManager.Condition.Bodiless)
+        {
+            _isFirstPersonCondition = true;
         }
         
         audioController = GetComponent<TutorialAudioDialogController>();
@@ -80,24 +93,37 @@ public class TutorialManager : MonoBehaviour
         Debug.Log("start tutorial");
         yield return new WaitForEndOfFrame();
         HybridController.AllowViewSwitch(false);
-        HybridController.AllowMovement(false);
+        HybridController.AllowInput(false);
         HybridController.Fading(0f,2f,2f);
         yield return new WaitUntil(() =>!HybridController.IsFadingInProgress());   
         audioController.FamilarizationAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         Debug.Log("finished Introduction");
-        audioController.SwitchViewButtonAudioClip();
-        HybridController.AllowViewSwitch(true);
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
-        HybridController.ShowControllers(true);
-        HybridController.HighLightControlSwitchButton(true);
-        yield return new WaitUntil(() => _thirdPersonIsActive);
-        HybridController.HighLightControlSwitchButton(false);
+        
+        if (!_isFirstPersonCondition)
+        {
+            audioController.SwitchViewButtonAudioClip();
+            HybridController.AllowViewSwitch(true);
+            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            HybridController.ShowControllers(true);
+            HybridController.HighLightControlSwitchButton(true);
+            yield return new WaitUntil(() => _thirdPersonIsActive);
+            HybridController.HighLightControlSwitchButton(false);
+        }
+        else
+        {
+            HybridController.ShowControllers(true);
+        }
+        
         audioController.MovementAudioClip();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        
         //Dont show Controllers
         EnableInteractionArea();
-        HybridController.AllowMovement(true);
+        HybridController.AllowInput(true);
+        
+        HybridController.HighLightMovementButton(true);
+        HybridController.HighLightRotationButton(true);
         Debug.Log("enabled Movement");
 
     }
@@ -109,16 +135,23 @@ public class TutorialManager : MonoBehaviour
 
     public IEnumerator ReachedInteractionAreaRoutine()
     {
-        HybridController.ShowControllers(true);
-        HybridController.HighLightControlSwitchButton(true);
-        audioController.InteractionAudioClip();
-        yield return new WaitUntil(() => !_thirdPersonIsActive);
-        HybridController.ShowControllers(false);
-        HybridController.HighLightControlSwitchButton(false);
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        HybridController.HighLightMovementButton(false);
+        HybridController.HighLightRotationButton(false);
+        if (!_isFirstPersonCondition)
+        {
+            HybridController.ShowControllers(true);
+            HybridController.HighLightControlSwitchButton(true);
+            audioController.InteractionAudioClip();
+            yield return new WaitUntil(() => !_thirdPersonIsActive);
+            HybridController.HighLightControlSwitchButton(false);
+            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        }
+        
+        
         audioController.PickBallAudioClip();
         Ball.SetActive(true);
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        HybridController.HighLightGraspButtons(true);
     }
 
     public void ReachedSecondInteractionArea()
@@ -135,6 +168,10 @@ public class TutorialManager : MonoBehaviour
         // now you can go go through the door and finish the tutorial section.  
         Door.SetActive(false);
         Door2.SetActive(false);
+        
+        HybridController.HighLightMovementButton(false);
+        HybridController.HighLightRotationButton(false);
+        HybridController.HighLightGraspButtons(false);
         HybridController.ShowControllers(false);
     }
 
@@ -143,9 +180,15 @@ public class TutorialManager : MonoBehaviour
 
     public void BallWasTaken()
     {
-        HybridController.ShowControllers(true);
-        HybridController.HighLightControlSwitchButton(true);
-        Ball.GetComponent<Rigidbody>().useGravity = true;
+       
+        if (!_isFirstPersonCondition)
+        {
+            HybridController.HighLightMovementButton(true);
+            HybridController.HighLightRotationButton(true);
+            HybridController.ShowControllers(true);
+            HybridController.HighLightControlSwitchButton(true);
+            Ball.GetComponent<Rigidbody>().useGravity = true;
+        }
         audioController.ThrowBallInBoxInstructionAudioClip(); //now throw the ball in the box to your right.
         EnableBoxArea();
     }

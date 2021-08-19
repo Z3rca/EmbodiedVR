@@ -281,7 +281,7 @@ public class HybridControl : MonoBehaviour
 
     public void HighLightControlSwitchButton(bool state)
     {
-        controllerRepresentations.HighLightPerspectiveChangeButton(state);
+        controllerRepresentations.HighLightPerspectiveChangeButtons(state);
     }
 
 

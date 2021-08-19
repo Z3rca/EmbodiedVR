@@ -30,6 +30,17 @@ public class ExperimentManager : MonoBehaviour
     public event EventHandler<StartExperimentArgs> startExperiment;
 
 
+
+    private Condition _condition;
+    private MenuState _menuState;
+    private string participantId;
+    private string order;
+    private string condition;
+
+    private float totalTime;
+    private bool runningExperiment;
+
+    
     private enum MenuState
     {
         IDAndOrderSelection,
@@ -39,14 +50,17 @@ public class ExperimentManager : MonoBehaviour
         Running
     }
 
-    private MenuState _menuState;
-    private string participantId;
-    private string order;
-    private string condition;
 
-    private float totalTime;
-    private bool runningExperiment;
-
+    public enum Condition
+    {
+        Hybrid,
+        FirstPerson,
+        Blob,
+        Bodiless
+    }
+    
+    
+    
     // Update is called once per frame
     void Update()
     {
@@ -74,10 +88,10 @@ public class ExperimentManager : MonoBehaviour
     {
        
     }
+    
 
     private void StartExperiment()
     {
-        
         runningExperiment = true;
 
         foreach (var stationSpawner in AvaibleStationSpawners)
@@ -115,13 +129,12 @@ public class ExperimentManager : MonoBehaviour
     private IEnumerator PlayerInstantiation()
     {
         SelectedAvatar.gameObject.SetActive(true);
-
-
+        
         yield return new WaitUntil(() => SelectedAvatar.GetComponent<HybridController>() != null);
+
         Debug.Log("finished establishing character");
         _playerController = SelectedAvatar.GetComponent<HybridController>();
         _playerCharacterController = _playerController.GetHybridChracterController();
-        
 
         
         
@@ -134,7 +147,7 @@ public class ExperimentManager : MonoBehaviour
         else
         {
             _playerController.AllowViewSwitch(true);
-            _playerController.AllowMovement(true);
+            _playerController.AllowInput(true);
         }
         
         StartExperimentArgs experimentargs = new StartExperimentArgs();
@@ -152,6 +165,11 @@ public class ExperimentManager : MonoBehaviour
         
     }
 
+    public Condition GetCondition()
+    {
+        return _condition;
+    }
+    
     public void TakeParticipantToNextStation()
     {
         RemainingstationsStationSpawners.Remove(ActiveStation);
@@ -296,6 +314,7 @@ public class ExperimentManager : MonoBehaviour
                 if (GUI.Button(new Rect(x, Screen.height/2, w, 80), "Hybrid", buttonStyle))
                 {
                     condition = "Hybrid";
+                    _condition = Condition.Hybrid;
                     SelectedAvatar = Avatars[0];
                     _menuState = MenuState.MainMenu;
                 }
@@ -303,18 +322,21 @@ public class ExperimentManager : MonoBehaviour
                 {
                     SelectedAvatar = Avatars[2];
                     condition = "Hybrid(Blob)";
+                    _condition = Condition.Blob;
                     _menuState = MenuState.MainMenu;
                 }
                 if (GUI.Button(new Rect(x*6, Screen.height/2, w, 80), "First-person", buttonStyle))
                 {
                     SelectedAvatar = Avatars[1];
                     condition = "First-person";
+                    _condition = Condition.FirstPerson;
                     _menuState = MenuState.MainMenu;
                 }
-                if (GUI.Button(new Rect(x*8.5f, Screen.height/2, w*1.3f, 80), "First-person(Blob)", buttonStyle))
+                if (GUI.Button(new Rect(x*8.5f, Screen.height/2, w*1.3f, 80), "Bodiless", buttonStyle))
                 {
                     SelectedAvatar = Avatars[3];
                     condition = "First-Person(Blob)";
+                    _condition = Condition.Bodiless;
                     _menuState = MenuState.MainMenu;
                 }
                 
