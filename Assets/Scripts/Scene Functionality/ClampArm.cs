@@ -12,16 +12,19 @@ public class ClampArm : MonoBehaviour
     public GameObject toUnlock;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        Debug.Log("This should mean that console output is working");
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (!open & transform.position.y > 1.45)
+        
+        if (!open & transform.position.z > 0.0037)
         {
+            Debug.Log("Clamp is now open and ball shoul dbe interactable");
+            open = true;
             onClampOpen.Invoke();
             Destroy(toUnlock.GetComponent<IgnoreHovering>());
         }
