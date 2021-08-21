@@ -9,7 +9,8 @@ public class AreaManager : MonoBehaviour
 
 
     public Timer Timer;
-    
+
+    public RatingSystem RatingSystem;
 
     private void Start()
     {
@@ -43,4 +44,6 @@ public class AreaManager : MonoBehaviour
             Debug.Log("Timer is not assigned");
         }
     }
+    
+    
 }

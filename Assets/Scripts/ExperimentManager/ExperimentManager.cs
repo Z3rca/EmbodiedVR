@@ -481,4 +481,6 @@ public class ExperimentManager : MonoBehaviour
 public class StartExperimentArgs : EventArgs
 {
     public HybridCharacterController CharacterController;
+    public ExperimentManager.Condition Condition;
+    public 
 }
