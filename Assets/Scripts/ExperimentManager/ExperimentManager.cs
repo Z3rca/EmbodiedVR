@@ -16,10 +16,11 @@ public class ExperimentManager : MonoBehaviour
     private HybridController _playerController;
     public HybridCharacterController _playerCharacterController;
 
-    public StationSpawner ActiveStation;
+    private StationSpawner _ActiveStation;
+    private AreaManager _activeAreaManager;
     private List<StationSpawner> AvaibleStationSpawners = new List<StationSpawner>();
     private List<StationSpawner> RemainingstationsStationSpawners = new List<StationSpawner>();
-    private List<AreaManager> AreaManagers = new List<AreaManager>();
+    private Dictionary<AreaManager, int> AreaManagers = new Dictionary<AreaManager, int>();
 
     public List<int> StationOrder;
     private int StationIndex;
@@ -27,13 +28,18 @@ public class ExperimentManager : MonoBehaviour
     public TutorialManager tutorialManager;
 
 
-    public event EventHandler<StartExperimentArgs> startExperiment;
+    public event EventHandler<StartExperimentArgs> startedExperiment;
+    public event EventHandler<ExperimentFinishedArgs> FinishedExperiment; 
+    public event EventHandler<StationCompletedArgs> stationCompleted;
+    
+    
+    private double ExperimentStartTime;
 
 
 
     private Condition _condition;
     private MenuState _menuState;
-    private string participantId;
+    private string _participantId;
     private string order;
     private string condition;
 
@@ -110,7 +116,7 @@ public class ExperimentManager : MonoBehaviour
         {
             if (station.ID == StationOrder[0])
             {
-                ActiveStation = station;
+                _ActiveStation = station;
             }
         }
 
@@ -140,7 +146,7 @@ public class ExperimentManager : MonoBehaviour
         
         _playerController.ShowControllers(false);
         
-        if (ActiveStation.ID == 0)
+        if (_ActiveStation.ID == 0)
         {
             tutorialManager.StartTutorial();
         }
@@ -150,21 +156,20 @@ public class ExperimentManager : MonoBehaviour
             _playerController.AllowInput(true);
         }
         
-        StartExperimentArgs experimentargs = new StartExperimentArgs();
-        experimentargs.CharacterController = _playerCharacterController;
-
-        startExperiment?.Invoke(this, experimentargs);
+        
+        StartedExperiment();
 
 
         yield return new WaitForFixedUpdate();
         
-        _playerController.TeleportToPosition(ActiveStation.gameObject.transform);
+        _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
         
         
         _playerController.Fading(0.5f,0.5f,0.5f);
         
     }
 
+   
     public Condition GetCondition()
     {
         return _condition;
@@ -172,10 +177,11 @@ public class ExperimentManager : MonoBehaviour
     
     public void TakeParticipantToNextStation()
     {
-        RemainingstationsStationSpawners.Remove(ActiveStation);
+        RemainingstationsStationSpawners.Remove(_ActiveStation);
             
         if (!RemainingstationsStationSpawners.Any())
         {
+            FinishExperiment();
             Debug.Log("Finished condition");
         }
 
@@ -190,7 +196,8 @@ public class ExperimentManager : MonoBehaviour
         {
             if (stationSpawner.ID == StationOrder[StationIndex])
             {
-                ActiveStation = stationSpawner;
+                _ActiveStation = stationSpawner;
+                
             }
         }
 
@@ -200,7 +207,7 @@ public class ExperimentManager : MonoBehaviour
 
         }
 
-        _playerController.TeleportToPosition(ActiveStation.gameObject.transform);
+        _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
     }
 
 
@@ -211,8 +218,64 @@ public class ExperimentManager : MonoBehaviour
 
     public void RegisterAreaManager(AreaManager manager)
     {
-        AreaManagers.Add(manager);
+        AreaManagers.Add(manager, manager.id);
     }
+
+   
+    
+    private void StartedExperiment()
+    {
+        StartExperimentArgs startExperimentArgs = new StartExperimentArgs();
+        startExperimentArgs.CharacterController = _playerCharacterController;
+        startExperimentArgs.Order = order;
+        startExperimentArgs.ApplicationStartTime = TimeManager.Instance.GetApplicationStartTime();
+        startExperimentArgs.ExperimentStartTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+
+        if (startedExperiment != null)
+        {
+            startedExperiment.Invoke(this,startExperimentArgs);
+        }
+        else
+        {
+            Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+        }
+    }
+
+    
+    
+    public void FinishArea()
+    {
+        StationCompletedArgs stationCompletedArgs = new StationCompletedArgs();
+        stationCompletedArgs.StationStartTime = _activeAreaManager.ParkourStartTime;
+        stationCompletedArgs.StationEndTime = _activeAreaManager.ParkourEndTime;
+        stationCompletedArgs.RatingStartTime = _activeAreaManager.StartRatingTime;
+        stationCompletedArgs.RatingEndTime = _activeAreaManager.EndRatingTime;
+        stationCompletedArgs.OrderPosition = StationIndex;
+        stationCompletedArgs.StationID = _activeAreaManager.id;
+        stationCompletedArgs.Condition = GetCondition();
+
+        if (stationCompleted != null)
+            stationCompleted.Invoke(this, stationCompletedArgs);
+        else
+            Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+    }
+
+    public void FinishExperiment()
+    {
+        ExperimentFinishedArgs experimentFinishedArgs = new ExperimentFinishedArgs();
+        experimentFinishedArgs.ParticipantID = _participantId;
+        experimentFinishedArgs.ExperimentEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        experimentFinishedArgs.Condition = GetCondition();
+        
+        
+        if (FinishedExperiment != null)
+            FinishedExperiment.Invoke(this, experimentFinishedArgs);
+        else
+            Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+        // TODO finish experiment Logic
+    }
+    
+    
 
 
     private void ReadOutPakourOrder(string Order)
@@ -272,7 +335,7 @@ public class ExperimentManager : MonoBehaviour
         {
             case MenuState.IDAndOrderSelection:
                 GUI.Box(new Rect(750, 490, 200, 40), "Participant ID", boxStyle);
-                participantId = GUI.TextField(new Rect(750, 530, 200, 40), participantId);
+                _participantId = GUI.TextField(new Rect(750, 530, 200, 40), _participantId);
 
                 GUI.Box(new Rect(970, 490, 200, 40), "Order", boxStyle);
                 order = GUI.TextField(new Rect(970, 530, 200, 40), order);
@@ -294,7 +357,7 @@ public class ExperimentManager : MonoBehaviour
             case MenuState.Condition:
 
                 valX = x;
-                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ participantId), boxStyle);
+                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ _participantId), boxStyle);
 
                 valX += w+ 2;
                 GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
@@ -344,7 +407,7 @@ public class ExperimentManager : MonoBehaviour
                 break;
             case MenuState.MainMenu:
                 valX = x;
-                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ participantId), boxStyle);
+                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ _participantId), boxStyle);
 
                 valX += w+ 2;
                 GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
@@ -399,7 +462,7 @@ public class ExperimentManager : MonoBehaviour
                 case MenuState.SafetyBeforeStart:
                     
                     valX = x;
-                    GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ participantId), boxStyle);
+                    GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ _participantId), boxStyle);
 
                     valX += w+ 2;
                     GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
@@ -453,19 +516,19 @@ public class ExperimentManager : MonoBehaviour
                 valX = x;
                
                 int buttonwidth =(int) (w * 2);
-                GUI.Box(new Rect(valX, valY, buttonwidth, 80), new GUIContent("ID: "+ participantId), boxStyle);
+                GUI.Box(new Rect(valX, valY, buttonwidth, 80), new GUIContent("ID: "+ _participantId), boxStyle);
 
                 valX += buttonwidth+ 2;
                 GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Order: "+ order), boxStyle);
                 
                 valX += buttonwidth +2;
-                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Station: "+ ActiveStation.ID), boxStyle);
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Station: "+ _ActiveStation.ID), boxStyle);
 
                 valX = x;
                 valY = y + 100;
                 
                 valX += buttonwidth+ 2;
-                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Station: "+ ActiveStation.ID), boxStyle);
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Station: "+ _ActiveStation.ID), boxStyle);
 
                 valX += buttonwidth+ 2;
                 TimeSpan time = TimeSpan.FromSeconds(totalTime);
@@ -482,5 +545,30 @@ public class StartExperimentArgs : EventArgs
 {
     public HybridCharacterController CharacterController;
     public ExperimentManager.Condition Condition;
-    public 
+    public double ApplicationStartTime;
+    public double ExperimentStartTime;
+    public string ParticipantID;
+    public string Order;
 }
+
+public class StationCompletedArgs : EventArgs
+{
+    public int StationID;
+    public string ParticipantID;
+    public ExperimentManager.Condition Condition;
+    public double StationStartTime;
+    public double StationEndTime;
+    public double RatingStartTime;
+    public double RatingEndTime;
+    public int OrderPosition;
+}
+
+public class ExperimentFinishedArgs : EventArgs
+{
+    public string ParticipantID;
+    public HybridCharacterController CharacterController;
+    public ExperimentManager.Condition Condition;
+    public double ExperimentEndTime;
+}
+
+

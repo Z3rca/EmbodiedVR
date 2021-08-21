@@ -11,6 +11,12 @@ public class AreaManager : MonoBehaviour
     public Timer Timer;
 
     public RatingSystem RatingSystem;
+    
+    public double ParkourStartTime;
+    public double ParkourEndTime;
+
+    public double StartRatingTime;
+    public double EndRatingTime;
 
     private void Start()
     {
@@ -21,8 +27,9 @@ public class AreaManager : MonoBehaviour
     }
 
 
-    public void StartArea()
+    public void StartParkour()
     {
+        ParkourStartTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
         if (Timer != null)
         {
             Timer.StartTimer();
@@ -33,8 +40,9 @@ public class AreaManager : MonoBehaviour
         }
     }
 
-    public void StopArea()
+    public void CompleteParkour()
     {
+        ParkourEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
         if (Timer != null)
         {
             Timer.StopTimer();
@@ -44,6 +52,19 @@ public class AreaManager : MonoBehaviour
             Debug.Log("Timer is not assigned");
         }
     }
-    
-    
+
+    public void StartRating()
+    {
+        StartRatingTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+    }
+
+    public void EndRating()
+    {
+        EndRatingTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+    }
+
+
+
+
+
 }

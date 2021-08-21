@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class MotionsicknessRatingLogic : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
-        ExperimentManager.Instance.startExperiment += OnStartExperiment;
+        ExperimentManager.Instance.startedExperiment += OnStartedExperiment;
     }
 
 
-    void OnStartExperiment(object sender, StartExperimentArgs startExperimentArgs)
+    void OnStartedExperiment(object sender, StartExperimentArgs startExperimentArgs)
     {
         
     }
