@@ -20,12 +20,17 @@ public class StaticDataRecorder : MonoBehaviour
 
     void OnPakourBegin(object sender, ParkourBeginArgs parkourBeginArgs)
     {
-        parkourBeginArgs.Condition.ToString()
+        parkourBeginArgs.Condition.ToString();
     }
     
     void OnPakourFinished(object sender, ParkourBeginArgs parkourBeginArgs)
     {
-        parkourBeginArgs.Condition.ToString()
+        parkourBeginArgs.Condition.ToString();
+    }
+    
+    void OnVotingBoardReached(object sender, ParkourEndArgs parkourEndArgs)
+    {
+        
     }
 
 

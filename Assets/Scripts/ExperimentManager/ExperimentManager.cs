@@ -33,7 +33,7 @@ public class ExperimentManager : MonoBehaviour
 
     public event EventHandler<ParkourBeginArgs> OnPakourBegin; 
     public event EventHandler<ParkourEndArgs> OnPakourFinished; 
-    public event EventHandler<> stationCompleted;
+    public event EventHandler<DataGatheringBeginArgs> stationCompleted;
     
     
     private double ExperimentStartTime;
@@ -262,22 +262,53 @@ public class ExperimentManager : MonoBehaviour
         ParkourEndArgs parkourEndArgs = new ParkourEndArgs();
         parkourEndArgs.StationStartTime = _activeAreaManager.ParkourStartTime;
         parkourEndArgs.StationEndTime = _activeAreaManager.ParkourEndTime;
-        parkourEndArgs.RatingStartTime = _activeAreaManager.StartRatingTime;
-        parkourEndArgs.RatingEndTime = _activeAreaManager.EndRatingTime;
-        parkourEndArgs.OrderPosition = StationIndex;
         parkourEndArgs.StationID = _activeAreaManager.id;
         parkourEndArgs.Condition = GetCondition();
 
-        if (stationCompleted != null)
-            stationCompleted.Invoke(this, parkourEndArgs);
+        if (OnPakourFinished != null)
+            OnPakourFinished.Invoke(this, parkourEndArgs);
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+    }
+
+
+    public void DataGatheringBegins()
+    {
+        
+        DataGatheringBeginArgs dataGatheringBeginArgs = new DataGatheringBeginArgs();
+        dataGatheringBeginArgs.ParticipantID = _participantId;
+        dataGatheringBeginArgs.StationID = _ActiveStation.ID;
+        dataGatheringBeginArgs.Condition = _condition;
+        dataGatheringBeginArgs.EnteredDataGatheringRoomStart = _activeAreaManager.ReachedDataGatheringRoomTime;
+        dataGatheringBeginArgs.ReachedVotingBoard = _activeAreaManager.ReachedRatingBoardTime;
+    }
+
+
+    public void DataGatheringEnds()
+    {
+        DataGatheringEndArgs dataGatheringEndArgs = new DataGatheringEndArgs();
+        dataGatheringEndArgs.ParticipantID = _participantId;
+        dataGatheringEndArgs.StationID = _ActiveStation.ID;
+        dataGatheringEndArgs.Condition = _condition;
+        dataGatheringEndArgs.DataGatheringStarted = _activeAreaManager.StartDataGatheringTime;
+        dataGatheringEndArgs.DataGatheringEnded = _activeAreaManager.EndDataGatheringTime;
+        
+        dataGatheringEndArgs.MotionSicknessScore = _activeAreaManager.choiceValue;
+        dataGatheringEndArgs.MotionSicknessScoreRatingAcceptedTime = _activeAreaManager.choiceTimeStamp;
+        
+        dataGatheringEndArgs.StartingAudioRecordTimeStamp = _activeAreaManager.StartAudioRecordTime;
+        dataGatheringEndArgs.EndedAudioRecordingTimeStamp = _activeAreaManager.EndAudioRecordTime;
+        dataGatheringEndArgs.NameOfAudioFile = _activeAreaManager.AudioStringName;
+
+        dataGatheringEndArgs.PostureTestStartTime = _activeAreaManager.PosturalTestStartTime;
+        dataGatheringEndArgs.PostureTestEndTime = _activeAreaManager.PosturalTestEndTime;
     }
 
     public void FinishExperiment()
     {
         ExperimentFinishedArgs experimentFinishedArgs = new ExperimentFinishedArgs();
         experimentFinishedArgs.ParticipantID = _participantId;
+        experimentFinishedArgs.Condition = _condition;
         experimentFinishedArgs.ExperimentEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
         experimentFinishedArgs.Condition = GetCondition();
         
@@ -588,13 +619,9 @@ public class ParkourEndArgs : EventArgs
     public string ParticipantID;
     public ExperimentManager.Condition Condition;
     public int OrderIndex;
-    
     public double StationStartTime;
     public double StationEndTime;
-    public double RatingStartTime;
-    public double RatingEndTime;
-    public int OrderPosition;
-    public double TeleportTime;
+    public bool wasTeleportedToEnd;
 }
 
 public class DataGatheringBeginArgs : EventArgs
@@ -605,6 +632,7 @@ public class DataGatheringBeginArgs : EventArgs
     public int OrderIndex;
     
     public double EnteredDataGatheringRoomStart;
+    public double ReachedVotingBoard;
 }
 
 public class DataGatheringEndArgs : EventArgs
@@ -614,15 +642,21 @@ public class DataGatheringEndArgs : EventArgs
     public ExperimentManager.Condition Condition;
     public int OrderIndex;
     
-    public double RatingStartTime;
-    public double RatingEndTime;
+    
+    
     public double StartingAudioRecordTimeStamp;
     public string NameOfAudioFile;
     public double EndedAudioRecordingTimeStamp;
+    
     public double MotionSicknessScoreRatingBeginTimeStamp;
     public int MotionSicknessScore;
     public double MotionSicknessScoreRatingAcceptedTime;
     
+    
+    public double PostureTestStartTime;
+    public double PostureTestEndTime;
+    
+    public double DataGatheringStarted;
     public double DataGatheringEnded;
 }
 
