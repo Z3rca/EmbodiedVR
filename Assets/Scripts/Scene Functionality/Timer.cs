@@ -21,11 +21,11 @@ public class Timer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ExperimentManager.Instance.startExperiment += OnExperimentStart;
+        ExperimentManager.Instance.startedExperiment += OnExperimentStarted;
     }
 
 
-    void OnExperimentStart(object sender, EventArgs eventArgs)
+    void OnExperimentStarted(object sender, EventArgs eventArgs)
     {
         timeRemaining = timerInMinutes * 60;
         // audioSource = FindObjectOfType<AudioSource>();

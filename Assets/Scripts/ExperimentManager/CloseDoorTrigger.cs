@@ -18,7 +18,7 @@ public class CloseDoorTrigger : MonoBehaviour
         if (ExperimentManager.Instance != null)
         {
             experimentManager = ExperimentManager.Instance;
-            experimentManager.startExperiment += OnExperimentStart;
+            experimentManager.startedExperiment += OnExperimentStarted;
         }
         
         
@@ -26,7 +26,7 @@ public class CloseDoorTrigger : MonoBehaviour
     }
 
 
-    private void OnExperimentStart(object sender, StartExperimentArgs eventArgs)
+    private void OnExperimentStarted(object sender, StartExperimentArgs eventArgs)
     {
         playerBody = eventArgs.CharacterController;
         if (playerBody == null)
