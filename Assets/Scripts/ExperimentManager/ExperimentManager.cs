@@ -234,6 +234,7 @@ public class ExperimentManager : MonoBehaviour
         startExperimentArgs.Order = order;
         startExperimentArgs.ApplicationStartTime = TimeManager.Instance.GetApplicationStartTime();
         startExperimentArgs.ExperimentStartTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        startExperimentArgs.ParticipantID = _participantId;
 
         if (startedExperiment != null)
         {
@@ -241,7 +242,7 @@ public class ExperimentManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+           
         }
     }
 
@@ -251,8 +252,16 @@ public class ExperimentManager : MonoBehaviour
         parkourBeginArgs.participantID = _participantId;
         parkourBeginArgs.Condition = _condition;
         parkourBeginArgs.stationID = _ActiveStation.ID;
+        parkourBeginArgs.Order = order;
         parkourBeginArgs.TeleportTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
-        OnPakourBegin.Invoke(this,parkourBeginArgs);
+        if (OnPakourBegin != null)
+        {
+            OnPakourBegin.Invoke(this, parkourBeginArgs);
+        }
+        else
+        {
+            Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+        }
     }
 
     
@@ -610,6 +619,7 @@ public class ParkourBeginArgs : EventArgs
     public int stationID;
     public string participantID;
     public ExperimentManager.Condition Condition;
+    public string Order;
     public int OrderIndex;
     public double TeleportTime;
 }

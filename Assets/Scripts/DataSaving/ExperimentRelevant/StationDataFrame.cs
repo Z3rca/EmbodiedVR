@@ -13,8 +13,9 @@ public class StationDataFrame
 
     public string pakourOrder;
 
-    public string stationIndex;
+    public int stationIndex;
     //General Time relevant Data
+    public double TeleportStartTimeStamp;
     public double PakourStartTimeStamp;
     public double PakourEndTimeStamp;
     public double PakourDuration;
