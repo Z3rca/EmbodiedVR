@@ -43,7 +43,7 @@ public class StaticDataRecorder : MonoBehaviour
         _currentStationDataFrame.TeleportStartTimeStamp = parkourBeginArgs.TeleportTime;
         _currentStationDataFrame.stationIndex = parkourBeginArgs.OrderIndex;
         
-        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  parkourBeginArgs.participantID  +" - "  + parkourBeginArgs.Order+  " - " + parkourBeginArgs.OrderIndex);
+        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + parkourBeginArgs.Order+  " - " + parkourBeginArgs.OrderIndex);
         
     }
     
@@ -53,6 +53,7 @@ public class StaticDataRecorder : MonoBehaviour
         _currentStationDataFrame.PakourDuration = _currentStationDataFrame.PakourStartTimeStamp -
                                                   _currentStationDataFrame.PakourEndTimeStamp;
         
+        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + parkourEndArgs.OrderIndex);
     }
     
     void OnVotingBoardReached(object sender, ParkourEndArgs parkourEndArgs)
