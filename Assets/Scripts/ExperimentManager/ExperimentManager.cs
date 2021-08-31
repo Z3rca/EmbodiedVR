@@ -31,7 +31,7 @@ public class ExperimentManager : MonoBehaviour
     public event EventHandler<StartExperimentArgs> startedExperiment;
     public event EventHandler<ExperimentFinishedArgs> FinishedExperiment;
 
-    public event EventHandler<ParkourBeginArgs> OnPakourBegin; 
+    public event EventHandler<StationBeginArgs> OnPakourBegin; 
     public event EventHandler<ParkourEndArgs> OnPakourFinished; 
     public event EventHandler<DataGatheringBeginArgs> stationCompleted;
     
@@ -167,7 +167,7 @@ public class ExperimentManager : MonoBehaviour
         
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
 
-        PakourBegins();
+        StationBegin();
         
         _playerController.Fading(0.5f,0.5f,0.5f);
         
@@ -246,17 +246,18 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
-    private void PakourBegins()
+    private void StationBegin()
     {
-        ParkourBeginArgs parkourBeginArgs = new ParkourBeginArgs();
-        parkourBeginArgs.participantID = _participantId;
-        parkourBeginArgs.Condition = _condition;
-        parkourBeginArgs.stationID = _ActiveStation.ID;
-        parkourBeginArgs.Order = order;
-        parkourBeginArgs.TeleportTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        StationBeginArgs stationBeginArgs = new StationBeginArgs();
+        stationBeginArgs.participantID = _participantId;
+        stationBeginArgs.Condition = _condition;
+        stationBeginArgs.stationID = _ActiveStation.ID;
+        stationBeginArgs.Order = order;
+        stationBeginArgs.OrderIndex = StationIndex;
+        stationBeginArgs.TeleportTimeFromLastStationTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         if (OnPakourBegin != null)
         {
-            OnPakourBegin.Invoke(this, parkourBeginArgs);
+            OnPakourBegin.Invoke(this, stationBeginArgs);
         }
         else
         {
@@ -264,13 +265,23 @@ public class ExperimentManager : MonoBehaviour
         }
     }
 
+    public void PakourBegin()
+    {
+        PakourBeginArgs pakourBeginArgs = new PakourBeginArgs();
+        pakourBeginArgs.Condition = _condition;
+        pakourBeginArgs.ParticipantID = _participantId;
+        pakourBeginArgs.OrderIndex = StationIndex;
+        
+    }
+
     
     
     public void PakourEnds()
     {
         ParkourEndArgs parkourEndArgs = new ParkourEndArgs();
-        parkourEndArgs.StationStartTime = _activeAreaManager.ParkourStartTime;
-        parkourEndArgs.StationEndTime = _activeAreaManager.ParkourEndTime;
+        parkourEndArgs.wasTeleportedToEnd = _activeAreaManager.wasTeleportedToEnd;
+        parkourEndArgs.wasTeleportedToEndTimeStamp = _activeAreaManager.wasTeleportedToEndTimeStamp;
+        parkourEndArgs.StationEndTime = _activeAreaManager.parkourEndTimeStamp;
         parkourEndArgs.StationID = _activeAreaManager.id;
         parkourEndArgs.Condition = GetCondition();
 
@@ -288,8 +299,8 @@ public class ExperimentManager : MonoBehaviour
         dataGatheringBeginArgs.ParticipantID = _participantId;
         dataGatheringBeginArgs.StationID = _ActiveStation.ID;
         dataGatheringBeginArgs.Condition = _condition;
-        dataGatheringBeginArgs.EnteredDataGatheringRoomStart = _activeAreaManager.ReachedDataGatheringRoomTime;
-        dataGatheringBeginArgs.ReachedVotingBoard = _activeAreaManager.ReachedRatingBoardTime;
+        dataGatheringBeginArgs.EnteredDataGatheringRoomStart = _activeAreaManager.reachedDataGatheringRoomTimeStamp;
+        dataGatheringBeginArgs.ReachedVotingBoard = _activeAreaManager.reachedRatingBoardTimeStamp;
     }
 
 
@@ -299,8 +310,8 @@ public class ExperimentManager : MonoBehaviour
         dataGatheringEndArgs.ParticipantID = _participantId;
         dataGatheringEndArgs.StationID = _ActiveStation.ID;
         dataGatheringEndArgs.Condition = _condition;
-        dataGatheringEndArgs.DataGatheringStarted = _activeAreaManager.StartDataGatheringTime;
-        dataGatheringEndArgs.DataGatheringEnded = _activeAreaManager.EndDataGatheringTime;
+        dataGatheringEndArgs.DataGatheringStarted = _activeAreaManager.startDataGatheringTimeStamp;
+        dataGatheringEndArgs.DataGatheringEnded = _activeAreaManager.endDataGatheringTimeStamp;
         
         dataGatheringEndArgs.MotionSicknessScore = _activeAreaManager.choiceValue;
         dataGatheringEndArgs.MotionSicknessScoreRatingAcceptedTime = _activeAreaManager.choiceTimeStamp;
@@ -614,14 +625,24 @@ public class ExperimentFinishedArgs : EventArgs
     public double ExperimentEndTime;
 }
 
-public class ParkourBeginArgs : EventArgs
+public class StationBeginArgs : EventArgs
 {
     public int stationID;
     public string participantID;
     public ExperimentManager.Condition Condition;
     public string Order;
     public int OrderIndex;
-    public double TeleportTime;
+    public double TeleportTimeFromLastStationTimeStamp;
+    public double PakourStartTimeStamp;
+}
+
+public class PakourBeginArgs : EventArgs
+{
+    public int StationID;
+    public string ParticipantID;
+    public ExperimentManager.Condition Condition;
+    public int OrderIndex;
+    public double StationStartTime;
 }
 public class ParkourEndArgs : EventArgs
 {
@@ -632,6 +653,7 @@ public class ParkourEndArgs : EventArgs
     public double StationStartTime;
     public double StationEndTime;
     public bool wasTeleportedToEnd;
+    public double wasTeleportedToEndTimeStamp;
 }
 
 public class DataGatheringBeginArgs : EventArgs

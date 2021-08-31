@@ -27,7 +27,7 @@ public class StaticDataRecorder : MonoBehaviour
 
     }
 
-    void OnPakourBegin(object sender, ParkourBeginArgs parkourBeginArgs)
+    void OnPakourBegin(object sender, StationBeginArgs stationBeginArgs)
     {
        
         Debug.Assert(_currentDataFrame != null && _currentDataFrame._stationDataFrames != null,
@@ -37,13 +37,13 @@ public class StaticDataRecorder : MonoBehaviour
 
         _currentStationDataFrame = new StationDataFrame();
 
-        _currentStationDataFrame.participantID = parkourBeginArgs.participantID;
+        _currentStationDataFrame.participantID = stationBeginArgs.participantID;
 
-        _currentStationDataFrame.condition = parkourBeginArgs.Condition.ToString();
-        _currentStationDataFrame.TeleportStartTimeStamp = parkourBeginArgs.TeleportTime;
-        _currentStationDataFrame.stationIndex = parkourBeginArgs.OrderIndex;
+        _currentStationDataFrame.condition = stationBeginArgs.Condition.ToString();
+        _currentStationDataFrame.TeleportStartTimeStamp = stationBeginArgs.TeleportTimeFromLastStationTimeStamp;
+        _currentStationDataFrame.stationIndex = stationBeginArgs.OrderIndex;
         
-        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + parkourBeginArgs.Order+  " - " + parkourBeginArgs.OrderIndex);
+        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + stationBeginArgs.Order+  " - " + stationBeginArgs.OrderIndex);
         
     }
     
