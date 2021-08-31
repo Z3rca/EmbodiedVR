@@ -12,16 +12,26 @@ public class AreaManager : MonoBehaviour
 
     public RatingSystem RatingSystem;
     
-    public double ParkourStartTime;
-    public double ParkourEndTime;
-    public bool wasTeleportedToEnd;
-
-    public double ReachedDataGatheringRoomTime;
-    public double ReachedRatingBoardTime;
-    public double StartDataGatheringTime;
-    public double EndDataGatheringTime;
-
+    private double _parkourStartTimeStamp; public double parkourStartTimeStamp => _parkourStartTimeStamp;
     
+    private double _parkourEndTimeStamp; public double parkourEndTimeStamp => _parkourEndTimeStamp;
+
+    private bool _wasTeleportedToEnd; public bool wasTeleportedToEnd => _wasTeleportedToEnd;
+    private double _wasTeleportedTimeStamp; public double wasTeleportedToEndTimeStamp => _wasTeleportedTimeStamp;
+
+    private double _reachedDataGatheringRoomTimeStamp;
+    public double reachedDataGatheringRoomTimeStamp => _reachedDataGatheringRoomTimeStamp;
+
+    private double _reachedRatingBoardTimeStamp;
+    public double reachedRatingBoardTimeStamp => _reachedRatingBoardTimeStamp;
+
+    private double _startDataGatheringTimeStamp;
+    public double startDataGatheringTimeStamp => _startDataGatheringTimeStamp;
+
+    private double _endDataGatheringTimeStamp; 
+    public double endDataGatheringTimeStamp => _endDataGatheringTimeStamp;
+
+
     public double choiceTimeStamp;
     public int choiceValue;
 
@@ -56,7 +66,7 @@ public class AreaManager : MonoBehaviour
     
     public void StartParkour()
     {
-        ParkourStartTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _parkourStartTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         if (Timer != null)
         {
             Timer.StartTimer();
@@ -69,7 +79,7 @@ public class AreaManager : MonoBehaviour
 
     public void CompleteParkour()
     {
-        ParkourEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         if (Timer != null)
         {
             Timer.StopTimer();
@@ -80,15 +90,19 @@ public class AreaManager : MonoBehaviour
         }
     }
 
-    
+    public void TeleportedToEnd()
+    {
+        _wasTeleportedTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _wasTeleportedToEnd = true;
+    }
     public void StartDataGathering()
     {
-        StartDataGatheringTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _startDataGatheringTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
     }
 
     public void EndDataGathering()
     {
-        EndDataGatheringTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _endDataGatheringTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
     }
 
     public void StartAudioRecording()
@@ -104,12 +118,12 @@ public class AreaManager : MonoBehaviour
     
     public void ReachedDataGatheringRoom()
     {
-        ReachedDataGatheringRoomTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _reachedDataGatheringRoomTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
     }
     
     public void ReachedRatingBoard()
     {
-        ReachedRatingBoardTime =TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _reachedRatingBoardTimeStamp =TimeManager.Instance.GetCurrentUnixTimeStamp();
     }
 
 
