@@ -75,11 +75,18 @@ public class AreaManager : MonoBehaviour
         {
             Debug.Log("Timer is not assigned");
         }
+
+        if (ExperimentManager.Instance != null)
+        {
+            ExperimentManager.Instance.PakourBegin();
+        }
     }
 
     public void CompleteParkour()
     {
-        _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        if(!_wasTeleportedToEnd)
+            _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        
         if (Timer != null)
         {
             Timer.StopTimer();
@@ -88,16 +95,31 @@ public class AreaManager : MonoBehaviour
         {
             Debug.Log("Timer is not assigned");
         }
+        
+        if (ExperimentManager.Instance != null)
+        {
+            ExperimentManager.Instance.PakourEnds();
+        }
     }
 
     public void TeleportedToEnd()
     {
         _wasTeleportedTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         _wasTeleportedToEnd = true;
+        
+        if (ExperimentManager.Instance != null)
+        {
+            ExperimentManager.Instance.PakourEnds();
+        }
     }
     public void StartDataGathering()
     {
         _startDataGatheringTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        
+        if (ExperimentManager.Instance != null)
+        {
+            ExperimentManager.Instance.PakourEnds();
+        }
     }
 
     public void EndDataGathering()
