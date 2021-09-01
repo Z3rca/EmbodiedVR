@@ -254,6 +254,7 @@ public class ExperimentManager : MonoBehaviour
         stationBeginArgs.stationID = _ActiveStation.ID;
         stationBeginArgs.Order = order;
         stationBeginArgs.OrderIndex = StationIndex;
+        
         stationBeginArgs.TeleportTimeFromLastStationTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         if (OnPakourBegin != null)
         {

@@ -69,6 +69,11 @@ public class MeasuringFlow : MonoBehaviour
         
         posturalStabilityMeasuringTool.SetActive(false);
         whenMeasuringComplete.Invoke();
+
+        if (ExperimentManager.Instance!=null)
+        {
+            ExperimentManager.Instance.DataGatheringEnds();
+        }
     }
 
 
