@@ -6,14 +6,22 @@ using UnityEngine.Events;
 
 public class TutorialInteractionTrigger : MonoBehaviour
 {
-
+    public bool goalBox = false;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<HybridCharacterController>())
         {
             Debug.Log("reached area");
-            TutorialManager.Instance.ReachedInteractionArea();
+            if (goalBox)
+            {
+                TutorialManager.Instance.ReachedSecondInteractionArea();
+            }
+            else
+            {
+                TutorialManager.Instance.ReachedInteractionArea();
+            }
+            
         }
         
     }
