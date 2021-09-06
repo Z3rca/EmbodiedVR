@@ -27130,7 +27130,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: e09241e09b12a4547baa7d9f0ce9a1b8, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 7573921e7106c024c86f7296734af517, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -31178,6 +31178,14 @@ MonoBehaviour:
   id: 3
   Timer: {fileID: 3765829889460247451}
   RatingSystem: {fileID: 1503547906215762999}
+  choiceTimeStamp: 0
+  choiceValue: 0
+  StartAudioRecordTime: 0
+  EndAudioRecordTime: 0
+  participantExpierenceAudioData: {fileID: 0}
+  AudioStringName: 
+  PosturalTestStartTime: 0
+  PosturalTestEndTime: 0
 --- !u!1 &6209438032556665926
 GameObject:
   m_ObjectHideFlags: 0
@@ -81793,12 +81801,22 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6547893010289122717, guid: 21cfe44e54fd42448b2d17d31be6b11c,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7018770308826630170, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7229451491099664292, guid: 21cfe44e54fd42448b2d17d31be6b11c,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496249259611984098, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -86521,14 +86539,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5340410605183976684, guid: f2723c3a108b9be478cf376df5c05735,
         type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 7231517870704559372}
+    - target: {fileID: 5340410605183976684, guid: f2723c3a108b9be478cf376df5c05735,
+        type: 3}
       propertyPath: firstWarning
       value: 
-      objectReference: {fileID: 8300000, guid: 7aee319048329a0468a7bb1b9907d1e2, type: 3}
+      objectReference: {fileID: 8300000, guid: 47e27c357b7a15c4ba7826b4026455d0, type: 3}
     - target: {fileID: 5340410605183976684, guid: f2723c3a108b9be478cf376df5c05735,
         type: 3}
       propertyPath: secondWarning
       value: 
-      objectReference: {fileID: 8300000, guid: d6652e52c652f4b41af924fb69996b09, type: 3}
+      objectReference: {fileID: 8300000, guid: 6789235bc7e211243a15aefb01c3ec71, type: 3}
     - target: {fileID: 5340410605183976684, guid: f2723c3a108b9be478cf376df5c05735,
         type: 3}
       propertyPath: timerInMinutes
