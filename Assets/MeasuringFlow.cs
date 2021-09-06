@@ -16,12 +16,19 @@ public class MeasuringFlow : MonoBehaviour
 
     public TMP_Text audioRunningText;
     
+    public AudioSource audioSource;
+    public AudioClip dataGatheringOver;
+    public AudioClip proceedToNextArea;
+    public AudioClip callExperimenter;
+    
     private bool recordingStarted = false;
     private bool audioMeasured = false;
 
     public bool sicknessMeasured { get; set; } = false;
     
     private bool stabilityMeasured = false;
+
+    private bool lastStage = false;
     
     // Start is called before the first frame update
     private void Start()
@@ -69,6 +76,26 @@ public class MeasuringFlow : MonoBehaviour
         
         posturalStabilityMeasuringTool.SetActive(false);
         whenMeasuringComplete.Invoke();
+
+        //TODO lastStage needs to be defined sensibly
+        if (ExperimentManager.Instance!=null)
+        {
+            lastStage = ExperimentManager.Instance.StationIndex > ExperimentManager.Instance.StationOrder.Count;
+        }
+        
+        if (!lastStage)
+        {
+            audioSource.clip = dataGatheringOver;
+            audioSource.Play();
+            audioSource.clip = proceedToNextArea;
+            audioSource.Play();
+        }
+        else
+        {
+            audioSource.clip = callExperimenter;
+            audioSource.Play();
+            
+        }
 
         if (ExperimentManager.Instance!=null)
         {

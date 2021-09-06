@@ -14,6 +14,10 @@ public class GoalBox : MonoBehaviour
     private bool eventCalled = false;
 
     public TMP_Text visibleCounter;
+    
+    public AudioSource audioSource;
+    public AudioClip enoughCollected;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +30,9 @@ public class GoalBox : MonoBehaviour
         if (!eventCalled & counter>=goal)
         {
             goalReached.Invoke();
+            audioSource.clip = enoughCollected;
+            audioSource.Play();
+            eventCalled = true;
         }
     }
     

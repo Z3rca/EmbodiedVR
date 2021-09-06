@@ -23,7 +23,7 @@ public class ExperimentManager : MonoBehaviour
     private Dictionary<AreaManager, int> AreaManagers = new Dictionary<AreaManager, int>();
 
     public List<int> StationOrder;
-    private int StationIndex;
+    public int StationIndex;
 
     public TutorialManager tutorialManager;
 
