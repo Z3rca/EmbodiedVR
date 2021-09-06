@@ -96,13 +96,22 @@ public class TutorialManager : MonoBehaviour
         HybridController.AllowInput(false);
         HybridController.Fading(0f,2f,2f);
         yield return new WaitUntil(() =>!HybridController.IsFadingInProgress());   
-        audioController.FamilarizationAudioClip();
+        audioController.AudioClip1();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        
         Debug.Log("finished Introduction");
         
         if (!_isFirstPersonCondition)
         {
-            audioController.SwitchViewButtonAudioClip();
+            audioController.AudioClip2();
+            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            yield return new WaitForSeconds(1);
+            audioController.AudioClip3();
+            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            yield return new WaitForSeconds(1);
+            audioController.AudioClip4();
+            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            
             HybridController.AllowViewSwitch(true);
             yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
             HybridController.ShowControllers(true);
@@ -115,16 +124,34 @@ public class TutorialManager : MonoBehaviour
             HybridController.ShowControllers(true);
         }
         
-        audioController.MovementAudioClip();
+        yield return new WaitForSeconds(1);
+        
+        HybridController.HighLightRotationButton(true);
+        audioController.AudioClip5();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        
+        //TODO: here only rotation should be enabled
+        HybridController.AllowInput(true);
+        
+        
+        
+        
+        HybridController.HighLightMovementButton(true);
+        audioController.AudioClip6();
+        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        
+        //TODO: here rest of movement should be enabled
+        Debug.Log("enabled Movement");
+        
+        yield return new WaitForSeconds(6);
         
         //Dont show Controllers
         EnableInteractionArea();
-        HybridController.AllowInput(true);
+        audioController.AudioClip7();
+        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         
-        HybridController.HighLightMovementButton(true);
-        HybridController.HighLightRotationButton(true);
-        Debug.Log("enabled Movement");
+        
+        
 
     }
 
@@ -137,34 +164,44 @@ public class TutorialManager : MonoBehaviour
     {
         HybridController.HighLightMovementButton(false);
         HybridController.HighLightRotationButton(false);
+        
+        Ball.SetActive(true);
+        
         if (!_isFirstPersonCondition)
         {
             HybridController.ShowControllers(true);
             HybridController.HighLightControlSwitchButton(true);
-            audioController.InteractionAudioClip();
+            audioController.AudioClip8();
+            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
             yield return new WaitUntil(() => !_thirdPersonIsActive);
             HybridController.HighLightControlSwitchButton(false);
             yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         }
         
-        
-        audioController.PickBallAudioClip();
-        Ball.SetActive(true);
+        audioController.AudioClip9();
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
         HybridController.HighLightGraspButtons(true);
+
+        
+        
     }
 
     public void ReachedSecondInteractionArea()
     {
-       
-        audioController.ThrowBallInBoxAudioClip();
+        StartCoroutine(ReachedInteractionAreaRoutine());
     }
 
-    public void ThorwnBallInBox()
+    public IEnumerator ReachedSecondInteractionAreaRoutine()
+    {
+        audioController.AudioClip12();
+        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+    }
+
+    public void ThrownBallInBox()
     {
         //audioController.FinishedTask();  //Well done.
         EnableExitArea();
-        audioController.ExitTutorialAudioClip();
+        audioController.AudioClip13();
         // now you can go go through the door and finish the tutorial section.  
         Door.SetActive(false);
         Door2.SetActive(false);
@@ -188,8 +225,12 @@ public class TutorialManager : MonoBehaviour
             HybridController.ShowControllers(true);
             HybridController.HighLightControlSwitchButton(true);
             Ball.GetComponent<Rigidbody>().useGravity = true;
+            
+            audioController.AudioClip10(); 
         }
-        audioController.ThrowBallInBoxInstructionAudioClip(); //now throw the ball in the box to your right.
+        
+        
+        audioController.AudioClip11(); 
         EnableBoxArea();
     }
     
