@@ -19,8 +19,11 @@ public class StationDataFrame
     public double PakourStartTimeStamp;
     public double PakourEndTimeStamp;
     public double PakourDuration;
-    public double DataGatheringRoomTimeStamp;
-    public double RatingEndTimestamp;
+    
+    
+    //Datagathering room
+    public double DataGatheringRoomEnteredTimeStamp;
+    public double RatingBoardReachedTimeStamp;
     
     //Audio Data Related
     public double AudioRecordStarted;
@@ -34,4 +37,11 @@ public class StationDataFrame
     public double PosturalStabilityTimeFrameBegin;
     public double PosturalStabilityTimeFrameEnd;
 
+
+    //Teleportation was initialized?
+
+    public bool wasTeleportedToEnd;
+    public double TeleportationInitalized;
+    
+  
 }

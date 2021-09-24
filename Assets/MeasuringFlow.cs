@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -29,6 +30,15 @@ public class MeasuringFlow : MonoBehaviour
     private bool stabilityMeasured = false;
 
     private bool lastStage = false;
+
+
+    public event Action MotionsicknessMeasurementStart;
+    public event Action AudioRecordingStarted;
+    public event Action AudioRecordingEnded;
+    public event Action PosturalStabilityTestStarted;
+    public event Action PosturalStabitityTestEnded;
+    
+    
     
     // Start is called before the first frame update
     private void Start()
@@ -48,6 +58,7 @@ public class MeasuringFlow : MonoBehaviour
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(false);
         
+        AudioRecordingStarted.Invoke();
         while(!audioMeasured)
         {
             yield return null;
@@ -57,6 +68,7 @@ public class MeasuringFlow : MonoBehaviour
         
         audioMeasuringTool.SetActive(false);
         motionSicknessMeasuringTool.SetActive(true);
+        MotionsicknessMeasurementStart.Invoke();
         
         while(!sicknessMeasured)
         {
@@ -65,7 +77,7 @@ public class MeasuringFlow : MonoBehaviour
         
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(true);
-        
+        PosturalStabilityTestStarted.Invoke();
         while(!stabilityMeasured)
         {
             StabilityFlow();
@@ -75,6 +87,7 @@ public class MeasuringFlow : MonoBehaviour
         yield return new WaitForSeconds(5);
         
         posturalStabilityMeasuringTool.SetActive(false);
+        PosturalStabitityTestEnded.Invoke();
         whenMeasuringComplete.Invoke();
 
         //TODO lastStage needs to be defined sensibly

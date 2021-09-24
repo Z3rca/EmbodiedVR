@@ -32,11 +32,14 @@ public class AreaManager : MonoBehaviour
     public double endDataGatheringTimeStamp => _endDataGatheringTimeStamp;
 
 
-    public double choiceTimeStamp;
-    public int choiceValue;
+    [HideInInspector]public  double choiceTimeStamp;    //motionsickness rating end time stamp
+    [HideInInspector]public int choiceValue;
 
-    public double StartAudioRecordTime;
-    public double EndAudioRecordTime;
+    [HideInInspector]public double StartAudioRecordTime;
+    [HideInInspector] public double EndAudioRecordTime;
+    [HideInInspector]public double  startMotionsicknessMeasurementTime;
+    [HideInInspector]public double  startPosturalStabilityTest;
+    [HideInInspector]public double  endPosturalStabilityTest;
     public AudioClip participantExpierenceAudioData;
     public string AudioStringName;
 
@@ -53,16 +56,9 @@ public class AreaManager : MonoBehaviour
             ExperimentManager.Instance.RegisterAreaManager(this);
         }
 
-        RatingSystem.HitEvent += AcceptRating;
+       // RatingSystem.HitEvent += AcceptRating;
     }
-
-
-
-    private void AcceptRating(object sender, RatingBoardDataFrame ratingBoardDataFrame)
-    {
-        choiceValue = ratingBoardDataFrame.Choice;
-        choiceTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
-    }
+    
     
     public void StartParkour()
     {
@@ -126,17 +122,9 @@ public class AreaManager : MonoBehaviour
     {
         _endDataGatheringTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
     }
-
-    public void StartAudioRecording()
-    {
-        StartAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
-    }
-
-    public void EndAudioRecording()
-    {
-        EndAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
-        AudioStringName = participantExpierenceAudioData.name;
-    }
+    
+    
+    
     
     public void ReachedDataGatheringRoom()
     {

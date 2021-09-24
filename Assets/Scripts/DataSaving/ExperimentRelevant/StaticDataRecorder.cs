@@ -42,23 +42,37 @@ public class StaticDataRecorder : MonoBehaviour
         _currentStationDataFrame.condition = stationBeginArgs.Condition.ToString();
         _currentStationDataFrame.TeleportStartTimeStamp = stationBeginArgs.TeleportTimeFromLastStationTimeStamp;
         _currentStationDataFrame.stationIndex = stationBeginArgs.OrderIndex;
-        
         DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + stationBeginArgs.Order+  " - " + stationBeginArgs.OrderIndex);
         
     }
-    
-    void OnPakourFinished(object sender, ParkourEndArgs parkourEndArgs)
+
+    void OnPakourEnds(object sender, ParkourEndArgs parkourEndArgs)
     {
+        if (_currentStationDataFrame == null)
+        {
+            Debug.LogWarning("The Pakour start  have been corrupted, abort");
+        }
+
         _currentStationDataFrame.PakourEndTimeStamp = parkourEndArgs.StationEndTime;
-        _currentStationDataFrame.PakourDuration = _currentStationDataFrame.PakourStartTimeStamp -
-                                                  _currentStationDataFrame.PakourEndTimeStamp;
-        
-        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + parkourEndArgs.OrderIndex);
+        _currentStationDataFrame.PakourDuration = -_currentStationDataFrame.PakourEndTimeStamp -
+                                                  _currentStationDataFrame.PakourStartTimeStamp;
+
+        _currentStationDataFrame.wasTeleportedToEnd = parkourEndArgs.wasTeleportedToEnd;
+        _currentStationDataFrame.TeleportStartTimeStamp = parkourEndArgs.wasTeleportedToEndTimeStamp;
+
     }
-    
-    void OnVotingBoardReached(object sender, ParkourEndArgs parkourEndArgs)
+
+    private void OnDataGatheringRoomCompleted(object sender, DataGatheringEndArgs dataGatheringEndArgs)
     {
+        if (_currentStationDataFrame == null)
+        {
+            Debug.LogWarning("Pakour data not found, aborted");
+        }
         
+        _currentStationDataFrame.RatingBoardReachedTimeStamp = dataGatheringEndArgs.ReachedVotingBoard;
+        _currentStationDataFrame.DataGatheringRoomEnteredTimeStamp = dataGatheringEndArgs.EnteredDataGatheringRoom;
+        _currentStationDataFrame.NameOfAudioData = dataGatheringEndArgs.NameOfAudioFile;
+        _currentStationDataFrame.PosturalStabilityTimeFrameBegin = dataGatheringEndArgs.PostureTestStartTime;
     }
 
 

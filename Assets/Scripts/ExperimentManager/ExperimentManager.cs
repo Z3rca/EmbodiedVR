@@ -32,8 +32,9 @@ public class ExperimentManager : MonoBehaviour
     public event EventHandler<ExperimentFinishedArgs> FinishedExperiment;
 
     public event EventHandler<StationBeginArgs> OnPakourBegin; 
-    public event EventHandler<ParkourEndArgs> OnPakourFinished; 
-    public event EventHandler<DataGatheringBeginArgs> stationCompleted;
+    public event EventHandler<ParkourEndArgs> OnPakourFinished;
+
+    public event EventHandler<DataGatheringEndArgs> OnDataGatheringCompleted;
     
     
     private double ExperimentStartTime;
@@ -291,18 +292,7 @@ public class ExperimentManager : MonoBehaviour
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
     }
-
-
-    public void DataGatheringBegins()
-    {
-        
-        DataGatheringBeginArgs dataGatheringBeginArgs = new DataGatheringBeginArgs();
-        dataGatheringBeginArgs.ParticipantID = _participantId;
-        dataGatheringBeginArgs.StationID = _ActiveStation.ID;
-        dataGatheringBeginArgs.Condition = _condition;
-        dataGatheringBeginArgs.EnteredDataGatheringRoomStart = _activeAreaManager.reachedDataGatheringRoomTimeStamp;
-        dataGatheringBeginArgs.ReachedVotingBoard = _activeAreaManager.reachedRatingBoardTimeStamp;
-    }
+    
 
 
     public void DataGatheringEnds()
@@ -311,10 +301,16 @@ public class ExperimentManager : MonoBehaviour
         dataGatheringEndArgs.ParticipantID = _participantId;
         dataGatheringEndArgs.StationID = _ActiveStation.ID;
         dataGatheringEndArgs.Condition = _condition;
+        dataGatheringEndArgs.OrderIndex = StationIndex;
+
+        dataGatheringEndArgs.EnteredDataGatheringRoom = _activeAreaManager.reachedDataGatheringRoomTimeStamp;
+        dataGatheringEndArgs.ReachedVotingBoard = _activeAreaManager.reachedRatingBoardTimeStamp;
+
         dataGatheringEndArgs.DataGatheringStarted = _activeAreaManager.startDataGatheringTimeStamp;
         dataGatheringEndArgs.DataGatheringEnded = _activeAreaManager.endDataGatheringTimeStamp;
         
         dataGatheringEndArgs.MotionSicknessScore = _activeAreaManager.choiceValue;
+        dataGatheringEndArgs.MotionSicknessScoreRatingBeginTimeStamp= _activeAreaManager.startMotionsicknessMeasurementTime;
         dataGatheringEndArgs.MotionSicknessScoreRatingAcceptedTime = _activeAreaManager.choiceTimeStamp;
         
         dataGatheringEndArgs.StartingAudioRecordTimeStamp = _activeAreaManager.StartAudioRecordTime;
@@ -323,6 +319,16 @@ public class ExperimentManager : MonoBehaviour
 
         dataGatheringEndArgs.PostureTestStartTime = _activeAreaManager.PosturalTestStartTime;
         dataGatheringEndArgs.PostureTestEndTime = _activeAreaManager.PosturalTestEndTime;
+
+        if (OnDataGatheringCompleted != null)
+        {
+            OnDataGatheringCompleted.Invoke(this,dataGatheringEndArgs);
+        }
+        else
+        {
+            Debug.LogWarning("DATA WASNT SAVED");
+        }
+        
     }
 
     public void FinishExperiment()
@@ -371,6 +377,11 @@ public class ExperimentManager : MonoBehaviour
         
     }
 
+    public AreaManager GetCurrentAreaManager()
+    {
+        return _activeAreaManager;
+    }
+    
     private void OnGUI()
     {
         var x = 100;
@@ -657,17 +668,6 @@ public class ParkourEndArgs : EventArgs
     public double wasTeleportedToEndTimeStamp;
 }
 
-public class DataGatheringBeginArgs : EventArgs
-{
-    public int StationID;
-    public string ParticipantID; 
-    public ExperimentManager.Condition Condition;
-    public int OrderIndex;
-    
-    public double EnteredDataGatheringRoomStart;
-    public double ReachedVotingBoard;
-}
-
 public class DataGatheringEndArgs : EventArgs
 {
     public int StationID;
@@ -675,7 +675,8 @@ public class DataGatheringEndArgs : EventArgs
     public ExperimentManager.Condition Condition;
     public int OrderIndex;
     
-    
+    public double EnteredDataGatheringRoom;
+    public double ReachedVotingBoard;
     
     public double StartingAudioRecordTimeStamp;
     public string NameOfAudioFile;
