@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ELIVRDataFrame
+[Serializable] public class ELIVRDataFrame
 {
    public double applicationStartTimestamp;
    public double ExperimentStartTimestamp;

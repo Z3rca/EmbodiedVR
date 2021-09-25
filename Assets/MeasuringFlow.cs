@@ -43,13 +43,11 @@ public class MeasuringFlow : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        StartDataGathering();
     }
 
-    private void StartDataGathering()
+    public void StartDataGathering()
     {
         StartCoroutine(Flow());
-
     }
 
     private IEnumerator Flow()
@@ -57,12 +55,14 @@ public class MeasuringFlow : MonoBehaviour
         audioMeasuringTool.SetActive(true);
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(false);
+
         
-        AudioRecordingStarted.Invoke();
         while(!audioMeasured)
         {
             yield return null;
         }
+        
+        AudioRecordingEnded.Invoke();
         
         yield return new WaitForSeconds(1);
         
@@ -84,10 +84,13 @@ public class MeasuringFlow : MonoBehaviour
             yield return null;
         }
         
+        
         yield return new WaitForSeconds(5);
         
         posturalStabilityMeasuringTool.SetActive(false);
         PosturalStabitityTestEnded.Invoke();
+
+        yield return new WaitForEndOfFrame();
         whenMeasuringComplete.Invoke();
 
         //TODO lastStage needs to be defined sensibly
@@ -110,6 +113,8 @@ public class MeasuringFlow : MonoBehaviour
             
         }
 
+        yield return new WaitForEndOfFrame();
+
         if (ExperimentManager.Instance!=null)
         {
             ExperimentManager.Instance.DataGatheringEnds();
@@ -127,6 +132,7 @@ public class MeasuringFlow : MonoBehaviour
         }
         else
         {
+            AudioRecordingStarted.Invoke();
             recordingStarted = true;
             audioRunningText.text = "Audio recording is in progress.";
             //TODO start recording
@@ -140,6 +146,7 @@ public class MeasuringFlow : MonoBehaviour
 
     private void StabilityFlow()
     {
+     
         stabilityMeasured = true;
         //TODO Start Postural stability test
     }

@@ -10,7 +10,10 @@ public class StaticDataRecorder : MonoBehaviour
     void Start()
     {
         ExperimentManager.Instance.startedExperiment += OnStartedExperiment;
+        ExperimentManager.Instance.OnStationBegin += OnStationBegin;
         ExperimentManager.Instance.OnPakourBegin += OnPakourBegin;
+        ExperimentManager.Instance.OnPakourFinished += OnPakourEnds;
+        ExperimentManager.Instance.OnDataGatheringCompleted += OnDataGatheringRoomCompleted;
     }
 
 
@@ -27,39 +30,44 @@ public class StaticDataRecorder : MonoBehaviour
 
     }
 
-    void OnPakourBegin(object sender, StationBeginArgs stationBeginArgs)
+    void OnStationBegin(object sender, StationBeginArgs stationBeginArgs)
     {
        
         Debug.Assert(_currentDataFrame != null && _currentDataFrame._stationDataFrames != null,
             "Experiment hasnt been started, can't record Station Data");
         
-        Debug.Assert(_currentStationDataFrame ==null, "current station data frame is still intact, cannot create new one yet");
+        //Debug.Assert(_currentStationDataFrame ==null, "current station data frame is still intact, cannot create new one yet");
 
         _currentStationDataFrame = new StationDataFrame();
 
         _currentStationDataFrame.participantID = stationBeginArgs.participantID;
 
         _currentStationDataFrame.condition = stationBeginArgs.Condition.ToString();
-        _currentStationDataFrame.TeleportStartTimeStamp = stationBeginArgs.TeleportTimeFromLastStationTimeStamp;
+        _currentStationDataFrame.TeleportationInitalizedTimeStamp = stationBeginArgs.TeleportTimeFromLastStationTimeStamp;
         _currentStationDataFrame.stationIndex = stationBeginArgs.OrderIndex;
-        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + stationBeginArgs.Order+  " - " + stationBeginArgs.OrderIndex);
+        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
         
     }
 
+    void OnPakourBegin(object sender, PakourBeginArgs pakourBeginArgs)
+    {
+        _currentStationDataFrame.PakourStartTimeStamp = pakourBeginArgs.PakourStartTime;
+    }
+    
     void OnPakourEnds(object sender, ParkourEndArgs parkourEndArgs)
     {
         if (_currentStationDataFrame == null)
         {
             Debug.LogWarning("The Pakour start  have been corrupted, abort");
         }
-
-        _currentStationDataFrame.PakourEndTimeStamp = parkourEndArgs.StationEndTime;
-        _currentStationDataFrame.PakourDuration = -_currentStationDataFrame.PakourEndTimeStamp -
+        
+        _currentStationDataFrame.PakourEndTimeStamp = parkourEndArgs.PakourEndTime;
+        _currentStationDataFrame.PakourDuration = _currentStationDataFrame.PakourEndTimeStamp -
                                                   _currentStationDataFrame.PakourStartTimeStamp;
 
         _currentStationDataFrame.wasTeleportedToEnd = parkourEndArgs.wasTeleportedToEnd;
-        _currentStationDataFrame.TeleportStartTimeStamp = parkourEndArgs.wasTeleportedToEndTimeStamp;
-
+        _currentStationDataFrame.AbortTeleportStartTimeStamp = parkourEndArgs.wasTeleportedToEndTimeStamp;
+        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
     }
 
     private void OnDataGatheringRoomCompleted(object sender, DataGatheringEndArgs dataGatheringEndArgs)
@@ -71,8 +79,27 @@ public class StaticDataRecorder : MonoBehaviour
         
         _currentStationDataFrame.RatingBoardReachedTimeStamp = dataGatheringEndArgs.ReachedVotingBoard;
         _currentStationDataFrame.DataGatheringRoomEnteredTimeStamp = dataGatheringEndArgs.EnteredDataGatheringRoom;
+        
+        
+        //Audio releated
         _currentStationDataFrame.NameOfAudioData = dataGatheringEndArgs.NameOfAudioFile;
+        _currentStationDataFrame.AudioRecordStarted = dataGatheringEndArgs.StartingAudioRecordTimeStamp;
+        _currentStationDataFrame.AudioRecordEnded = dataGatheringEndArgs.EndedAudioRecordingTimeStamp;
+        
+        //motion sicknesss
+        _currentStationDataFrame.MotionsicknessScore = dataGatheringEndArgs.MotionSicknessScore;
+        _currentStationDataFrame.MotionsicknessScoreRatingBegin =
+            dataGatheringEndArgs.MotionSicknessScoreRatingBeginTimeStamp;
+        _currentStationDataFrame.MotionsicknessScoreRatingAcceptedTimeStamp =
+            dataGatheringEndArgs.MotionSicknessScoreRatingAcceptedTime;
+        //Postural stabiilty test
+
         _currentStationDataFrame.PosturalStabilityTimeFrameBegin = dataGatheringEndArgs.PostureTestStartTime;
+        _currentStationDataFrame.PosturalStabilityTimeFrameEnd = dataGatheringEndArgs.PostureTestStartTime;
+        
+        
+        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
+        _currentDataFrame._stationDataFrames.Add(_currentStationDataFrame);
     }
 
 

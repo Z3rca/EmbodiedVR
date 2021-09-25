@@ -7,7 +7,6 @@ public class Timer : MonoBehaviour
 {
 
     public float timerInMinutes;
-    private PhysicalMovement player;
     public GameObject exit;
     public AudioSource audioSource;
     public AudioClip firstWarning;
@@ -17,6 +16,8 @@ public class Timer : MonoBehaviour
     private bool _timerIsRunning = false;
     private bool firstClipPlayed = false;
     private bool secondClipPlayed = false;
+    
+    public event Action TimeElasped;
     
     // Start is called before the first frame update
     void Start()
@@ -30,9 +31,6 @@ public class Timer : MonoBehaviour
         timeRemaining = timerInMinutes * 60;
         // audioSource = FindObjectOfType<AudioSource>();
 
-
-        player = ExperimentManager.Instance.SelectedAvatar.GetComponentInChildren<PhysicalMovement>();
-    
     }
 
 
@@ -83,7 +81,7 @@ public class Timer : MonoBehaviour
                 timeRemaining = 0;
                 _timerIsRunning = false;
                 // teleport player to exit
-                player.TeleportToPosition(exit.transform.position);
+                TimeElasped.Invoke();
             }
         }
     }

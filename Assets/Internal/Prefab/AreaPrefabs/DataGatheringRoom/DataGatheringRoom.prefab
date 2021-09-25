@@ -1369,7 +1369,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnEnterTrigger:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8509041633507076103}
+        m_MethodName: ReachedRatingBoard
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4102135654075538574
 GameObject:
   m_ObjectHideFlags: 0
@@ -1544,6 +1555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80301fea364dc6744b4511e626a8d64c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _measuringFlow: {fileID: 9065229256365263096}
   _ratingSystem: {fileID: 2981989853492325238}
 --- !u!64 &3695613310049900703
 MeshCollider:
@@ -1851,8 +1863,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.691711, y: 1.7868123, z: 1.4759848}
-  m_Center: {x: -0.38285375, y: 0.39340615, z: -0.23799247}
+  m_Size: {x: 3.691711, y: 1.7868123, z: 0.047642708}
+  m_Center: {x: -0.38285375, y: 0.39340615, z: -0.95216346}
 --- !u!114 &4086426451901047341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1883,7 +1895,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4086426451901047341}
-        m_MethodName: CloseDoor
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

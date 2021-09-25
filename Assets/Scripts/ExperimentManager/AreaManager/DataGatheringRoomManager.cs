@@ -33,37 +33,48 @@ public class DataGatheringRoomManager : MonoBehaviour
         {
             _areaManager = ExperimentManager.Instance.GetCurrentAreaManager();
         }
+        else
+        {
+            Debug.Log("EXperimentManager not found");
+        }
 
         if (_areaManager != null)
         {
             _areaManager.ReachedDataGatheringRoom();
         }
+        else
+        {
+            Debug.LogWarning("Area manager was not found");
+        }
+        
+        _measuringFlow.StartDataGathering();
     }
 
 
     private void StartAudioRecording()
     {
-        if (ExperimentManager.Instance != null)
-        {
-            _areaManager = ExperimentManager.Instance.GetCurrentAreaManager();
-        }
-        
         if (_areaManager != null)
         {
-            _areaManager.StartAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+            Debug.Log("saving Audio begin");
+            _areaManager.BeginAudioRecording();
+        }
+        else
+        {
+            Debug.LogWarning("Area manager was not found, did not correclty collect data");
         }
     }
     
     private void EndAudioRecording()
     {
-        if (ExperimentManager.Instance != null)
-        {
-            _areaManager = ExperimentManager.Instance.GetCurrentAreaManager();
-        }
         
         if (_areaManager != null)
         {
-            _areaManager.EndAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+            Debug.Log("saving Audio end");
+            _areaManager.EndAudioRecording();
+        }
+        else
+        {
+            Debug.LogWarning("Area manager was not found, did not correclty collect data");
         }
     }
 
@@ -112,7 +123,7 @@ public class DataGatheringRoomManager : MonoBehaviour
         
         if (_areaManager != null)
         {
-            _areaManager.startPosturalStabilityTest = TimeManager.Instance.GetCurrentUnixTimeStamp();
+            _areaManager.BeginPosturalStabilityTest();
         }
     }
     
@@ -125,7 +136,7 @@ public class DataGatheringRoomManager : MonoBehaviour
         
         if (_areaManager != null)
         {
-            _areaManager.endPosturalStabilityTest = TimeManager.Instance.GetCurrentUnixTimeStamp();
+            _areaManager.EndPosturalStabilityTest();
         }
     }
 
