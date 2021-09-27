@@ -75,7 +75,7 @@ public class StaticDataRecorder : MonoBehaviour
 
         _currentStationDataFrame.wasTeleportedToEnd = parkourEndArgs.wasTeleportedToEnd;
         _currentStationDataFrame.AbortTeleportStartTimeStamp = parkourEndArgs.wasTeleportedToEndTimeStamp;
-        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
+        //DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
     }
 
     private void OnDataGatheringRoomCompleted(object sender, DataGatheringEndArgs dataGatheringEndArgs)
@@ -106,8 +106,9 @@ public class StaticDataRecorder : MonoBehaviour
         _currentStationDataFrame.PosturalStabilityTimeFrameEnd = dataGatheringEndArgs.PostureTestEndTime;
         
         
-        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
+       // DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
         _currentDataFrame._stationDataFrames.Add(_currentStationDataFrame);
+        _currentStationDataFrame = null;
     }
 
 

@@ -23,6 +23,7 @@ public class ExperimentManager : MonoBehaviour
     private List<StationSpawner> RemainingstationsStationSpawners = new List<StationSpawner>();
     private Dictionary<int, AreaManager> AreaManagers = new Dictionary<int, AreaManager>();
 
+    private bool _gettingToNewStation;
     public List<int> StationOrder;
     public int StationIndex;
 
@@ -194,15 +195,18 @@ public class ExperimentManager : MonoBehaviour
     
     public void TakeParticipantToNextStation()
     {
+        if (_gettingToNewStation) return;
+        _gettingToNewStation = true;
         Debug.Log("Take to the next chapter my friends");
             
+        RemainingstationsStationSpawners.Remove(_ActiveStation);
         if (!RemainingstationsStationSpawners.Any())
         {
             FinishExperiment();
             Debug.Log("Finished condition");
         }
         
-        RemainingstationsStationSpawners.Remove(_ActiveStation);
+        
         
         StationIndex++;
 
@@ -215,9 +219,10 @@ public class ExperimentManager : MonoBehaviour
         {
             if (stationSpawner.ID == StationOrder[StationIndex])
             {
-                Debug.Log("we are here ");
+                Debug.Log("we found the according new area manager ");
                 _ActiveStation = stationSpawner;
-                _activeAreaManager = AreaManagers[StationIndex];
+                _activeAreaManager = null;
+                _activeAreaManager = AreaManagers[StationOrder[StationIndex]];
             }
         }
 
@@ -227,17 +232,22 @@ public class ExperimentManager : MonoBehaviour
 
         }
         
+        
         StationBegin();
-
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
+        
+        
     }
 
     public HybridController GetPlayerController()
     {
         return _playerController;
     }
-    
-    
+
+    public void TeleportComplete()
+    {
+        _gettingToNewStation = false;
+    }
     public void RegisterSpawnerToList(StationSpawner spawner)
     {
         AvaibleStationSpawners.Add(spawner);
@@ -246,12 +256,14 @@ public class ExperimentManager : MonoBehaviour
     public void RegisterAreaManager(AreaManager manager)
     {
         AreaManagers.Add(manager.id,manager );
+        
     }
 
     
     
     private void StartedExperiment()
     {
+        Debug.Log(AreaManagers.Count+  " managers");
         StartExperimentArgs startExperimentArgs = new StartExperimentArgs();
         startExperimentArgs.CharacterController = _playerCharacterController;
         startExperimentArgs.Order = order;
@@ -364,8 +376,8 @@ public class ExperimentManager : MonoBehaviour
         liveDataRecorder.StopRecording();
         liveDataRecorder.SaveData();
         liveDataRecorder.ClearData();
-        OnDataSavingCompleted.Invoke();
         yield return new WaitForSeconds(FadeOutDuration / 2);
+        OnDataSavingCompleted.Invoke();
         SelectedAvatar.GetComponent<HybridController>().FadeIn(0.5f);
     }
 

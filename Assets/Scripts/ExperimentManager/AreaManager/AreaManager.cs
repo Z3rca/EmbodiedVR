@@ -61,7 +61,9 @@ public class AreaManager : MonoBehaviour
         }
 
         _pakourIsDone = false;
-        Timer.TimeElasped += TeleportPlayerToExit;
+        
+        if(Timer!=null)
+            Timer.TimeElasped += TeleportPlayerToExit;
         // RatingSystem.HitEvent += AcceptRating;
     }
     

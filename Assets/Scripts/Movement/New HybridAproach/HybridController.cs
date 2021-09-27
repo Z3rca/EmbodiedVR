@@ -381,13 +381,13 @@ public class HybridController : MonoBehaviour
     
     public void TeleportToPosition(Transform TeleportTransform)
     {
-        ApplyOuterImpact(Vector3.zero, 0.0f);
         StartCoroutine(TeleportProcess(TeleportTransform));
     }
 
     private IEnumerator TeleportProcess(Transform TeleportTransform)
     {
         //ugliest Teleport ever
+        _characterController.AddOuterMovementImpact(Vector3.zero, 0f);
         _characterController.GetComponent<CharacterController>().enabled = false;
         _characterController.transform.localPosition = Vector3.zero;
         _remoteTransformConroller.transform.localPosition = Vector3.zero;
@@ -402,6 +402,7 @@ public class HybridController : MonoBehaviour
         yield return new WaitForSeconds(1);
         
         _characterController.GetComponent<CharacterController>().enabled = true;
+        ExperimentManager.Instance.TeleportComplete();
     }
 
 
