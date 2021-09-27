@@ -117,7 +117,7 @@ public class LiveDataRecorder : MonoBehaviour
         while (_isRecording)
         {
             LiveDataFrame dataFrame = new LiveDataFrame();
-            
+            dataFrame.TimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
             //HMD
             dataFrame.HMDPositionGlobal = _hmd.position;
             dataFrame.HMDPositionLocal = _hmd.localPosition;

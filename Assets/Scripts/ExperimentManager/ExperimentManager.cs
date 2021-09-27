@@ -29,8 +29,10 @@ public class ExperimentManager : MonoBehaviour
 
     public TutorialManager tutorialManager;
 
-    [SerializeField] private LiveDataRecorder liveDataRecorder;
+    private Microphone _microphone;
 
+        [SerializeField] private LiveDataRecorder liveDataRecorder;
+    
 
     public event EventHandler<StartExperimentArgs> startedExperiment;
     public event EventHandler<ExperimentFinishedArgs> FinishedExperiment;

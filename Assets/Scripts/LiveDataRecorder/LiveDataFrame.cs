@@ -4,6 +4,7 @@ using UnityEngine;
 
     [Serializable] public class LiveDataFrame
     {
+        public double TimeStamp;
         //HMD - Camera Position
         public Vector3 NoseVector;      //HMD forward
         public Vector3 HMDPositionGlobal;
