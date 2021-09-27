@@ -32,6 +32,8 @@ public class AreaManager : MonoBehaviour
     private double _endDataGatheringTimeStamp; 
     public double endDataGatheringTimeStamp => _endDataGatheringTimeStamp;
 
+    private bool _pakourIsDone;
+
 
     [HideInInspector]public  double choiceTimeStamp;    //motionsickness rating end time stamp
     [HideInInspector]public int choiceValue;
@@ -58,6 +60,7 @@ public class AreaManager : MonoBehaviour
             ExperimentManager.Instance.RegisterAreaManager(this);
         }
 
+        _pakourIsDone = false;
         Timer.TimeElasped += TeleportPlayerToExit;
         // RatingSystem.HitEvent += AcceptRating;
     }
@@ -83,6 +86,8 @@ public class AreaManager : MonoBehaviour
 
     public void CompleteParkour()
     {
+        if (_pakourIsDone) return;
+        _pakourIsDone = true;
         _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         
         if (Timer != null)
@@ -125,7 +130,6 @@ public class AreaManager : MonoBehaviour
     public void BeginAudioRecording()
     {
         _startAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
-        
         
     }
     

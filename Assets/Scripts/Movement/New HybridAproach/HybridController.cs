@@ -381,6 +381,7 @@ public class HybridController : MonoBehaviour
     
     public void TeleportToPosition(Transform TeleportTransform)
     {
+        ApplyOuterImpact(Vector3.zero, 0.0f);
         StartCoroutine(TeleportProcess(TeleportTransform));
     }
 
