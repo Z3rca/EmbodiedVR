@@ -26,7 +26,6 @@ public class TutorialManager : MonoBehaviour
     private bool ThirdPersonIsActive;
     
     
-    
 
     public GameObject Door;
     public GameObject Door2;
@@ -51,8 +50,10 @@ public class TutorialManager : MonoBehaviour
 
     public void StartTutorial()
     {
+        
         if (ExperimentManager.Instance != null)
         {
+            ExperimentManager.Instance.GetCurrentAreaManager().StartParkour();
             HybridController = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>();
         }
 

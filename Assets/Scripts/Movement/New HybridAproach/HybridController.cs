@@ -321,8 +321,21 @@ public class HybridController : MonoBehaviour
         _cameraController.Fading(FadeOutDuration,FadeInDuration,FadeDuration);
     }
 
-    
-    
+    public void FadeOut(float FadeOutDuration)
+    {
+        _cameraController.Fading(FadeOutDuration, true);
+    }
+
+    public void FadeIn(float FadeInDuration)
+    {
+        _cameraController.Fading(FadeInDuration,false);
+    }
+
+
+    public HybridRemoteTransformConroller GetRemoteTransformController()
+    {
+        return _remoteTransformConroller;
+    }
     
     
     
@@ -374,6 +387,7 @@ public class HybridController : MonoBehaviour
     private IEnumerator TeleportProcess(Transform TeleportTransform)
     {
         //ugliest Teleport ever
+        _characterController.AddOuterMovementImpact(Vector3.zero, 0f);
         _characterController.GetComponent<CharacterController>().enabled = false;
         _characterController.transform.localPosition = Vector3.zero;
         _remoteTransformConroller.transform.localPosition = Vector3.zero;
@@ -388,6 +402,7 @@ public class HybridController : MonoBehaviour
         yield return new WaitForSeconds(1);
         
         _characterController.GetComponent<CharacterController>().enabled = true;
+        ExperimentManager.Instance.TeleportComplete();
     }
 
 

@@ -16,8 +16,9 @@ public class AreaManager : MonoBehaviour
     
     private double _parkourEndTimeStamp; public double parkourEndTimeStamp => _parkourEndTimeStamp;
 
-    private bool _wasTeleportedToEnd; public bool wasTeleportedToEnd => _wasTeleportedToEnd;
-    private double _wasTeleportedTimeStamp; public double wasTeleportedToEndTimeStamp => _wasTeleportedTimeStamp;
+    private bool _wasTeleportedToEnd; 
+    public bool wasTeleportedToEnd => _wasTeleportedToEnd;
+    private double _wasTeleportedTimeStamp;
 
     private double _reachedDataGatheringRoomTimeStamp;
     public double reachedDataGatheringRoomTimeStamp => _reachedDataGatheringRoomTimeStamp;
@@ -31,14 +32,20 @@ public class AreaManager : MonoBehaviour
     private double _endDataGatheringTimeStamp; 
     public double endDataGatheringTimeStamp => _endDataGatheringTimeStamp;
 
+    private bool _pakourIsDone;
 
-    public double choiceTimeStamp;
-    public int choiceValue;
 
-    public double StartAudioRecordTime;
-    public double EndAudioRecordTime;
+    [HideInInspector]public  double choiceTimeStamp;    //motionsickness rating end time stamp
+    [HideInInspector]public int choiceValue;
+
+    private double _startAudioRecordTime;
+    private double _endAudioRecordTime;
+    private string _audioFileName;
+    [HideInInspector]public double  startMotionsicknessMeasurementTime;
+    private double  _startPosturalStabilityTest;
+    private double  _endPosturalStabilityTest;
     public AudioClip participantExpierenceAudioData;
-    public string AudioStringName;
+ 
 
     public double PosturalTestStartTime;
     public double PosturalTestEndTime;
@@ -53,16 +60,13 @@ public class AreaManager : MonoBehaviour
             ExperimentManager.Instance.RegisterAreaManager(this);
         }
 
-        RatingSystem.HitEvent += AcceptRating;
+        _pakourIsDone = false;
+        
+        if(Timer!=null)
+            Timer.TimeElasped += TeleportPlayerToExit;
+        // RatingSystem.HitEvent += AcceptRating;
     }
-
-
-
-    private void AcceptRating(object sender, RatingBoardDataFrame ratingBoardDataFrame)
-    {
-        choiceValue = ratingBoardDataFrame.Choice;
-        choiceTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
-    }
+    
     
     public void StartParkour()
     {
@@ -84,8 +88,9 @@ public class AreaManager : MonoBehaviour
 
     public void CompleteParkour()
     {
-        if(!_wasTeleportedToEnd)
-            _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        if (_pakourIsDone) return;
+        _pakourIsDone = true;
+        _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         
         if (Timer != null)
         {
@@ -107,10 +112,6 @@ public class AreaManager : MonoBehaviour
         _wasTeleportedTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         _wasTeleportedToEnd = true;
         
-        if (ExperimentManager.Instance != null)
-        {
-            ExperimentManager.Instance.PakourEnds();
-        }
     }
     public void StartDataGathering()
     {
@@ -125,27 +126,76 @@ public class AreaManager : MonoBehaviour
     public void EndDataGathering()
     {
         _endDataGatheringTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        ExperimentManager.Instance.DataGatheringEnds();
     }
 
-    public void StartAudioRecording()
+    public void BeginAudioRecording()
     {
-        StartAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _startAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        
     }
-
+    
     public void EndAudioRecording()
     {
-        EndAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
-        AudioStringName = participantExpierenceAudioData.name;
+        _endAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _audioFileName = ExperimentManager.Instance.GetParticipantID()+ " "+ ExperimentManager.Instance.GetCondition() +" "+ id ;
+    }
+    public double GetAudioRecordingStart()
+    {
+        return _startAudioRecordTime;
+    }
+    public double GetAudioRecordingEnd()
+    {
+        return _endAudioRecordTime;
+    }
+
+    public string GetAudioFileName()
+    {
+        return _audioFileName;
+    }
+    public void BeginPosturalStabilityTest()
+    {
+        PosturalTestStartTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+    }
+    
+    public double GetBeginPosturalStabilityTest()
+    {
+        return PosturalTestStartTime;
+    }
+    
+    public void EndPosturalStabilityTest()
+    {
+        PosturalTestEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
+    }
+
+    public double GetEndPosturalStabilityTest()
+    {
+        return PosturalTestEndTime;
     }
     
     public void ReachedDataGatheringRoom()
     {
         _reachedDataGatheringRoomTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+
     }
     
     public void ReachedRatingBoard()
     {
         _reachedRatingBoardTimeStamp =TimeManager.Instance.GetCurrentUnixTimeStamp();
+    }
+
+
+    public void TeleportPlayerToExit()
+    {
+        _wasTeleportedTimeStamp= TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _wasTeleportedToEnd = true;
+        ExperimentManager.Instance.GetPlayerController().TeleportToPosition(Timer.exit.transform);
+    }
+
+
+    public double GetWasTeleportedTimeStamp()
+    {
+        return _wasTeleportedTimeStamp;
     }
 
 

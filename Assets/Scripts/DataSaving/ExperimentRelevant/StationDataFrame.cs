@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StationDataFrame
+[Serializable] public class StationDataFrame
 {
     //experiment Relevant
     public string stationID;
@@ -15,12 +16,19 @@ public class StationDataFrame
 
     public int stationIndex;
     //General Time relevant Data
-    public double TeleportStartTimeStamp;
+    public double TeleportationInitalizedTimeStamp; //beeing in the start room
     public double PakourStartTimeStamp;
     public double PakourEndTimeStamp;
     public double PakourDuration;
-    public double DataGatheringRoomTimeStamp;
-    public double RatingEndTimestamp;
+    
+    //Teleportation was initialized?
+    public double AbortTeleportStartTimeStamp;  //if the pakour wasn't finished, at which time was the teleport initialized
+    public bool wasTeleportedToEnd;
+    
+    
+    //Datagathering room
+    public double DataGatheringRoomEnteredTimeStamp;
+    public double RatingBoardReachedTimeStamp;
     
     //Audio Data Related
     public double AudioRecordStarted;
@@ -34,4 +42,8 @@ public class StationDataFrame
     public double PosturalStabilityTimeFrameBegin;
     public double PosturalStabilityTimeFrameEnd;
 
+
+   
+    
+  
 }

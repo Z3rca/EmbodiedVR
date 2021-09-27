@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Valve.Newtonsoft.Json.Utilities;
+using Valve.VR;
 
 public class ExperimentManager : MonoBehaviour
 {
@@ -20,21 +21,30 @@ public class ExperimentManager : MonoBehaviour
     private AreaManager _activeAreaManager;
     private List<StationSpawner> AvaibleStationSpawners = new List<StationSpawner>();
     private List<StationSpawner> RemainingstationsStationSpawners = new List<StationSpawner>();
-    private Dictionary<AreaManager, int> AreaManagers = new Dictionary<AreaManager, int>();
+    private Dictionary<int, AreaManager> AreaManagers = new Dictionary<int, AreaManager>();
 
+    private bool _gettingToNewStation;
     public List<int> StationOrder;
     public int StationIndex;
 
     public TutorialManager tutorialManager;
 
+    private Microphone _microphone;
+
+        [SerializeField] private LiveDataRecorder liveDataRecorder;
+    
 
     public event EventHandler<StartExperimentArgs> startedExperiment;
     public event EventHandler<ExperimentFinishedArgs> FinishedExperiment;
 
-    public event EventHandler<StationBeginArgs> OnPakourBegin; 
-    public event EventHandler<ParkourEndArgs> OnPakourFinished; 
-    public event EventHandler<DataGatheringBeginArgs> stationCompleted;
+    public event EventHandler<StationBeginArgs> OnStationBegin;
+    public event EventHandler<PakourBeginArgs> OnPakourBegin;
+    public event EventHandler<ParkourEndArgs> OnPakourFinished;
+
+    public event EventHandler<DataGatheringEndArgs> OnDataGatheringCompleted;
     
+     
+    private event Action OnDataSavingCompleted; 
     
     private double ExperimentStartTime;
 
@@ -95,7 +105,7 @@ public class ExperimentManager : MonoBehaviour
 
     private void Start()
     {
-       
+        OnDataSavingCompleted += TakeParticipantToNextStation;
     }
     
 
@@ -120,6 +130,8 @@ public class ExperimentManager : MonoBehaviour
             if (station.ID == StationOrder[0])
             {
                 _ActiveStation = station;
+                _activeAreaManager = AreaManagers[station.ID];
+                Debug.Log(_activeAreaManager);
             }
         }
 
@@ -166,10 +178,14 @@ public class ExperimentManager : MonoBehaviour
         yield return new WaitForFixedUpdate();
         
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
+        
+        liveDataRecorder.Initialize();
 
         StationBegin();
         
         _playerController.Fading(0.5f,0.5f,0.5f);
+        
+        
         
     }
 
@@ -181,14 +197,19 @@ public class ExperimentManager : MonoBehaviour
     
     public void TakeParticipantToNextStation()
     {
-        RemainingstationsStationSpawners.Remove(_ActiveStation);
+        if (_gettingToNewStation) return;
+        _gettingToNewStation = true;
+        Debug.Log("Take to the next chapter my friends");
             
+        RemainingstationsStationSpawners.Remove(_ActiveStation);
         if (!RemainingstationsStationSpawners.Any())
         {
             FinishExperiment();
             Debug.Log("Finished condition");
         }
-
+        
+        
+        
         StationIndex++;
 
         if (StationIndex > StationOrder.Count)
@@ -200,8 +221,10 @@ public class ExperimentManager : MonoBehaviour
         {
             if (stationSpawner.ID == StationOrder[StationIndex])
             {
+                Debug.Log("we found the according new area manager ");
                 _ActiveStation = stationSpawner;
-                
+                _activeAreaManager = null;
+                _activeAreaManager = AreaManagers[StationOrder[StationIndex]];
             }
         }
 
@@ -210,11 +233,23 @@ public class ExperimentManager : MonoBehaviour
             _playerController = SelectedAvatar.GetComponent<HybridController>();
 
         }
-
+        
+        
+        StationBegin();
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
+        
+        
     }
 
+    public HybridController GetPlayerController()
+    {
+        return _playerController;
+    }
 
+    public void TeleportComplete()
+    {
+        _gettingToNewStation = false;
+    }
     public void RegisterSpawnerToList(StationSpawner spawner)
     {
         AvaibleStationSpawners.Add(spawner);
@@ -222,13 +257,15 @@ public class ExperimentManager : MonoBehaviour
 
     public void RegisterAreaManager(AreaManager manager)
     {
-        AreaManagers.Add(manager, manager.id);
+        AreaManagers.Add(manager.id,manager );
+        
     }
 
-   
+    
     
     private void StartedExperiment()
     {
+        Debug.Log(AreaManagers.Count+  " managers");
         StartExperimentArgs startExperimentArgs = new StartExperimentArgs();
         startExperimentArgs.CharacterController = _playerCharacterController;
         startExperimentArgs.Order = order;
@@ -248,6 +285,8 @@ public class ExperimentManager : MonoBehaviour
 
     private void StationBegin()
     {
+        liveDataRecorder.StartRecording();
+        
         StationBeginArgs stationBeginArgs = new StationBeginArgs();
         stationBeginArgs.participantID = _participantId;
         stationBeginArgs.Condition = _condition;
@@ -256,9 +295,9 @@ public class ExperimentManager : MonoBehaviour
         stationBeginArgs.OrderIndex = StationIndex;
         
         stationBeginArgs.TeleportTimeFromLastStationTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
-        if (OnPakourBegin != null)
+        if (OnStationBegin != null)
         {
-            OnPakourBegin.Invoke(this, stationBeginArgs);
+            OnStationBegin.Invoke(this, stationBeginArgs);
         }
         else
         {
@@ -272,7 +311,8 @@ public class ExperimentManager : MonoBehaviour
         pakourBeginArgs.Condition = _condition;
         pakourBeginArgs.ParticipantID = _participantId;
         pakourBeginArgs.OrderIndex = StationIndex;
-        
+        pakourBeginArgs.PakourStartTime = _activeAreaManager.parkourStartTimeStamp;
+        OnPakourBegin.Invoke(this,pakourBeginArgs);
     }
 
     
@@ -281,8 +321,8 @@ public class ExperimentManager : MonoBehaviour
     {
         ParkourEndArgs parkourEndArgs = new ParkourEndArgs();
         parkourEndArgs.wasTeleportedToEnd = _activeAreaManager.wasTeleportedToEnd;
-        parkourEndArgs.wasTeleportedToEndTimeStamp = _activeAreaManager.wasTeleportedToEndTimeStamp;
-        parkourEndArgs.StationEndTime = _activeAreaManager.parkourEndTimeStamp;
+        parkourEndArgs.wasTeleportedToEndTimeStamp = _activeAreaManager.GetWasTeleportedTimeStamp();
+        parkourEndArgs.PakourEndTime = _activeAreaManager.parkourEndTimeStamp;
         parkourEndArgs.StationID = _activeAreaManager.id;
         parkourEndArgs.Condition = GetCondition();
 
@@ -291,18 +331,7 @@ public class ExperimentManager : MonoBehaviour
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
     }
-
-
-    public void DataGatheringBegins()
-    {
-        
-        DataGatheringBeginArgs dataGatheringBeginArgs = new DataGatheringBeginArgs();
-        dataGatheringBeginArgs.ParticipantID = _participantId;
-        dataGatheringBeginArgs.StationID = _ActiveStation.ID;
-        dataGatheringBeginArgs.Condition = _condition;
-        dataGatheringBeginArgs.EnteredDataGatheringRoomStart = _activeAreaManager.reachedDataGatheringRoomTimeStamp;
-        dataGatheringBeginArgs.ReachedVotingBoard = _activeAreaManager.reachedRatingBoardTimeStamp;
-    }
+    
 
 
     public void DataGatheringEnds()
@@ -311,18 +340,47 @@ public class ExperimentManager : MonoBehaviour
         dataGatheringEndArgs.ParticipantID = _participantId;
         dataGatheringEndArgs.StationID = _ActiveStation.ID;
         dataGatheringEndArgs.Condition = _condition;
+        dataGatheringEndArgs.OrderIndex = StationIndex;
+
+        dataGatheringEndArgs.EnteredDataGatheringRoom = _activeAreaManager.reachedDataGatheringRoomTimeStamp;
+        dataGatheringEndArgs.ReachedVotingBoard = _activeAreaManager.reachedRatingBoardTimeStamp;
+
         dataGatheringEndArgs.DataGatheringStarted = _activeAreaManager.startDataGatheringTimeStamp;
         dataGatheringEndArgs.DataGatheringEnded = _activeAreaManager.endDataGatheringTimeStamp;
         
         dataGatheringEndArgs.MotionSicknessScore = _activeAreaManager.choiceValue;
+        dataGatheringEndArgs.MotionSicknessScoreRatingBeginTimeStamp= _activeAreaManager.startMotionsicknessMeasurementTime;
         dataGatheringEndArgs.MotionSicknessScoreRatingAcceptedTime = _activeAreaManager.choiceTimeStamp;
         
-        dataGatheringEndArgs.StartingAudioRecordTimeStamp = _activeAreaManager.StartAudioRecordTime;
-        dataGatheringEndArgs.EndedAudioRecordingTimeStamp = _activeAreaManager.EndAudioRecordTime;
-        dataGatheringEndArgs.NameOfAudioFile = _activeAreaManager.AudioStringName;
+        dataGatheringEndArgs.StartingAudioRecordTimeStamp = _activeAreaManager.GetAudioRecordingStart();
+        dataGatheringEndArgs.EndedAudioRecordingTimeStamp = _activeAreaManager.GetAudioRecordingEnd();
+        dataGatheringEndArgs.NameOfAudioFile = _activeAreaManager.GetAudioFileName();
 
-        dataGatheringEndArgs.PostureTestStartTime = _activeAreaManager.PosturalTestStartTime;
-        dataGatheringEndArgs.PostureTestEndTime = _activeAreaManager.PosturalTestEndTime;
+        dataGatheringEndArgs.PostureTestStartTime = _activeAreaManager.GetBeginPosturalStabilityTest();
+        dataGatheringEndArgs.PostureTestEndTime = _activeAreaManager.GetEndPosturalStabilityTest();
+
+        if (OnDataGatheringCompleted != null)
+        {
+            OnDataGatheringCompleted.Invoke(this,dataGatheringEndArgs);
+        }
+        else
+        {
+            Debug.LogWarning("DATA WASNT SAVED");
+        }
+
+        StartCoroutine(SaveLiveDataCoroutine(1f));
+    }
+
+    public IEnumerator SaveLiveDataCoroutine(float FadeOutDuration)
+    {
+        SelectedAvatar.GetComponent<HybridController>().FadeOut(FadeOutDuration/2);
+        yield return new WaitForSeconds(FadeOutDuration);
+        liveDataRecorder.StopRecording();
+        liveDataRecorder.SaveData();
+        liveDataRecorder.ClearData();
+        yield return new WaitForSeconds(FadeOutDuration / 2);
+        OnDataSavingCompleted.Invoke();
+        SelectedAvatar.GetComponent<HybridController>().FadeIn(0.5f);
     }
 
     public void FinishExperiment()
@@ -333,16 +391,21 @@ public class ExperimentManager : MonoBehaviour
         experimentFinishedArgs.ExperimentEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
         experimentFinishedArgs.Condition = GetCondition();
         
-        
+        SelectedAvatar.GetComponent<HybridController>().FadeOut(2f);
         if (FinishedExperiment != null)
             FinishedExperiment.Invoke(this, experimentFinishedArgs);
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+        
+        
         // TODO finish experiment Logic
     }
-    
-    
 
+
+    public string GetParticipantID()
+    {
+        return _participantId;
+    }
 
     private void ReadOutPakourOrder(string Order)
     {
@@ -371,6 +434,11 @@ public class ExperimentManager : MonoBehaviour
         
     }
 
+    public AreaManager GetCurrentAreaManager()
+    {
+        return _activeAreaManager;
+    }
+    
     private void OnGUI()
     {
         var x = 100;
@@ -634,7 +702,6 @@ public class StationBeginArgs : EventArgs
     public string Order;
     public int OrderIndex;
     public double TeleportTimeFromLastStationTimeStamp;
-    public double PakourStartTimeStamp;
 }
 
 public class PakourBeginArgs : EventArgs
@@ -643,7 +710,7 @@ public class PakourBeginArgs : EventArgs
     public string ParticipantID;
     public ExperimentManager.Condition Condition;
     public int OrderIndex;
-    public double StationStartTime;
+    public double PakourStartTime;
 }
 public class ParkourEndArgs : EventArgs
 {
@@ -651,21 +718,9 @@ public class ParkourEndArgs : EventArgs
     public string ParticipantID;
     public ExperimentManager.Condition Condition;
     public int OrderIndex;
-    public double StationStartTime;
-    public double StationEndTime;
+    public double PakourEndTime;
     public bool wasTeleportedToEnd;
     public double wasTeleportedToEndTimeStamp;
-}
-
-public class DataGatheringBeginArgs : EventArgs
-{
-    public int StationID;
-    public string ParticipantID; 
-    public ExperimentManager.Condition Condition;
-    public int OrderIndex;
-    
-    public double EnteredDataGatheringRoomStart;
-    public double ReachedVotingBoard;
 }
 
 public class DataGatheringEndArgs : EventArgs
@@ -675,7 +730,8 @@ public class DataGatheringEndArgs : EventArgs
     public ExperimentManager.Condition Condition;
     public int OrderIndex;
     
-    
+    public double EnteredDataGatheringRoom;
+    public double ReachedVotingBoard;
     
     public double StartingAudioRecordTimeStamp;
     public string NameOfAudioFile;

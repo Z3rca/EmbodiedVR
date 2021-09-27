@@ -88,7 +88,7 @@ public class RatingSystem : MonoBehaviour
             Ratings = _choiceValues,
             RatingTimeStamps = _timeStamps,
             ChoiceTimeStamp = currentTimeStamp,
-            Choice = 0
+            Choice = _value
          };
       
          HitEvent?.Invoke(this,frame);
