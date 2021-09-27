@@ -7,7 +7,9 @@ using UnityEngine;
 {
    public double applicationStartTimestamp;
    public double ExperimentStartTimestamp;
+   public double ExperimentFinishTimeStamp;
    public string participantID;
+   public string Condition;
    public string Order;
    public List<StationDataFrame> _stationDataFrames;
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
@@ -14,24 +15,31 @@ public class LiveDataRecorder : MonoBehaviour
     
     private HybridCharacterController _characterController;
     private HybridRemoteTransformConroller _remoteController;
+    private InputController _inputController;
     
     private Transform _hmd;
     private Transform _leftController;
     private Transform _rightController;
 
 
+    private string HeldObjectInLeftHand;
+    private string HeldObjectInRightHand;
+
     private Transform Character;
     private bool _isInThirdPerson;
+
+    [SerializeField] private Vector2 _movementInput;
     
     
     private Transform Puppet;
     private Transform PuppetHead;
 
-    public void Initialize()
+    public void Initialize(int framesPerSecond=90)
     {
         //assign Transforms
         if (SteamVR.active)
         {
+            SetFrameRate(framesPerSecond);
             _hmd = Player.instance.hmdTransform;
             _leftController = Player.instance.leftHand.transform;
             _rightController = Player.instance.rightHand.transform;
@@ -42,8 +50,15 @@ public class LiveDataRecorder : MonoBehaviour
                 PerspectiveWasSwitched;
             _remoteController = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>()
                 .GetRemoteTransformController();
+            _inputController = ExperimentManager.Instance.SelectedAvatar.GetComponent<InputController>();
+
+            _movementInput = new Vector2();
+            _inputController.OnNotifyControlStickMovedObservers += ReadInput;
+            
             Puppet = _remoteController.RemoteFeetPositionGuess;
             PuppetHead = _remoteController.RemoteHMD;
+            
+            
 
         }
         
@@ -58,6 +73,7 @@ public class LiveDataRecorder : MonoBehaviour
         else
         {
             _isRecording = true;
+            _dataFrames = new List<LiveDataFrame>();
             StartCoroutine(Recording());
         }
     }
@@ -65,6 +81,11 @@ public class LiveDataRecorder : MonoBehaviour
     public void StopRecording()
     {
         _isRecording = false;
+    }
+
+    public void ClearData()
+    {
+        _dataFrames.Clear();
     }
 
     public void SaveData()
@@ -84,6 +105,11 @@ public class LiveDataRecorder : MonoBehaviour
     public void PerspectiveWasSwitched(bool state)
     {
         _isInThirdPerson = state;
+    }
+
+    private void ReadInput(Vector2 movementInput)
+    {
+        _movementInput = movementInput;
     }
 
     private IEnumerator Recording()
@@ -109,7 +135,8 @@ public class LiveDataRecorder : MonoBehaviour
             dataFrame.RightHandLocalPositon = _rightController.localPosition;
             dataFrame.RightGlobalRotation = _rightController.rotation;
             dataFrame.RightHandLocalRotation = _rightController.localRotation;
-            
+
+            dataFrame.MovementInput = _movementInput;
             //Character
             dataFrame.CharacterControllerPosition = _characterController.GetAdjustedPosition();
             dataFrame.CharacterControllerRotation = _characterController.transform.rotation;

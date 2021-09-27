@@ -11,7 +11,8 @@ using UnityEngine;
         public Vector3 HMDPositionLocal;
         public Quaternion HMDRotationLocal;
         
-        
+        //Input
+        public Vector2 MovementInput;
         //LeftController - Global Position -> Hand position of Puppet
         public Vector3 LeftHandLocalPositon;
         public Quaternion LeftHandLocalRotation;

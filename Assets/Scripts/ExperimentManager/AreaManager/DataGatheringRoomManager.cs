@@ -140,6 +140,11 @@ public class DataGatheringRoomManager : MonoBehaviour
         }
     }
 
+    public void EndDataGathering()
+    {
+        _areaManager.EndDataGathering();
+    }
+
     
     
     

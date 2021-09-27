@@ -14,13 +14,21 @@ public class StaticDataRecorder : MonoBehaviour
         ExperimentManager.Instance.OnPakourBegin += OnPakourBegin;
         ExperimentManager.Instance.OnPakourFinished += OnPakourEnds;
         ExperimentManager.Instance.OnDataGatheringCompleted += OnDataGatheringRoomCompleted;
+        ExperimentManager.Instance.FinishedExperiment += OnFinishExperiment;
+    }
+
+    private void OnFinishExperiment(object sender, ExperimentFinishedArgs e)
+    {
+        _currentDataFrame.ExperimentFinishTimeStamp = e.ExperimentEndTime;
+        
+        DataSavingManager.Instance.Save(_currentDataFrame, _currentDataFrame.participantID +" " + _currentDataFrame.Condition +" "+ _currentDataFrame.Order);
     }
 
 
     void OnStartedExperiment(object sender, StartExperimentArgs startExperimentArgs)
     {
         _currentDataFrame = new ELIVRDataFrame();
-
+        _currentDataFrame.Condition = ExperimentManager.Instance.GetCondition().ToString();
         _currentDataFrame.applicationStartTimestamp = startExperimentArgs.ApplicationStartTime;
         _currentDataFrame.ExperimentStartTimestamp = startExperimentArgs.ExperimentStartTime;
         _currentDataFrame.participantID = startExperimentArgs.ParticipantID;
@@ -95,7 +103,7 @@ public class StaticDataRecorder : MonoBehaviour
         //Postural stabiilty test
 
         _currentStationDataFrame.PosturalStabilityTimeFrameBegin = dataGatheringEndArgs.PostureTestStartTime;
-        _currentStationDataFrame.PosturalStabilityTimeFrameEnd = dataGatheringEndArgs.PostureTestStartTime;
+        _currentStationDataFrame.PosturalStabilityTimeFrameEnd = dataGatheringEndArgs.PostureTestEndTime;
         
         
         DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);

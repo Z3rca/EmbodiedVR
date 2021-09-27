@@ -24472,6 +24472,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 3496802412258329570}
@@ -24482,6 +24492,16 @@ PrefabInstance:
       objectReference: {fileID: 8593677065812004274}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 545603666247230701}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: CloseDoor
       objectReference: {fileID: 0}
@@ -24489,6 +24509,16 @@ PrefabInstance:
         type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: StopTimer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: CompleteParkour
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8303821994303588952, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
@@ -25243,11 +25273,16 @@ PrefabInstance:
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
@@ -25267,7 +25302,17 @@ PrefabInstance:
       objectReference: {fileID: 2918481069729977329}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 545603666247230701}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
@@ -25287,7 +25332,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: StartParkour
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8303821994303588952, guid: 68f2e64a4370c504e849669dfb4b2773,

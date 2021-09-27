@@ -16,7 +16,8 @@ public class AreaManager : MonoBehaviour
     
     private double _parkourEndTimeStamp; public double parkourEndTimeStamp => _parkourEndTimeStamp;
 
-    private bool _wasTeleportedToEnd; public bool wasTeleportedToEnd => _wasTeleportedToEnd;
+    private bool _wasTeleportedToEnd; 
+    public bool wasTeleportedToEnd => _wasTeleportedToEnd;
     private double _wasTeleportedTimeStamp;
 
     private double _reachedDataGatheringRoomTimeStamp;
@@ -82,8 +83,7 @@ public class AreaManager : MonoBehaviour
 
     public void CompleteParkour()
     {
-        if(!_wasTeleportedToEnd)
-            _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        _parkourEndTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         
         if (Timer != null)
         {
@@ -105,10 +105,6 @@ public class AreaManager : MonoBehaviour
         _wasTeleportedTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         _wasTeleportedToEnd = true;
         
-        if (ExperimentManager.Instance != null)
-        {
-            ExperimentManager.Instance.PakourEnds();
-        }
     }
     public void StartDataGathering()
     {
@@ -123,6 +119,7 @@ public class AreaManager : MonoBehaviour
     public void EndDataGathering()
     {
         _endDataGatheringTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
+        ExperimentManager.Instance.DataGatheringEnds();
     }
 
     public void BeginAudioRecording()

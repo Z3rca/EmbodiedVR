@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Valve.Newtonsoft.Json.Utilities;
+using Valve.VR;
 
 public class ExperimentManager : MonoBehaviour
 {
@@ -39,6 +40,8 @@ public class ExperimentManager : MonoBehaviour
 
     public event EventHandler<DataGatheringEndArgs> OnDataGatheringCompleted;
     
+     
+    private event Action OnDataSavingCompleted; 
     
     private double ExperimentStartTime;
 
@@ -99,7 +102,7 @@ public class ExperimentManager : MonoBehaviour
 
     private void Start()
     {
-       
+        OnDataSavingCompleted += TakeParticipantToNextStation;
     }
     
 
@@ -172,10 +175,14 @@ public class ExperimentManager : MonoBehaviour
         yield return new WaitForFixedUpdate();
         
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
+        
+        liveDataRecorder.Initialize();
 
         StationBegin();
         
         _playerController.Fading(0.5f,0.5f,0.5f);
+        
+        
         
     }
 
@@ -187,14 +194,16 @@ public class ExperimentManager : MonoBehaviour
     
     public void TakeParticipantToNextStation()
     {
-        RemainingstationsStationSpawners.Remove(_ActiveStation);
+        Debug.Log("Take to the next chapter my friends");
             
         if (!RemainingstationsStationSpawners.Any())
         {
             FinishExperiment();
             Debug.Log("Finished condition");
         }
-
+        
+        RemainingstationsStationSpawners.Remove(_ActiveStation);
+        
         StationIndex++;
 
         if (StationIndex > StationOrder.Count)
@@ -217,6 +226,8 @@ public class ExperimentManager : MonoBehaviour
             _playerController = SelectedAvatar.GetComponent<HybridController>();
 
         }
+        
+        StationBegin();
 
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
     }
@@ -342,8 +353,20 @@ public class ExperimentManager : MonoBehaviour
         {
             Debug.LogWarning("DATA WASNT SAVED");
         }
+
+        StartCoroutine(SaveLiveDataCoroutine(1f));
+    }
+
+    public IEnumerator SaveLiveDataCoroutine(float FadeOutDuration)
+    {
+        SelectedAvatar.GetComponent<HybridController>().FadeOut(FadeOutDuration/2);
+        yield return new WaitForSeconds(FadeOutDuration);
         liveDataRecorder.StopRecording();
         liveDataRecorder.SaveData();
+        liveDataRecorder.ClearData();
+        OnDataSavingCompleted.Invoke();
+        yield return new WaitForSeconds(FadeOutDuration / 2);
+        SelectedAvatar.GetComponent<HybridController>().FadeIn(0.5f);
     }
 
     public void FinishExperiment()
@@ -354,11 +377,13 @@ public class ExperimentManager : MonoBehaviour
         experimentFinishedArgs.ExperimentEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
         experimentFinishedArgs.Condition = GetCondition();
         
-        
+        SelectedAvatar.GetComponent<HybridController>().FadeOut(2f);
         if (FinishedExperiment != null)
             FinishedExperiment.Invoke(this, experimentFinishedArgs);
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
+        
+        
         // TODO finish experiment Logic
     }
 

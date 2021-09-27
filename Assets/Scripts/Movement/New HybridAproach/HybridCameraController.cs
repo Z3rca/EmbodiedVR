@@ -66,8 +66,20 @@ public class HybridCameraController : MonoBehaviour
         Debug.Log("fading");
         _fadingInProgres = true;
         StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
-        
     }
+
+    public void Fading(float duration, bool fadeout)
+    {
+        if (fadeout)
+        {
+            SteamVR_Fade.Start(Color.black, duration); 
+        }
+        else
+        {
+            SteamVR_Fade.Start(Color.clear, duration); 
+        }
+    }
+    
     private IEnumerator FadeOutFadeIn(float FadeOut=0.25f, float FadeIn=0.25f, float FadeTime =.1f)
     {
         SteamVR_Fade.Start(Color.black,FadeOut);
