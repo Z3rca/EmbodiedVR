@@ -59,6 +59,12 @@ public class StaticDataRecorder : MonoBehaviour
 
     void OnPakourBegin(object sender, PakourBeginArgs pakourBeginArgs)
     {
+        if (_currentStationDataFrame == null)
+        {
+            Debug.LogWarning("Pakour data start data not found, you miss  data");
+            _currentStationDataFrame = new StationDataFrame();
+        }
+        
         _currentStationDataFrame.PakourStartTimeStamp = pakourBeginArgs.PakourStartTime;
     }
     
@@ -66,7 +72,8 @@ public class StaticDataRecorder : MonoBehaviour
     {
         if (_currentStationDataFrame == null)
         {
-            Debug.LogWarning("The Pakour start  have been corrupted, abort");
+            Debug.LogWarning("Pakour data start data not found, you miss  data");
+            _currentStationDataFrame = new StationDataFrame();
         }
         
         _currentStationDataFrame.PakourEndTimeStamp = parkourEndArgs.PakourEndTime;
@@ -82,7 +89,8 @@ public class StaticDataRecorder : MonoBehaviour
     {
         if (_currentStationDataFrame == null)
         {
-            Debug.LogWarning("Pakour data not found, aborted");
+            Debug.LogWarning("Pakour data start data not found, you miss  data");
+            _currentStationDataFrame = new StationDataFrame();
         }
         
         _currentStationDataFrame.RatingBoardReachedTimeStamp = dataGatheringEndArgs.ReachedVotingBoard;

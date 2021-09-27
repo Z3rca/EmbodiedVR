@@ -53,7 +53,6 @@ public class TutorialManager : MonoBehaviour
         
         if (ExperimentManager.Instance != null)
         {
-            ExperimentManager.Instance.GetCurrentAreaManager().StartParkour();
             HybridController = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>();
         }
 
@@ -74,10 +73,7 @@ public class TutorialManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            
-        }
+        
     }
 
 
