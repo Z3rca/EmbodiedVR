@@ -321,8 +321,11 @@ public class HybridController : MonoBehaviour
         _cameraController.Fading(FadeOutDuration,FadeInDuration,FadeDuration);
     }
 
-    
-    
+
+    public HybridRemoteTransformConroller GetRemoteTransformController()
+    {
+        return _remoteTransformConroller;
+    }
     
     
     

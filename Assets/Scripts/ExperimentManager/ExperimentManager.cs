@@ -27,6 +27,8 @@ public class ExperimentManager : MonoBehaviour
 
     public TutorialManager tutorialManager;
 
+    [SerializeField] private LiveDataRecorder liveDataRecorder;
+
 
     public event EventHandler<StartExperimentArgs> startedExperiment;
     public event EventHandler<ExperimentFinishedArgs> FinishedExperiment;
@@ -258,6 +260,8 @@ public class ExperimentManager : MonoBehaviour
 
     private void StationBegin()
     {
+        liveDataRecorder.StartRecording();
+        
         StationBeginArgs stationBeginArgs = new StationBeginArgs();
         stationBeginArgs.participantID = _participantId;
         stationBeginArgs.Condition = _condition;
@@ -338,7 +342,8 @@ public class ExperimentManager : MonoBehaviour
         {
             Debug.LogWarning("DATA WASNT SAVED");
         }
-        
+        liveDataRecorder.StopRecording();
+        liveDataRecorder.SaveData();
     }
 
     public void FinishExperiment()
