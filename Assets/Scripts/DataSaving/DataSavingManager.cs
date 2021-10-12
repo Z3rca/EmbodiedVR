@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;  
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+using UnityEditor.Playables;
 using UnityEngine;
 
 public class DataSavingManager : MonoBehaviour
@@ -189,7 +191,12 @@ public class DataSavingManager : MonoBehaviour
         
         Debug.Log("saved  " +fileName + " to : " + SavePath );
     }
-    
+
+    public void SaveToWav(AudioClip audioClip, string Filename)
+    {
+        SavWav.Save(Filename, audioClip);
+    }
+
     private string GetPathForSaveFile(string fileName, string format=".json")
     {
         string name = fileName + format;
@@ -202,4 +209,13 @@ public class DataSavingManager : MonoBehaviour
         return SavePath;
     }
     
+}
+
+[Serializable]
+class AudioClipSample
+{
+    public int frequency;
+    public int samples;
+    public int channels;
+    public float[] sample;
 }
