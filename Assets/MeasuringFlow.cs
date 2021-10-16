@@ -31,6 +31,7 @@ public class MeasuringFlow : MonoBehaviour
 
     private bool lastStage = false;
 
+    private bool audioRecordingPassed;
 
     public event Action MotionsicknessMeasurementStart;
     public event Action AudioRecordingStarted;
@@ -57,7 +58,7 @@ public class MeasuringFlow : MonoBehaviour
         posturalStabilityMeasuringTool.SetActive(false);
 
         
-        while(!audioMeasured)
+        while(!audioMeasured||ExperimentManager.Instance.MicrophoneIsRecording())
         {
             yield return null;
         }
@@ -128,6 +129,7 @@ public class MeasuringFlow : MonoBehaviour
         if (recordingStarted)
         {
             //TODO stop recording
+            AudioRecordingEnded.Invoke();
             audioMeasured = true;
         }
         else

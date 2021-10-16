@@ -29,9 +29,11 @@ public class ExperimentManager : MonoBehaviour
 
     public TutorialManager tutorialManager;
 
-    private Microphone _microphone;
+    [SerializeField] private int _defaultRecordingTime=300;
 
-        [SerializeField] private LiveDataRecorder liveDataRecorder;
+    [SerializeField] private MicrophoneManager _microphoneManager;
+
+    [SerializeField] private LiveDataRecorder liveDataRecorder;
     
 
     public event EventHandler<StartExperimentArgs> startedExperiment;
@@ -106,6 +108,7 @@ public class ExperimentManager : MonoBehaviour
     private void Start()
     {
         OnDataSavingCompleted += TakeParticipantToNextStation;
+        _microphoneManager = GetComponentInChildren<MicrophoneManager>();
     }
     
 
@@ -331,8 +334,11 @@ public class ExperimentManager : MonoBehaviour
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
     }
-    
 
+    public void StartMicrophoneRecording(int time)
+    {
+        _microphoneManager.StartRecording(time);
+    }
 
     public void DataGatheringEnds()
     {
@@ -355,6 +361,7 @@ public class ExperimentManager : MonoBehaviour
         dataGatheringEndArgs.StartingAudioRecordTimeStamp = _activeAreaManager.GetAudioRecordingStart();
         dataGatheringEndArgs.EndedAudioRecordingTimeStamp = _activeAreaManager.GetAudioRecordingEnd();
         dataGatheringEndArgs.NameOfAudioFile = _activeAreaManager.GetAudioFileName();
+        _microphoneManager.SetAudioFileName(_activeAreaManager.GetAudioFileName());
 
         dataGatheringEndArgs.PostureTestStartTime = _activeAreaManager.GetBeginPosturalStabilityTest();
         dataGatheringEndArgs.PostureTestEndTime = _activeAreaManager.GetEndPosturalStabilityTest();
@@ -368,16 +375,20 @@ public class ExperimentManager : MonoBehaviour
             Debug.LogWarning("DATA WASNT SAVED");
         }
 
-        StartCoroutine(SaveLiveDataCoroutine(1f));
+        StartCoroutine(SaveDataCoroutine(1f));
     }
 
-    public IEnumerator SaveLiveDataCoroutine(float FadeOutDuration)
+    public IEnumerator SaveDataCoroutine(float FadeOutDuration)
     {
         SelectedAvatar.GetComponent<HybridController>().FadeOut(FadeOutDuration/2);
         yield return new WaitForSeconds(FadeOutDuration);
         liveDataRecorder.StopRecording();
+        
         liveDataRecorder.SaveData();
+        _microphoneManager.SaveAudioClip();
+        
         liveDataRecorder.ClearData();
+        _microphoneManager.ClearData();
         yield return new WaitForSeconds(FadeOutDuration / 2);
         OnDataSavingCompleted.Invoke();
         SelectedAvatar.GetComponent<HybridController>().FadeIn(0.5f);
@@ -434,6 +445,21 @@ public class ExperimentManager : MonoBehaviour
         
     }
 
+    public bool MicrophoneIsRecording()
+    {
+        return _microphoneManager.isRecording();
+    }
+
+    public void StopRecordingMicrophone()
+    {
+        _microphoneManager.StopRecording();
+    }
+    
+    public int GetDefaultAudioRecordingTime()
+    {
+        return _defaultRecordingTime;
+    }
+    
     public AreaManager GetCurrentAreaManager()
     {
         return _activeAreaManager;

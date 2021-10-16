@@ -8,6 +8,7 @@ public class MicrophoneManager : MonoBehaviour
     private AudioSource _audioSource;
     private List<AudioClip> Audioclips;
     private bool _isRecording;
+    private string _audioFileName;
     [SerializeField] private bool IsDebug;
 
     [SerializeField] private string Device;
@@ -15,6 +16,7 @@ public class MicrophoneManager : MonoBehaviour
     [SerializeField] private int frequency = 44100;
 
     [SerializeField] private float[] _data;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -73,32 +75,49 @@ public class MicrophoneManager : MonoBehaviour
     private IEnumerator StoreDataAfterRecording(int timeInSeconds)
     {
         yield return new WaitForSeconds(timeInSeconds);
-        Microphone.End(Device);
-        SaveAudioClip("test");
+        StopRecording();
+
         if (IsDebug)
         {
             _audioSource.Play();
-            Debug.Log("audio complete " + " "+ _audioSource.clip.length + " "+ _audioSource.clip.samples);
-            
-            Debug.Log("data: " + _data.Length +"frames");
         }
         
     }
 
-
+    public bool isRecording()
+    {
+        return _isRecording;
+    }
 
     public void StopRecording()
     {
          Microphone.End(Device);
-         
-        // _audioSource.clip.Create()
+         _isRecording = false;
+         // _audioSource.clip.Create()
     }
 
-
-    public void SaveAudioClip(string Name)
+    public void SetAudioFileName(string name)
     {
-        _data = new float[_audioSource.clip.samples * _audioSource.clip.channels];
+        _audioFileName = name;
+    }
+
+    public void SaveAudioClip()
+    {
+        if (_isRecording)
+        {
+            StopRecording();
+        }
         _audioSource.clip.GetData(_data, 0);
-        DataSavingManager.Instance.SaveToWav(_audioSource.clip,Name);
+        DataSavingManager.Instance.SaveToWav(_audioSource.clip,_audioFileName);
+    }
+
+    public void ClearData()
+    {
+        if (_isRecording)
+        {
+            StopRecording();
+        }
+
+        _audioSource.clip = null;
     }
 }
