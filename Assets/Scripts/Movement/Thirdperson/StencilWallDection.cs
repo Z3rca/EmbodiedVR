@@ -5,11 +5,13 @@ using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 using Valve.VR.InteractionSystem;
 using Debug = UnityEngine.Debug;
 
 public class StencilWallDection : MonoBehaviour
 {
+    public GameObject TargetForMask;
     public GameObject stencilMaskObject;
     public LayerMask WallLayer;
     public LayerMask DefaultLayer;
@@ -39,7 +41,7 @@ public class StencilWallDection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        stencilMaskObject.transform.position = TargetForMask.transform.position;
     }
 
 
