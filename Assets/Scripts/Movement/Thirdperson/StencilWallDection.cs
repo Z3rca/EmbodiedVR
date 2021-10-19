@@ -5,11 +5,13 @@ using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 using Valve.VR.InteractionSystem;
 using Debug = UnityEngine.Debug;
 
 public class StencilWallDection : MonoBehaviour
 {
+    public GameObject TargetForMask;
     public GameObject stencilMaskObject;
     public LayerMask WallLayer;
     public LayerMask DefaultLayer;
@@ -24,19 +26,22 @@ public class StencilWallDection : MonoBehaviour
     private int _playeLayerNumber;
 
     private bool ignoreMask;
+
+    private Dictionary<string, Material> MaterialDictionary;
+    
     // Start is called before the first frame update
     void Start()
     {
         float tmp = Mathf.Log(WallLayer, 2);
         _wallLayerNumber = (int) tmp;
-        
-      Debug.Log(" layer number is "+ _wallLayerNumber);
+        MaterialDictionary = new Dictionary<string, Material>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        stencilMaskObject.transform.position = TargetForMask.transform.position;
     }
 
 
@@ -52,7 +57,12 @@ public class StencilWallDection : MonoBehaviour
 //            Debug.Log("wall object " + other.name);
             if (other.GetComponent<Renderer>()!=null)
             {
-                tmp_Material = other.gameObject.GetComponent<Renderer>().material;
+                if (!MaterialDictionary.ContainsKey(other.gameObject.GetComponent<Renderer>().material.name))
+                {
+                    MaterialDictionary.Add(other.gameObject.GetComponent<Renderer>().material.name,other.gameObject.GetComponent<Renderer>().material);
+                    Debug.Log("added material of " + other.name);
+                    tmp_Material = other.gameObject.GetComponent<Renderer>().material;
+                }
             }
             else
             {
@@ -69,16 +79,22 @@ public class StencilWallDection : MonoBehaviour
         
 
     }
-    
+
     private void OnTriggerExit(Collider other)
     {
         if (ignoreMask)
             return;
         
-            stencilMaskObject.SetActive(false);
+        stencilMaskObject.SetActive(false);
+        
         if (other.gameObject.layer == _wallLayerNumber&& other.GetComponent<Renderer>()!=null)
         {
-            other.gameObject.GetComponent<Renderer>().material = tmp_Material;
+            if (MaterialDictionary.ContainsKey(other.name))
+            {
+                other.gameObject.GetComponent<Renderer>().material = MaterialDictionary[other.name];
+            }
+            
+            //other.gameObject.GetComponent<Renderer>().material = tmp_Material;
             other.GetComponent<Renderer>().receiveShadows = true;
             other.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.On;
         }

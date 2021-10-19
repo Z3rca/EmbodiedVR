@@ -9,8 +9,9 @@ public class AutoElevator : MonoBehaviour
     [SerializeField] private GameObject UpperBoundary;
     [SerializeField] private GameObject MiddlePosition;
     [SerializeField] private GameObject LowerBoundary;
-    [SerializeField] private GameObject Door;
+    [SerializeField] private List<GameObject> Doors;
 
+    public bool upward;
     public float speed;
     
     private Vector3 _boundedPosition;
@@ -20,11 +21,16 @@ public class AutoElevator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Door.SetActive(false);
+        foreach (var door in Doors)
+        {
+            door.SetActive(false);
+        }
         _boundedPosition = elevator.transform.position;
+        
+        
     }
 
-    // Update is called once per frame
+
 
     void FixedUpdate()
     {
@@ -32,8 +38,7 @@ public class AutoElevator : MonoBehaviour
     }
 
     
-
-
+    
     public void StartLift()
     {
         StartCoroutine(StartElevatorScript());
@@ -42,17 +47,26 @@ public class AutoElevator : MonoBehaviour
     private IEnumerator StartElevatorScript()
     {
         reachedPosition = false;
-        Door.SetActive(true);
-        yield return MoveInDirection(speed, true, MiddlePosition.transform.position);
-        Debug.Log("finished middle step");
+        foreach (var door in Doors)
+        {
+            door.SetActive(true);
+        }
+        
+        if(MiddlePosition!=null)
+            yield return MoveInDirection(speed, MiddlePosition.transform.position);
+        
         reachedPosition = false;
         yield return new WaitForSeconds(2f);
-        yield return MoveInDirection(speed, true, UpperBoundary.transform.position);
+        yield return MoveInDirection(speed, UpperBoundary.transform.position);
         Debug.Log("finished lift");
-        Door.SetActive(false);
+        
+        foreach (var door in Doors)
+        {
+            door.SetActive(false);
+        }
     }
 
-    private IEnumerator MoveInDirection(float speed, bool upward, Vector3 targetPosition)
+    private IEnumerator MoveInDirection(float speed, Vector3 targetPosition)
     {
         while (!reachedPosition)
         {
@@ -61,19 +75,36 @@ public class AutoElevator : MonoBehaviour
             if (upward)
             {
                 posY += speed * Time.deltaTime;
+                posY =  Mathf.Clamp(posY,  
+                    (LowerBoundary.transform.position.y), 
+                    (UpperBoundary.transform.position.y));
+            }
+            else
+            {
+                posY -= speed * Time.deltaTime;
+                posY =  Mathf.Clamp(posY,  
+                    (UpperBoundary.transform.position.y), 
+                    (LowerBoundary.transform.position.y));
             }
             
-            posY =  Mathf.Clamp(posY,  
-                (LowerBoundary.transform.position.y), 
-                (UpperBoundary.transform.position.y));
+            
 
-            _boundedPosition = new Vector3(LowerBoundary.transform.position.x, posY, LowerBoundary.transform.position.z);
+            _boundedPosition = new Vector3(elevator.transform.position.x, posY, elevator.transform.position.z);
 
-         
 
-            if (posY >= targetPosition.y)
+            if (upward)
             {
-                reachedPosition = true;
+                if (posY >= targetPosition.y)
+                {
+                    reachedPosition = true;
+                }
+            }
+            else
+            {
+                if (posY <= targetPosition.y)
+                {
+                    reachedPosition = true;
+                }
             }
 
             yield return new WaitForEndOfFrame();
