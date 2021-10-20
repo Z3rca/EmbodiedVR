@@ -387,10 +387,11 @@ public class ExperimentManager : MonoBehaviour
         liveDataRecorder.SaveData();
         _microphoneManager.SaveAudioClip();
         
-        liveDataRecorder.ClearData();
-        _microphoneManager.ClearData();
+        
         yield return new WaitForSeconds(FadeOutDuration / 2);
         OnDataSavingCompleted.Invoke();
+        liveDataRecorder.ClearData();
+        _microphoneManager.ClearData();
         SelectedAvatar.GetComponent<HybridController>().FadeIn(0.5f);
     }
 

@@ -14,8 +14,7 @@ public class MicrophoneManager : MonoBehaviour
     [SerializeField] private string Device;
 
     [SerializeField] private int frequency = 44100;
-
-    [SerializeField] private float[] _data;
+    
     
     // Start is called before the first frame update
     void Start()
@@ -76,7 +75,7 @@ public class MicrophoneManager : MonoBehaviour
     {
         yield return new WaitForSeconds(timeInSeconds);
         StopRecording();
-
+        
         if (IsDebug)
         {
             _audioSource.Play();
@@ -107,7 +106,7 @@ public class MicrophoneManager : MonoBehaviour
         {
             StopRecording();
         }
-        _audioSource.clip.GetData(_data, 0);
+        
         DataSavingManager.Instance.SaveToWav(_audioSource.clip,_audioFileName);
     }
 
