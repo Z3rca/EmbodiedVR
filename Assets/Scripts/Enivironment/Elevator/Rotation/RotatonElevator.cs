@@ -11,6 +11,7 @@ public class RotatonElevator : MonoBehaviour
     private bool running;
     public float speed;
     private bool atTarget;
+    public float BeginRotationAfterSeconds = 2;
     public RotationAffector _rotationAffector;
     [SerializeField] private bool clockwise;
     private HybridCharacterController characterController;
@@ -25,19 +26,9 @@ public class RotatonElevator : MonoBehaviour
         _rotationAffector.speed = 0f;
         running = false;
     }
+    
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            TurnPlatform();
-        }
-    }
-
-
-
-    public void TurnPlatform()
+    private void TurnPlatform()
     {
         if (!running)
         {
@@ -128,7 +119,7 @@ public class RotatonElevator : MonoBehaviour
             
             launchedStart = true;
             physicalMovementPlayer.transform.parent.SetParent(Lift.transform);
-            StartCoroutine(WaitForStart(physicalMovementPlayer, 5f));
+            StartCoroutine(WaitForStart(physicalMovementPlayer, BeginRotationAfterSeconds));
         }
         
     }
