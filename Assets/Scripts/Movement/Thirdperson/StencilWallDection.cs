@@ -60,7 +60,6 @@ public class StencilWallDection : MonoBehaviour
                 if (!MaterialDictionary.ContainsKey(other.gameObject.GetComponent<Renderer>().material.name))
                 {
                     MaterialDictionary.Add(other.gameObject.GetComponent<Renderer>().material.name,other.gameObject.GetComponent<Renderer>().material);
-                    Debug.Log("added material of " + other.name);
                     tmp_Material = other.gameObject.GetComponent<Renderer>().material;
                 }
             }

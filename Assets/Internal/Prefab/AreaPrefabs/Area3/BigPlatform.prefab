@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6432027375569528547}
   - component: {fileID: 242091356932205217}
   - component: {fileID: 2767740799766250865}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BigPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,8 +108,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a605872c599c7bc4bb41ba4b1bf67e0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActivationTrigger: {fileID: 0}
   direction: {x: 0, y: 0, z: 1}
   speed: 1
+  StartOnTriggerEnter: 0
+  ActivationEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  ExitEvents:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &2767740799766250865
 BoxCollider:
   m_ObjectHideFlags: 0

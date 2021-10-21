@@ -125,10 +125,11 @@ public class MeasuringFlow : MonoBehaviour
 
     private void AudioButton()
     {
+        if(audioMeasured)
+            return;
         
         if (recordingStarted)
         {
-            //TODO stop recording
             AudioRecordingEnded.Invoke();
             audioMeasured = true;
         }
@@ -137,7 +138,6 @@ public class MeasuringFlow : MonoBehaviour
             AudioRecordingStarted.Invoke();
             recordingStarted = true;
             audioRunningText.text = "Audio recording is in progress.";
-            //TODO start recording
         }
     }
 

@@ -14,7 +14,7 @@ public class ClampArm : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        Debug.Log("This should mean that console output is working");
+       // Debug.Log("This should mean that console output is working");
     }
 
     // Update is called once per frame

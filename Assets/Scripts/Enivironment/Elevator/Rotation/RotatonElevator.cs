@@ -29,7 +29,10 @@ public class RotatonElevator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            TurnPlatform();
+        }
     }
 
 
@@ -73,6 +76,7 @@ public class RotatonElevator : MonoBehaviour
               {
                  
                   this.transform.Rotate(Vector3.up * (+speed * Time.deltaTime));
+                  //physicalMovementPlayer.GetComponent<HybridCharacterController>().RotateCharacter(Quaternion.Euler(transform.forward));
               }
           }
           else
@@ -97,7 +101,9 @@ public class RotatonElevator : MonoBehaviour
         _rotationAffector.speed = 0f;
         _rotationAffector.SetActive(false);
         door.SetActive(false);
-        physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.SetParent(null);
+        physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.parent.SetParent(null);
+        physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.parent.eulerAngles= Vector3.zero;
+        physicalMovementPlayer.GetComponent<HybridCharacterController>().RotateCharacter(Quaternion.Euler(transform.forward*-1));
         running = false;
     }
 
@@ -121,7 +127,7 @@ public class RotatonElevator : MonoBehaviour
             physicalMovementPlayer = other.gameObject;
             
             launchedStart = true;
-            physicalMovementPlayer.transform.SetParent(this.transform);
+            physicalMovementPlayer.transform.parent.SetParent(Lift.transform);
             StartCoroutine(WaitForStart(physicalMovementPlayer, 5f));
         }
         
