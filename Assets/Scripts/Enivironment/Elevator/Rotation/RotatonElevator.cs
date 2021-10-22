@@ -94,7 +94,7 @@ public class RotatonElevator : MonoBehaviour
         door.SetActive(false);
         physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.parent.SetParent(null);
         physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.parent.eulerAngles= Vector3.zero;
-        physicalMovementPlayer.GetComponent<HybridCharacterController>().RotateCharacter(Quaternion.Euler(transform.forward*-1));
+        physicalMovementPlayer.GetComponent<HybridCharacterController>().RotateCharacter(Quaternion.Euler(transform.forward));
         running = false;
     }
 
