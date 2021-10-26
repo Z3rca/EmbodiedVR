@@ -94,7 +94,7 @@ public class LiveDataRecorder : MonoBehaviour
         {
             StopRecording();
         }
-        DataSavingManager.Instance.SaveList(_dataFrames, ExperimentManager.Instance.GetParticipantID()+ " " + ExperimentManager.Instance.GetCondition()+ " " + TimeManager.Instance.GetCurrentUnixTimeStamp());
+        DataSavingManager.Instance.SaveList(_dataFrames, ExperimentManager.Instance.GetParticipantID()+ "_" + ExperimentManager.Instance.GetCondition()+ "_lv " + TimeManager.Instance.GetCurrentUnixTimeStamp());
     }
 
     public void SetFrameRate(int frames)

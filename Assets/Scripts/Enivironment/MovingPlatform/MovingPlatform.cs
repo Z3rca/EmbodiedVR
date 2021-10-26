@@ -6,9 +6,6 @@ using UnityEngine.Events;
 
 public class MovingPlatform : MonoBehaviour
 {
-    
-    [SerializeField] private GameObject ActivationTrigger;
-    
     [SerializeField] private Vector3 direction;
 
     [SerializeField] private float speed;
