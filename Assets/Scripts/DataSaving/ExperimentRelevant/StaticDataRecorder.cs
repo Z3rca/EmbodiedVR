@@ -53,7 +53,7 @@ public class StaticDataRecorder : MonoBehaviour
         _currentStationDataFrame.condition = stationBeginArgs.Condition.ToString();
         _currentStationDataFrame.TeleportationInitalizedTimeStamp = stationBeginArgs.TeleportTimeFromLastStationTimeStamp;
         _currentStationDataFrame.stationIndex = stationBeginArgs.OrderIndex;
-        DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
+        DataSavingManager.Instance.Save(_currentStationDataFrame,"tmp_"+  _currentStationDataFrame.participantID   +"_stat_"+_currentStationDataFrame.condition+"_" + _currentStationDataFrame.stationIndex);
         
     }
 
@@ -64,8 +64,11 @@ public class StaticDataRecorder : MonoBehaviour
             Debug.LogWarning("Pakour data start data not found, you miss  data");
             _currentStationDataFrame = new StationDataFrame();
         }
-        
+
         _currentStationDataFrame.PakourStartTimeStamp = pakourBeginArgs.PakourStartTime;
+
+
+        DataSavingManager.Instance.Save(_currentStationDataFrame,"tmp_"+  _currentStationDataFrame.participantID   +"_stat_"+_currentStationDataFrame.condition+"_" + _currentStationDataFrame.stationIndex);
     }
     
     void OnPakourEnds(object sender, ParkourEndArgs parkourEndArgs)
@@ -82,11 +85,12 @@ public class StaticDataRecorder : MonoBehaviour
 
         _currentStationDataFrame.wasTeleportedToEnd = parkourEndArgs.wasTeleportedToEnd;
         _currentStationDataFrame.AbortTeleportStartTimeStamp = parkourEndArgs.wasTeleportedToEndTimeStamp;
-        //DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
+        DataSavingManager.Instance.Save(_currentStationDataFrame,"tmp_"+  _currentStationDataFrame.participantID   +"_stat_"+_currentStationDataFrame.condition+"_" + _currentStationDataFrame.stationIndex);
     }
 
     private void OnDataGatheringRoomCompleted(object sender, DataGatheringEndArgs dataGatheringEndArgs)
     {
+        Debug.Log("save data of static data");
         if (_currentStationDataFrame == null)
         {
             Debug.LogWarning("Pakour data start data not found, you miss  data");

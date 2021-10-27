@@ -79,9 +79,10 @@ namespace Valve.VR.InteractionSystem
 
         private void UpdateCenterPoint()
         {
-            Vector3 offset = hand.skeleton.GetBonePosition(SteamVR_Skeleton_JointIndexes.middleProximal) - hand.skeleton.GetBonePosition(SteamVR_Skeleton_JointIndexes.root);
+            
             if (hand.HasSkeleton())
             {
+                Vector3 offset = hand.skeleton.GetBonePosition(SteamVR_Skeleton_JointIndexes.middleProximal) - hand.skeleton.GetBonePosition(SteamVR_Skeleton_JointIndexes.root);
                 handCollider.SetCenterPoint(hand.skeleton.transform.position + offset);
             }
         }

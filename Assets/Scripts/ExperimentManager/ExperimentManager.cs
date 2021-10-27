@@ -381,7 +381,7 @@ public class ExperimentManager : MonoBehaviour
     public IEnumerator SaveDataCoroutine(float FadeOutDuration)
     {
         SelectedAvatar.GetComponent<HybridController>().FadeOut(FadeOutDuration/2);
-        yield return new WaitForSeconds(FadeOutDuration);
+        yield return new WaitForSeconds(FadeOutDuration/2);
         liveDataRecorder.StopRecording();
         
         liveDataRecorder.SaveData();

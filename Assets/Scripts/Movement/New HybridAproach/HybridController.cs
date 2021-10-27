@@ -104,6 +104,8 @@ public class HybridController : MonoBehaviour
         
         if (!EmbodiedCondition&& _blobController!=null)
         {
+            Debug.Log("got the blob");
+            _blobController.Initialize();
             _blobController.DeactivateHandsOnStartWorkaround(startWithThirdPerson);
         }
         
@@ -251,6 +253,7 @@ public class HybridController : MonoBehaviour
     //Tutorial Related
     public void ShowControllers(bool state)
     {
+        Debug.Log("show controller representations");
         _controllerRepresentations.ShowController(state);
     }
     

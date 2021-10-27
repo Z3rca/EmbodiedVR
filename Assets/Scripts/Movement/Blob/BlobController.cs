@@ -32,6 +32,19 @@ public class BlobController : MonoBehaviour
         }
     }
 
+    public void Initialize()
+    {
+        foreach (var hand in Player.instance.hands)
+        {
+            foreach (var renderModel in hand.renderModels)
+            {
+                renderModel.displayControllerByDefault = true;
+                renderModel.displayHandByDefault = false;
+            }
+        }
+
+    }
+
 
     public void DeactivateHandsOnStartWorkaround(bool thirdperson)
     {
@@ -45,10 +58,7 @@ public class BlobController : MonoBehaviour
         foreach (var hand in Player.instance.hands)
         {
             hand.HideSkeleton();
-            if (!thirdperson)
-            {
-                hand.ShowController();
-            }
+            hand.HideController(false);
         }
         
         
@@ -61,31 +71,47 @@ public class BlobController : MonoBehaviour
         {
             foreach (var hand in Player.instance.hands)
             {
-                hand.ShowController();
-                hand.HideSkeleton();
+                foreach (var renderModel in hand.renderModels)
+                {
+                    renderModel.SetHandVisibility(false);
+                    renderModel.SetControllerVisibility(true);
+                }
+               // Debug.Log(hand);
+               // hand.HideSkeleton(true);
+              //  hand.ShowController(true);
             }
+            
+            
         }
         else
         {
             foreach (var hand in Player.instance.hands)
             {
-                hand.HideController();
-                hand.HideSkeleton();
+                foreach (var renderModel in hand.renderModels)
+                {
+                    renderModel.SetHandVisibility(false);
+                    renderModel.SetControllerVisibility(false);
+                }
+                //hand.HideController();
+               // hand.HideSkeleton();
             }
         }
+        
+        hybridController.ShowControllers(state);
        
     }
     private void OnPerspectiveSwitch(bool state)
     {
         if (state)
         {
+            Debug.Log("switch");
             BlobModel.GetComponent<MeshRenderer>().enabled = true;
-            EnabledControllers(!state);
+            EnabledControllers(false);
         }
         else
         {
             BlobModel.GetComponent<MeshRenderer>().enabled = false;
-            EnabledControllers(!state);
+            EnabledControllers(true);
         }
     }
     
