@@ -7,7 +7,7 @@ public class BallRespawner : MonoBehaviour
 
     public GameObject tutManagerReference;
     public GameObject floor;
-    public Vector3 originalPos;
+    public GameObject originalPos;
     
     // Start is called before the first frame update
     void Start()
@@ -31,6 +31,6 @@ public class BallRespawner : MonoBehaviour
 
     private void Respawn()
     {
-        transform.position = originalPos;
+        transform.position = originalPos.transform.position;
     }
 }
