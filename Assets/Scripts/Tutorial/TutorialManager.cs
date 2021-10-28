@@ -15,6 +15,7 @@ public class TutorialManager : MonoBehaviour
     public GameObject ExitAreaShine;
     public GameObject Ball;
 
+    public bool success = false;
 
     private bool _isFirstPersonCondition;
     
@@ -202,6 +203,8 @@ public class TutorialManager : MonoBehaviour
         // now you can go go through the door and finish the tutorial section.  
         Door.SetActive(false);
         Door2.SetActive(false);
+
+        success = true;
         
         HybridController.HighLightMovementButton(false);
         HybridController.HighLightRotationButton(false);
