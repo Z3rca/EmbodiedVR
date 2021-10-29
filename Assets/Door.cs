@@ -5,7 +5,7 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
 
-    public bool isLeftDoor = false;
+   
 
     // Start is called before the first frame update
     void Start()
@@ -21,15 +21,6 @@ public class Door : MonoBehaviour
 
     public void openDoor()
     {
-        if (isLeftDoor)
-        {
-            // open to left side
-            gameObject.transform.Translate(-1,0,0);
-        }
-        else
-        {
-            //open to right side
-            gameObject.transform.Translate(1,0,0);
-        }
+        gameObject.SetActive(false);
     }
 }
