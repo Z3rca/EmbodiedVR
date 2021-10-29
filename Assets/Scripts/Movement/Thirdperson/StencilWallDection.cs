@@ -17,7 +17,6 @@ public class StencilWallDection : MonoBehaviour
     public LayerMask DefaultLayer;
     public LayerMask PlayerLayer;
     private Material formerMaterial;
-    private Material tmp_Material;
 
     public Material stencilMaterial;
 
@@ -28,7 +27,9 @@ public class StencilWallDection : MonoBehaviour
     private bool ignoreMask;
 
     private Dictionary<string, Material> MaterialDictionary;
-    
+
+    private List<GameObject> _changedGameObjects;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,22 +58,24 @@ public class StencilWallDection : MonoBehaviour
 //            Debug.Log("wall object " + other.name);
             if (other.GetComponent<Renderer>()!=null)
             {
-                if (!MaterialDictionary.ContainsKey(other.gameObject.GetComponent<Renderer>().material.name))
+                Material tmpMaterial = other.gameObject.GetComponent<Renderer>().material;
+                if (!MaterialDictionary.ContainsKey(other.gameObject.name))
                 {
-                    MaterialDictionary.Add(other.gameObject.GetComponent<Renderer>().material.name,other.gameObject.GetComponent<Renderer>().material);
-                    tmp_Material = other.gameObject.GetComponent<Renderer>().material;
+                    MaterialDictionary.Add(other.gameObject.name,other.gameObject.GetComponent<Renderer>().material);
+                }
+                
+                stencilMaterial.mainTexture = tmpMaterial.mainTexture;
+                other.GetComponent<Renderer>().receiveShadows = false;
+                other.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
+                other.gameObject.GetComponent<Renderer>().material = stencilMaterial;
+
+                if (!_changedGameObjects.Contains(other.gameObject))
+                {
+                    _changedGameObjects.Add(other.gameObject);
                 }
             }
-            else
-            {
-                return;
-            }
-            
-            stencilMaterial.mainTexture = tmp_Material.mainTexture;
-            other.GetComponent<Renderer>().receiveShadows = false;
-            other.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
-            other.gameObject.GetComponent<Renderer>().material = stencilMaterial;
         }
+        
         
         
         
@@ -88,9 +91,9 @@ public class StencilWallDection : MonoBehaviour
         
         if (other.gameObject.layer == _wallLayerNumber&& other.GetComponent<Renderer>()!=null)
         {
-            if (MaterialDictionary.ContainsKey(other.name))
+            if (MaterialDictionary.ContainsKey(other.gameObject.name))
             {
-                other.gameObject.GetComponent<Renderer>().material = MaterialDictionary[other.name];
+                other.gameObject.GetComponent<Renderer>().material = MaterialDictionary[other.gameObject.name];
             }
             
             //other.gameObject.GetComponent<Renderer>().material = tmp_Material;
@@ -113,5 +116,19 @@ public class StencilWallDection : MonoBehaviour
             ignoreMask = false;
         }
         
+    }
+
+    public void OnDisable()
+    {
+        foreach (var obj in _changedGameObjects)
+        {
+            obj.GetComponent<Renderer>().material = MaterialDictionary[obj.name];
+
+          
+        }
+        
+        MaterialDictionary.Clear();
+
+        _changedGameObjects.Clear();
     }
 }
