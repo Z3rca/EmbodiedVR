@@ -28,7 +28,7 @@ public class ControllerRepresentations : MonoBehaviour
     // Start is called before the first frame update
     
     // Update is called once per frame
-
+    public bool forceStop;
     private Dictionary<GameObject, bool> highlightedButtons;
     public void ShowController(bool state)
     {
@@ -132,7 +132,7 @@ public class ControllerRepresentations : MonoBehaviour
         bool switchDirection = true;
         
         
-        while (highlightedButtons[Button])
+        while (highlightedButtons[Button]||!forceStop)
         {
 //            Debug.Log("running " + renderer.material.color.r + " "  +renderer.material.color.g);
             if (switchDirection)
@@ -156,15 +156,23 @@ public class ControllerRepresentations : MonoBehaviour
             }
 
             yield return new WaitForSeconds(0.01f);
-        }
 
-        renderer.material = standardMaterial;
+            if (forceStop)
+            {
+                renderer.material.color = standardMaterial.color;
+            }
+        }
+        Debug.Log("we are now done with highlighting");
+       
 
 
 
     }
-    
-    
+
+    public void ForceStop()
+    {
+        forceStop = true;
+    }
 
     private void OnDisable()
     {

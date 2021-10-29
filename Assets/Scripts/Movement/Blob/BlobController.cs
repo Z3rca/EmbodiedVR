@@ -10,16 +10,23 @@ public class BlobController : MonoBehaviour
     private int ModelCounter;
     public GameObject BlobModel;
     public HybridController hybridController;
+
+    public Hand LeftHand;
+
+    public Hand RightHand;
     // Start is called before the first frame update
     void Start()
     {
         hybridController.OnNotifyPerspectiveSwitchObservers += OnPerspectiveSwitch;
-        
+
+        LeftHand = Player.instance.hands[0];
+        RightHand = Player.instance.hands[1];
     }
     // Update is called once per frame
     void Update()
     {
-        
+        LeftHand.SetVisibility(false);
+        RightHand.SetVisibility(false);
     }
 
     private  void OnControllerLoaded()
@@ -38,9 +45,20 @@ public class BlobController : MonoBehaviour
         {
             foreach (var renderModel in hand.renderModels)
             {
-                renderModel.displayControllerByDefault = true;
+                renderModel.displayControllerByDefault = false;
                 renderModel.displayHandByDefault = false;
             }
+        }
+        
+        foreach (var hand in Player.instance.hands)
+        {
+            foreach (var renderModel in hand.renderModels)
+            {
+                renderModel.SetHandVisibility(false, true);
+                renderModel.SetControllerVisibility(false,true);
+            }
+            //hand.HideController();
+            // hand.HideSkeleton();
         }
 
     }
@@ -57,8 +75,11 @@ public class BlobController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         foreach (var hand in Player.instance.hands)
         {
-            hand.HideSkeleton();
-            hand.HideController(false);
+            foreach (var renderModel in hand.renderModels)
+            {
+                renderModel.SetHandVisibility(false);
+                renderModel.SetControllerVisibility(false);
+            }
         }
         
         
@@ -67,37 +88,21 @@ public class BlobController : MonoBehaviour
     
     public void EnabledControllers(bool state)
     {
-        if (state)
+        
+        
+        foreach (var hand in Player.instance.hands)
         {
-            foreach (var hand in Player.instance.hands)
+            foreach (var renderModel in hand.renderModels)
             {
-                foreach (var renderModel in hand.renderModels)
-                {
-                    renderModel.SetHandVisibility(false);
-                    renderModel.SetControllerVisibility(true);
-                }
-               // Debug.Log(hand);
-               // hand.HideSkeleton(true);
-              //  hand.ShowController(true);
+                renderModel.SetHandVisibility(false);
+                renderModel.SetControllerVisibility(false);
             }
-            
-            
-        }
-        else
-        {
-            foreach (var hand in Player.instance.hands)
-            {
-                foreach (var renderModel in hand.renderModels)
-                {
-                    renderModel.SetHandVisibility(false);
-                    renderModel.SetControllerVisibility(false);
-                }
-                //hand.HideController();
-               // hand.HideSkeleton();
-            }
+            //hand.HideController();
+            // hand.HideSkeleton();
         }
         
-        hybridController.ShowControllers(state);
+        if(!ExperimentManager.Instance.isTutorialRunning())
+            hybridController.ShowControllers(state);
        
     }
     private void OnPerspectiveSwitch(bool state)

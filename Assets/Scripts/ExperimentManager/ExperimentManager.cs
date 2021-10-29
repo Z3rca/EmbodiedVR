@@ -23,6 +23,7 @@ public class ExperimentManager : MonoBehaviour
     private List<StationSpawner> RemainingstationsStationSpawners = new List<StationSpawner>();
     private Dictionary<int, AreaManager> AreaManagers = new Dictionary<int, AreaManager>();
 
+    private bool _isInTutorial;
     private bool _gettingToNewStation;
     public List<int> StationOrder;
     public int StationIndex;
@@ -167,6 +168,7 @@ public class ExperimentManager : MonoBehaviour
         if (_ActiveStation.ID == 0)
         {
             tutorialManager.StartTutorial();
+            _isInTutorial=true;
         }
         else
         {
@@ -264,7 +266,15 @@ public class ExperimentManager : MonoBehaviour
         
     }
 
-    
+    public bool isTutorialRunning()
+    {
+        return _isInTutorial;
+    }
+
+    public void SetisInTutorial(bool state)
+    {
+        _isInTutorial = state;
+    }
     
     private void StartedExperiment()
     {

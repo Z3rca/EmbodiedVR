@@ -205,14 +205,23 @@ public class TutorialManager : MonoBehaviour
         Door2.SetActive(false);
 
         success = true;
-        
+        ExperimentManager.Instance.SetisInTutorial(false);
+
+
+        StartCoroutine(StopHighlighting(0.3f));
+
+
+    }
+
+    private IEnumerator StopHighlighting(float time)
+    {
         HybridController.HighLightMovementButton(false);
         HybridController.HighLightRotationButton(false);
         HybridController.HighLightGraspButtons(false);
+        HybridController.StopHighlighting();
+        yield return new WaitForSeconds(time);
         HybridController.ShowControllers(false);
     }
-
-
   
 
     public void BallWasTaken()

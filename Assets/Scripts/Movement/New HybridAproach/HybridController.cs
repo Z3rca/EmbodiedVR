@@ -256,8 +256,11 @@ public class HybridController : MonoBehaviour
         Debug.Log("show controller representations");
         _controllerRepresentations.ShowController(state);
     }
-    
-    
+
+    public void StopHighlighting()
+    {
+        _controllerRepresentations.ForceStop();
+    }
     public void HighLightControlSwitchButton(bool state)
     {
         _controllerRepresentations.HighLightPerspectiveChangeButtons(state);
