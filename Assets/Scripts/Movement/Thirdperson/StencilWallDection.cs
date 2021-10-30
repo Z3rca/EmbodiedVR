@@ -123,7 +123,8 @@ public class StencilWallDection : MonoBehaviour
     {
         foreach (var obj in _changedGameObjects)
         {
-            obj.GetComponent<Renderer>().material = MaterialDictionary[obj.name];
+            if(obj!=null)
+                obj.GetComponent<Renderer>().material = MaterialDictionary[obj.name];
 
           
         }
