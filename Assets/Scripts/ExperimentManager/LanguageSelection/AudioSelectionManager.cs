@@ -17,7 +17,10 @@ public class AudioSelectionManager : MonoBehaviour
     private Dictionary<string, AudioClip> _chosenAudioDictionarty;
     private Dictionary<string, AudioClip> _englishAudioDictionary; 
     private List<AudioSource> _audioSources;
+    
     private Language _setLanguage;
+
+    private TutorialAudioDialogController _audioDialogController;
 
 
     private void Awake()
@@ -66,6 +69,8 @@ public class AudioSelectionManager : MonoBehaviour
             Debug.Log(pair.Key+ " "+  pair.Value.name);
         }
 
+        _audioDialogController = ExperimentManager.Instance.tutorialManager.GetComponent<TutorialAudioDialogController>();
+
     }
 
 
@@ -87,19 +92,57 @@ public class AudioSelectionManager : MonoBehaviour
         switch (language)
         {
             case Language.German:
+               
                 foreach (var audioSource in _audioSources)
                 {
                     OverrideAudioClipFromDictionary(_germanAudioDictionary, audioSource, language);
                 }
 
+                _audioDialogController.SwitchClipsToLanguage(Language.German);
+                
                 break;
             case Language.English:
                 foreach (var audioSource in _audioSources)
                 {
                     OverrideAudioClipFromDictionary(_englishAudioDictionary, audioSource, language);
                 }
+                
+                _audioDialogController.SwitchClipsToLanguage(Language.English);
                 break;
         }
+        
+        
+    }
+
+
+    public AudioClip GetClipInCorrectLanguage(string audioClipName)
+    {
+        Language language;
+        int index = 0;
+        index = audioClipName.IndexOf("_de", StringComparison.Ordinal);
+        language = Language.German;
+      
+        if (index == -1)
+        {
+            index = audioClipName.IndexOf("_en", StringComparison.Ordinal);
+            language = Language.English;
+        }
+        
+
+        if (_setLanguage == Language.English)
+        {
+            string name = audioClipName.Substring(0, index);
+            return _englishAudioDictionary[name];
+        }
+
+        if (_setLanguage == Language.German)
+        {
+            string name = audioClipName.Substring(0, index);
+            return _germanAudioDictionary[name];
+        }
+
+        return null;
+
     }
 
     
@@ -109,8 +152,13 @@ public class AudioSelectionManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log("assign language");
+            Debug.Log("assign language German");
             SetLanguage(Language.German);
+        }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            Debug.Log("assign language English");
+            SetLanguage(Language.English);
         }
     }
 

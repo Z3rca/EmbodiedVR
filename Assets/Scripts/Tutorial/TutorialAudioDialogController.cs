@@ -5,91 +5,94 @@ using UnityEngine;
 
 public class TutorialAudioDialogController : MonoBehaviour
 {
-   public AudioClip clip_1;
-   public AudioClip clip_2;
-   public AudioClip clip_3;
-   public AudioClip clip_4;
-   public AudioClip clip_5;
-   public AudioClip clip_6;
-   public AudioClip clip_7;
-   public AudioClip clip_8;
-   public AudioClip clip_9;
-   public AudioClip clip_10;
-   public AudioClip clip_11;
-   public AudioClip clip_12;
-   public AudioClip clip_13;
    public AudioSource audioSource;
-
+   [SerializeField] private List<AudioClip> _audioClips;
+   private AudioSelectionManager _audioSelectionManager;
    private bool _playingAudioClip;
-   public void Start()
+
+
+   private void Start()
    {
-      
+      _audioSelectionManager = ExperimentManager.Instance.GetComponent<AudioSelectionManager>();
+
    }
 
+   public void SwitchClipsToLanguage(Language language)
+   {
+      for (int i = 0; i < _audioClips.Count; i++)
+      {
+         _audioClips[i] = _audioSelectionManager.GetClipInCorrectLanguage(_audioClips[i].name);
+      }
+   }
+
+   public List<AudioClip> GetAudioClips()
+   {
+      return _audioClips;
+   }
 
    public void AudioClip1()
    {
-      StartAudioClip(clip_1);
+      StartAudioClip(_audioClips[0]);
    }
 
    public void AudioClip2()
    {
-      StartAudioClip(clip_2);
+      StartAudioClip(_audioClips[1]);
    }
    
    public void AudioClip3()
    {
-      StartAudioClip(clip_3);
+      StartAudioClip(_audioClips[2]);
    }
 
    public void AudioClip4()
    {
-      StartAudioClip(clip_4);
+      StartAudioClip(_audioClips[3]);
    }
    
    public void AudioClip5()
    {
-      StartAudioClip(clip_5);
+      StartAudioClip(_audioClips[4]);
    }
    
    public void AudioClip6()
    {
-      StartAudioClip(clip_6);
+      StartAudioClip(_audioClips[5]);
    }
    
    public void AudioClip7()
    {
-      StartAudioClip(clip_7);
+      StartAudioClip(_audioClips[6]);
    }
 
    public void AudioClip8()
    {
-      StartAudioClip(clip_8);
+      StartAudioClip(_audioClips[7]);
    }
    
    public void AudioClip9()
    {
-      StartAudioClip(clip_9);
+      StartAudioClip(_audioClips[8]);
    }
    
    public void AudioClip10()
    {
-      StartAudioClip(clip_10);
+      StartAudioClip(_audioClips[9]);
    }
    
    public void AudioClip11()
    {
-      StartAudioClip(clip_11);
+      StartAudioClip(_audioClips[10]);
    }
    
    public void AudioClip12()
    {
-      StartAudioClip(clip_12);
+      StartAudioClip(_audioClips[11]);
    }
    
    public void AudioClip13()
    {
-      StartAudioClip(clip_13);
+      StartAudioClip(_audioClips[12]);
    }
    
    public void FinishedTask()
