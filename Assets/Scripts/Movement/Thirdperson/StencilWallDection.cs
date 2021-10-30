@@ -35,6 +35,7 @@ public class StencilWallDection : MonoBehaviour
     {
         float tmp = Mathf.Log(WallLayer, 2);
         _wallLayerNumber = (int) tmp;
+        _changedGameObjects = new List<GameObject>();
         MaterialDictionary = new Dictionary<string, Material>();
 
     }
