@@ -8,7 +8,7 @@ using Valve.VR;
 
 public class ExperimentManager : MonoBehaviour
 {
-
+    
     public Camera mainMenuCamera;
     public static ExperimentManager Instance { get; private set; }
 
@@ -25,7 +25,9 @@ public class ExperimentManager : MonoBehaviour
 
     private bool _isInTutorial;
     private bool _gettingToNewStation;
+    private string _language;
     public List<int> StationOrder;
+    
     public int StationIndex;
 
     public TutorialManager tutorialManager;
@@ -56,6 +58,7 @@ public class ExperimentManager : MonoBehaviour
     private Condition _condition;
     private MenuState _menuState;
     private string _participantId;
+    private string orderText;
     private string order;
     private string condition;
 
@@ -66,6 +69,7 @@ public class ExperimentManager : MonoBehaviour
     private enum MenuState
     {
         IDAndOrderSelection,
+        LanguageSelection,
         Condition,
         MainMenu,
         SafetyBeforeStart,
@@ -431,6 +435,7 @@ public class ExperimentManager : MonoBehaviour
 
     private void ReadOutPakourOrder(string Order)
     {
+        StationOrder.Clear();
         var charArray = Order.ToCharArray();
         order = "";
         for (int i = 0; i < charArray.Length; i++)
@@ -504,15 +509,17 @@ public class ExperimentManager : MonoBehaviour
         var valY = y;
         switch (_menuState)
         {
+            
             case MenuState.IDAndOrderSelection:
                 GUI.Box(new Rect(750, 490, 200, 40), "Participant ID", boxStyle);
                 _participantId = GUI.TextField(new Rect(750, 530, 200, 40), _participantId);
 
                 GUI.Box(new Rect(970, 490, 200, 40), "Order", boxStyle);
-                order = GUI.TextField(new Rect(970, 530, 200, 40), order);
+                orderText = GUI.TextField(new Rect(970, 530, 200, 40), orderText);
 
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
                 {
+                    order = orderText;
                     //Save Order temporary
                     //Save Participant ID temporary
 
@@ -520,11 +527,45 @@ public class ExperimentManager : MonoBehaviour
                     
                     
                     
-                    _menuState = MenuState.Condition;
+                    _menuState = MenuState.LanguageSelection;
 
+                }
+                break;
+            
+            case MenuState.LanguageSelection:
+                if (GUI.Button(new Rect(x*6, Screen.height/2, w, 80), "German", buttonStyle))
+                {
+                    GetComponent<AudioSelectionManager>().SetLanguage(Language.German);
+                    _language = "German";
+                    _menuState =  MenuState.Condition;
+                }
+                if (GUI.Button(new Rect(x*8.5f, Screen.height/2, w*1.3f, 80), "English", buttonStyle))
+                {
+                    GetComponent<AudioSelectionManager>().SetLanguage(Language.English);
+                    _language = "English";
+                    _menuState = MenuState.Condition;
+                }
+                
+                
+                valX = x;
+                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ _participantId), boxStyle);
+
+                valX += w+ 2;
+                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
+                
+                
+                GUI.backgroundColor = Color.red;
+
+                valX += w + 2;
+
+                if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                {
+                    order = "";
+                    _menuState = MenuState.IDAndOrderSelection;
                 }
 
                 break;
+
             case MenuState.Condition:
 
                 valX = x;
@@ -532,14 +573,33 @@ public class ExperimentManager : MonoBehaviour
 
                 valX += w+ 2;
                 GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
-
+                
+                valX += w + 2;
+                GUI.backgroundColor = Color.red;
+                
+                if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                {
+                    order = "";
+                    _menuState = MenuState.IDAndOrderSelection;
+                }
+                
+                //space
+                
+                valX += w + 2;
+                
+                valX += w+ 2;
+                
+                GUI.backgroundColor = Color.cyan;
+                
+                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent(_language), boxStyle);
+                
                 GUI.backgroundColor = Color.red;
 
                 valX += w + 2;
 
                 if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
                 {
-                    _menuState = MenuState.IDAndOrderSelection;
+                    _menuState = MenuState.LanguageSelection;
                 }
                 
                 GUI.backgroundColor = Color.cyan;
@@ -582,29 +642,54 @@ public class ExperimentManager : MonoBehaviour
 
                 valX += w+ 2;
                 GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
-
+                
+                valX += w + 2;
+                GUI.backgroundColor = Color.red;
+                
+                if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                {
+                    order = "";
+                    _menuState = MenuState.IDAndOrderSelection;
+                }
+                
+                valX += w+ 2;
+                //space to language 
+                valX += w+ 2;
+                
+                GUI.backgroundColor = Color.cyan;
+                
+                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent(_language), boxStyle);
+                
                 GUI.backgroundColor = Color.red;
 
                 valX += w + 2;
 
                 if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
                 {
-                    _menuState = MenuState.IDAndOrderSelection;
+                    _menuState = MenuState.LanguageSelection;
                 }
                 
-                valX += w;
+                
+
+                valX += w + 2;
                 
                 
+                
+                GUI.backgroundColor = Color.cyan;
 
                 valX += w+2;
                 GUI.Box(new Rect(valX, 100, w, 80), new GUIContent(condition), boxStyle);
                 
                 valX += w+2;
+                GUI.backgroundColor = Color.red;
+
                 
                 if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
                 {
                     _menuState = MenuState.Condition;
                 }
+                
+                
                 
                 
                 GUI.backgroundColor = Color.cyan;
@@ -633,40 +718,67 @@ public class ExperimentManager : MonoBehaviour
                 case MenuState.SafetyBeforeStart:
                     
                     valX = x;
-                    GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ _participantId), boxStyle);
+                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ _participantId), boxStyle);
 
-                    valX += w+ 2;
-                    GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
+                valX += w+ 2;
+                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent("Order: "+ order), boxStyle);
+                
+                valX += w + 2;
+                GUI.backgroundColor = Color.red;
+                
+                if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                {
+                    order = "";
+                    _menuState = MenuState.IDAndOrderSelection;
+                }
+                
+                valX += w+ 2;
+                //space to language 
+                valX += w+ 2;
+                
+                GUI.backgroundColor = Color.cyan;
+                
+                GUI.Box(new Rect(valX , 100, w, 80), new GUIContent(_language), boxStyle);
+                
+                GUI.backgroundColor = Color.red;
 
-                    GUI.backgroundColor = Color.red;
+                valX += w + 2;
 
-                    valX += w + 2;
-
-                    if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
-                    {
-                        _menuState = MenuState.IDAndOrderSelection;
-                    }
-                
-                    valX += w;
+                if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                {
+                    _menuState = MenuState.LanguageSelection;
+                }
                 
                 
 
-                    valX += w+2;
-                    GUI.Box(new Rect(valX, 100, w, 80), new GUIContent(condition), boxStyle);
+                valX += w + 2;
                 
-                    valX += w+2;
                 
-                    if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
-                    {
-                        _menuState = MenuState.Condition;
-                    }
-                    
-                    
-                    valX = x;
+                
+                GUI.backgroundColor = Color.cyan;
+
+                valX += w+2;
+                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent(condition), boxStyle);
+                
+                valX += w+2;
+                GUI.backgroundColor = Color.red;
+
+                
+                if (GUI.Button(new Rect(valX, 100, w, 80), "Change", buttonStyle))
+                {
+                    _menuState = MenuState.Condition;
+                }
+                
+                
+                
+                
+                GUI.backgroundColor = Color.cyan;
+                valX = x;
+                
                     
                 GUI.Box(new Rect(valX, Screen.height/2-y, w*1.5f, 80), new GUIContent("Are you Sure?"), boxStyle);
                     
-                    GUI.backgroundColor = Color.green;
+                GUI.backgroundColor = Color.green;
                 
                 if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Yes", buttonStyle))
                 {

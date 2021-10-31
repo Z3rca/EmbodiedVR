@@ -667,7 +667,7 @@ MonoBehaviour:
     actionSetPath: /actions/platformer
   SnapTurn: 1
   SetRotationImpuls: 9
-  SetAutoRotationImpulsDuration: 0.5
+  SetAutoRotationImpulsDuration: 0.1
   InvertRotation: 0
 --- !u!114 &689633547
 MonoBehaviour:
@@ -691,6 +691,7 @@ MonoBehaviour:
   RightSqueeze: {fileID: 1978254308864938006}
   HighLightMaterial: {fileID: 2100000, guid: 27d11271a6c08d4409e2983565fc6c48, type: 2}
   RemoteVR: {fileID: 0}
+  forceStop: 0
 --- !u!1 &8857710912998660986
 GameObject:
   m_ObjectHideFlags: 0
@@ -2683,6 +2684,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlobModel: {fileID: 8515604259863677717}
   hybridController: {fileID: 0}
+  LeftHand: {fileID: 0}
+  RightHand: {fileID: 0}
 --- !u!1 &8857710913345211763
 GameObject:
   m_ObjectHideFlags: 0
