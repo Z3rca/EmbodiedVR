@@ -37,7 +37,8 @@ public class MeasuringFlow : MonoBehaviour
     [SerializeField] private GameObject AcceptButton;
     [SerializeField] private Material ActiveOkayButtonMaterial;
     [SerializeField] private Material DeactivatedOkayButtonMaterial;
-    
+
+    private float _posturalStabilityMeasuringDuration=5f;
 
     public event Action MotionsicknessMeasurementStart;
     public event Action AudioRecordingStarted;
@@ -52,6 +53,11 @@ public class MeasuringFlow : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+    }
+
+    public void SetPosturalMeasuringDuration(float duration)
+    {
+        _posturalStabilityMeasuringDuration = duration;
     }
 
     public void StartDataGathering()
@@ -86,18 +92,14 @@ public class MeasuringFlow : MonoBehaviour
         
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(true);
-        PosturalStabilityTestStarted.Invoke();
+        
         while(!stabilityMeasured)
         {
-            StabilityFlow();
             yield return null;
         }
-        
-        
-        yield return new WaitForSeconds(5);
-        
-        posturalStabilityMeasuringTool.SetActive(false);
         PosturalStabitityTestEnded.Invoke();
+        posturalStabilityMeasuringTool.SetActive(false);
+        
 
         yield return new WaitForEndOfFrame();
 
@@ -157,9 +159,9 @@ public class MeasuringFlow : MonoBehaviour
 
     private void StabilityFlow()
     {
-     
-        stabilityMeasured = true;
-        //TODO Start Postural stability test
+        PosturalStabilityTestStarted.Invoke();
+
+        StartCoroutine(WaitForPosturalStabiltyTestDuration(_posturalStabilityMeasuringDuration));
     }
 
     public void OkayButton()
@@ -192,6 +194,12 @@ public class MeasuringFlow : MonoBehaviour
         yield return new WaitForSeconds(recoveryTimeOfButton);
         _pressed = false;
         AcceptButton.GetComponent<Renderer>().material = ActiveOkayButtonMaterial;
+    }
+
+    private IEnumerator WaitForPosturalStabiltyTestDuration(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        stabilityMeasured = true;
     }
     
 }
