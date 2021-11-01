@@ -8,9 +8,8 @@ public class Timer : MonoBehaviour
 
     public float timerInMinutes;
     public GameObject exit;
-    public AudioSource audioSource;
-    public AudioClip firstWarning;
-    public AudioClip secondWarning;
+    public AudioSource firstWarning15;
+    public AudioSource secondWarning16;
 
     private float timeRemaining;
     private bool _timerIsRunning = false;
@@ -54,24 +53,22 @@ public class Timer : MonoBehaviour
             {
                 timeRemaining -= Time.deltaTime;
             }
-            else if (timeRemaining <= 15 & timeRemaining > secondWarning.length)
+            else if (timeRemaining <= 15 & timeRemaining > firstWarning15.clip.length)
             {
                 // starting countdown
                 if (firstClipPlayed == false)
                 {
-                    audioSource.clip = firstWarning;
-                    audioSource.Play();
+                    firstWarning15.Play();
                     firstClipPlayed = true;
                 }
                 timeRemaining -= Time.deltaTime;
             }
-            else if (timeRemaining <= secondWarning.length & timeRemaining > 0)
+            else if (timeRemaining <= secondWarning16.clip.length & timeRemaining > 0)
             {
                 // warning before teleport
                 if (secondClipPlayed == false)
                 {
-                    audioSource.clip = secondWarning;
-                    audioSource.Play();
+                    secondWarning16.Play();
                     secondClipPlayed = true;
                 }
                 timeRemaining -= Time.deltaTime;

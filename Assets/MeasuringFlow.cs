@@ -7,8 +7,6 @@ using UnityEngine.Events;
 
 public class MeasuringFlow : MonoBehaviour
 {
-    public UnityEvent whenMeasuringComplete;
-
     public UnityEvent whenSicknessButtonPressed;
     
     public GameObject audioMeasuringTool;
@@ -17,10 +15,12 @@ public class MeasuringFlow : MonoBehaviour
 
     public TMP_Text audioRunningText;
     
-    public AudioSource audioSource;
-    public AudioClip dataGatheringOver;
-    public AudioClip proceedToNextArea;
-    public AudioClip callExperimenter;
+    public AudioSource audioInstruction21;
+    public AudioSource audioInstruction22;
+    public AudioSource audioInstruction23;
+    public AudioSource audioInstruction24;
+
+    public float recoveryTimeOfButton = 2f;
     
     private bool recordingStarted = false;
     private bool audioMeasured = false;
@@ -33,17 +33,31 @@ public class MeasuringFlow : MonoBehaviour
 
     private bool audioRecordingPassed;
 
+    private bool _pressed;
+    [SerializeField] private GameObject AcceptButton;
+    [SerializeField] private Material ActiveOkayButtonMaterial;
+    [SerializeField] private Material DeactivatedOkayButtonMaterial;
+
+    private float _posturalStabilityMeasuringDuration=5f;
+
     public event Action MotionsicknessMeasurementStart;
     public event Action AudioRecordingStarted;
     public event Action AudioRecordingEnded;
     public event Action PosturalStabilityTestStarted;
     public event Action PosturalStabitityTestEnded;
+
+    public event Action DataGatheringEnded;
     
     
     
     // Start is called before the first frame update
     private void Start()
     {
+    }
+
+    public void SetPosturalMeasuringDuration(float duration)
+    {
+        _posturalStabilityMeasuringDuration = duration;
     }
 
     public void StartDataGathering()
@@ -78,39 +92,34 @@ public class MeasuringFlow : MonoBehaviour
         
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(true);
-        PosturalStabilityTestStarted.Invoke();
+        
         while(!stabilityMeasured)
         {
-            StabilityFlow();
             yield return null;
         }
-        
-        
-        yield return new WaitForSeconds(5);
-        
-        posturalStabilityMeasuringTool.SetActive(false);
         PosturalStabitityTestEnded.Invoke();
+        posturalStabilityMeasuringTool.SetActive(false);
+        
 
         yield return new WaitForEndOfFrame();
-        whenMeasuringComplete.Invoke();
 
         //TODO lastStage needs to be defined sensibly
         if (ExperimentManager.Instance!=null)
         {
-            lastStage = ExperimentManager.Instance.StationIndex > ExperimentManager.Instance.StationOrder.Count;
+            lastStage = ExperimentManager.Instance.LastTrail();
         }
         
         if (!lastStage)
         {
-            audioSource.clip = dataGatheringOver;
-            audioSource.Play();
-            audioSource.clip = proceedToNextArea;
-            audioSource.Play();
+            audioInstruction22.Play();
+            while (audioInstruction22.isPlaying)
+                yield return null;
+            
+            audioInstruction23.Play();
         }
         else
         {
-            audioSource.clip = callExperimenter;
-            audioSource.Play();
+            audioInstruction24.Play();
             
         }
 
@@ -118,7 +127,9 @@ public class MeasuringFlow : MonoBehaviour
 
         if (ExperimentManager.Instance!=null)
         {
-            ExperimentManager.Instance.DataGatheringEnds();
+            Debug.Log("Data Gathering ends , measuring panel");
+           
+            DataGatheringEnded.Invoke();
         }
     }
 
@@ -148,13 +159,18 @@ public class MeasuringFlow : MonoBehaviour
 
     private void StabilityFlow()
     {
-     
-        stabilityMeasured = true;
-        //TODO Start Postural stability test
+        PosturalStabilityTestStarted.Invoke();
+
+        StartCoroutine(WaitForPosturalStabiltyTestDuration(_posturalStabilityMeasuringDuration));
     }
 
     public void OkayButton()
     {
+        if (_pressed)
+            return;
+        
+        _pressed = true;
+        AcceptButton.GetComponent<Renderer>().material = DeactivatedOkayButtonMaterial;
         if (audioMeasuringTool.activeSelf)
         {
             AudioButton();
@@ -166,6 +182,24 @@ public class MeasuringFlow : MonoBehaviour
             StabilityFlow();
         }
 
+    }
+
+    public void RecoverButton()
+    {
+        StartCoroutine(delayedRecovery());
+    }
+
+    private IEnumerator delayedRecovery()
+    {
+        yield return new WaitForSeconds(recoveryTimeOfButton);
+        _pressed = false;
+        AcceptButton.GetComponent<Renderer>().material = ActiveOkayButtonMaterial;
+    }
+
+    private IEnumerator WaitForPosturalStabiltyTestDuration(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        stabilityMeasured = true;
     }
     
 }

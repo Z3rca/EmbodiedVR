@@ -336,7 +336,11 @@ public class HybridController : MonoBehaviour
     {
         _cameraController.Fading(FadeInDuration,false);
     }
-
+    
+    public bool IsFading()
+    {
+        return _cameraController.IsFadingInProgress();
+    }
 
     public HybridRemoteTransformConroller GetRemoteTransformController()
     {

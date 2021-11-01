@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +64,7 @@ public class ExperimentManager : MonoBehaviour
 
     private float totalTime;
     private bool runningExperiment;
+    private bool _lastStation;
 
     
     private enum MenuState
@@ -193,12 +194,16 @@ public class ExperimentManager : MonoBehaviour
         StationBegin();
         
         _playerController.Fading(0.5f,0.5f,0.5f);
-        
+
         
         
     }
 
-   
+    public bool LastTrail()
+    {
+        //this is called before the new instantiation. remaining is substracted at the teleport. 
+        return RemainingstationsStationSpawners.Count == 1;
+    }
     public Condition GetCondition()
     {
         return _condition;
@@ -417,16 +422,21 @@ public class ExperimentManager : MonoBehaviour
         experimentFinishedArgs.ExperimentEndTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
         experimentFinishedArgs.Condition = GetCondition();
         
-        SelectedAvatar.GetComponent<HybridController>().FadeOut(2f);
+        
         if (FinishedExperiment != null)
             FinishedExperiment.Invoke(this, experimentFinishedArgs);
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
-        
-        
-        // TODO finish experiment Logic
+
+        StartCoroutine(DisableAvatarView());
     }
 
+    private IEnumerator DisableAvatarView()
+    {
+        yield return new WaitUntil(() =>SelectedAvatar.GetComponent<HybridController>().IsFading());
+        
+        SelectedAvatar.GetComponent<HybridController>().FadeOut(2f);
+    }
 
     public string GetParticipantID()
     {
