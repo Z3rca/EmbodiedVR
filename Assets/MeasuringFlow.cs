@@ -7,8 +7,6 @@ using UnityEngine.Events;
 
 public class MeasuringFlow : MonoBehaviour
 {
-    public UnityEvent whenMeasuringComplete;
-
     public UnityEvent whenSicknessButtonPressed;
     
     public GameObject audioMeasuringTool;
@@ -102,7 +100,6 @@ public class MeasuringFlow : MonoBehaviour
         PosturalStabitityTestEnded.Invoke();
 
         yield return new WaitForEndOfFrame();
-        whenMeasuringComplete.Invoke();
 
         //TODO lastStage needs to be defined sensibly
         if (ExperimentManager.Instance!=null)
