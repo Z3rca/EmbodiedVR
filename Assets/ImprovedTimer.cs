@@ -6,10 +6,9 @@ using UnityEngine.Events;
 public class ImprovedTimer : MonoBehaviour
 {
     public float timerInMinutes;
-    public AudioSource audioSource;
-    public AudioClip firstWarning;
-    public AudioClip secondWarning;
 
+    public AudioSource firstWarning19;
+    public AudioSource secondWarning20;
     private float timeRemaining;
     private bool _timerIsRunning = false;
     private bool firstClipPlayed = false;
@@ -37,6 +36,7 @@ public class ImprovedTimer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         // if timer is running, reduce time every frame by deltaTime
         if (_timerIsRunning)
         {
@@ -44,25 +44,23 @@ public class ImprovedTimer : MonoBehaviour
             {
                 timeRemaining -= Time.deltaTime;
             }
-            else if (timeRemaining <= 15 & timeRemaining > secondWarning.length)
+            else if (timeRemaining <= 15 & timeRemaining > firstWarning19.clip.length)
             {
                 // starting countdown
                 if (firstClipPlayed == false)
                 {
-                    audioSource.clip = firstWarning;
-                    audioSource.Play();
+                    firstWarning19.Play();
                     firstClipPlayed = true;
                 }
 
                 timeRemaining -= Time.deltaTime;
             }
-            else if (timeRemaining <= secondWarning.length & timeRemaining > 0)
+            else if (timeRemaining <= secondWarning20.clip.length & timeRemaining > 0)
             {
                 // warning before teleport
                 if (secondClipPlayed == false)
                 {
-                    audioSource.clip = secondWarning;
-                    audioSource.Play();
+                    secondWarning20.Play();
                     secondClipPlayed = true;
                 }
 
