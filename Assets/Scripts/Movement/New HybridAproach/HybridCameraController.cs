@@ -34,7 +34,11 @@ public class HybridCameraController : MonoBehaviour
     {
         targetPosition = position;
     }
-    
+
+    public bool IsFadingInProgress()
+    {
+        return _fadingInProgres;
+    }
 
     public void SwitchPerspective(bool toThirdPerson)
     {
@@ -68,15 +72,16 @@ public class HybridCameraController : MonoBehaviour
         StartCoroutine(FadeOutFadeIn(FadeOutDuration,FadeInDuration,FadeDuration));
     }
 
-    public void Fading(float duration, bool fadeout)
+    public void Fading(float duration, bool fadeout, bool fadeOverlay=false)
     {
+        _fadingInProgres = true;
         if (fadeout)
         {
-            SteamVR_Fade.Start(Color.black, duration); 
+            SteamVR_Fade.Start(Color.black, duration, fadeOverlay); 
         }
         else
         {
-            SteamVR_Fade.Start(Color.clear, duration); 
+            SteamVR_Fade.Start(Color.clear, duration,fadeOverlay); 
         }
     }
     
