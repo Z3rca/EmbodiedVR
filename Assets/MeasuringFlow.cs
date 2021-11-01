@@ -17,10 +17,12 @@ public class MeasuringFlow : MonoBehaviour
 
     public TMP_Text audioRunningText;
     
-    public AudioSource audioSource;
-    public AudioClip dataGatheringOver;
-    public AudioClip proceedToNextArea;
-    public AudioClip callExperimenter;
+    public AudioSource audioInstruction21;
+    public AudioSource audioInstruction22;
+    public AudioSource audioInstruction23;
+    public AudioSource audioInstruction24;
+
+    public float recoveryTimeOfButton = 2f;
     
     private bool recordingStarted = false;
     private bool audioMeasured = false;
@@ -33,11 +35,19 @@ public class MeasuringFlow : MonoBehaviour
 
     private bool audioRecordingPassed;
 
+    private bool _pressed;
+    [SerializeField] private GameObject AcceptButton;
+    [SerializeField] private Material ActiveOkayButtonMaterial;
+    [SerializeField] private Material DeactivatedOkayButtonMaterial;
+    
+
     public event Action MotionsicknessMeasurementStart;
     public event Action AudioRecordingStarted;
     public event Action AudioRecordingEnded;
     public event Action PosturalStabilityTestStarted;
     public event Action PosturalStabitityTestEnded;
+
+    public event Action DataGatheringEnded;
     
     
     
@@ -97,20 +107,20 @@ public class MeasuringFlow : MonoBehaviour
         //TODO lastStage needs to be defined sensibly
         if (ExperimentManager.Instance!=null)
         {
-            lastStage = ExperimentManager.Instance.StationIndex > ExperimentManager.Instance.StationOrder.Count;
+            lastStage = ExperimentManager.Instance.LastTrail();
         }
         
         if (!lastStage)
         {
-            audioSource.clip = dataGatheringOver;
-            audioSource.Play();
-            audioSource.clip = proceedToNextArea;
-            audioSource.Play();
+            audioInstruction22.Play();
+            while (audioInstruction22.isPlaying)
+                yield return null;
+            
+            audioInstruction23.Play();
         }
         else
         {
-            audioSource.clip = callExperimenter;
-            audioSource.Play();
+            audioInstruction24.Play();
             
         }
 
@@ -118,7 +128,9 @@ public class MeasuringFlow : MonoBehaviour
 
         if (ExperimentManager.Instance!=null)
         {
-            ExperimentManager.Instance.DataGatheringEnds();
+            Debug.Log("Data Gathering ends , measuring panel");
+           
+            DataGatheringEnded.Invoke();
         }
     }
 
@@ -155,6 +167,11 @@ public class MeasuringFlow : MonoBehaviour
 
     public void OkayButton()
     {
+        if (_pressed)
+            return;
+        
+        _pressed = true;
+        AcceptButton.GetComponent<Renderer>().material = DeactivatedOkayButtonMaterial;
         if (audioMeasuringTool.activeSelf)
         {
             AudioButton();
@@ -166,6 +183,18 @@ public class MeasuringFlow : MonoBehaviour
             StabilityFlow();
         }
 
+    }
+
+    public void RecoverButton()
+    {
+        StartCoroutine(delayedRecovery());
+    }
+
+    private IEnumerator delayedRecovery()
+    {
+        yield return new WaitForSeconds(recoveryTimeOfButton);
+        _pressed = false;
+        AcceptButton.GetComponent<Renderer>().material = ActiveOkayButtonMaterial;
     }
     
 }
