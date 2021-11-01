@@ -64,6 +64,7 @@ public class ExperimentManager : MonoBehaviour
 
     private float totalTime;
     private bool runningExperiment;
+    private bool _lastStation;
 
     
     private enum MenuState
@@ -193,12 +194,16 @@ public class ExperimentManager : MonoBehaviour
         StationBegin();
         
         _playerController.Fading(0.5f,0.5f,0.5f);
-        
+
         
         
     }
 
-   
+    public bool LastTrail()
+    {
+        //this is called before the new instantiation. remaining is substracted at the teleport. 
+        return RemainingstationsStationSpawners.Count == 1;
+    }
     public Condition GetCondition()
     {
         return _condition;

@@ -23,6 +23,7 @@ public class DataGatheringRoomManager : MonoBehaviour
             //postural stabilty
         _measuringFlow.PosturalStabilityTestStarted += StartedPosturalStabilityTest;
         _measuringFlow.PosturalStabitityTestEnded += EndedPosturalStabilityTest;
+        _measuringFlow.DataGatheringEnded += EndDataGathering;
 
 
     }

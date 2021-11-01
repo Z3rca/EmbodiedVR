@@ -47,6 +47,7 @@ public class StaticDataRecorder : MonoBehaviour
         //Debug.Assert(_currentStationDataFrame ==null, "current station data frame is still intact, cannot create new one yet");
 
         _currentStationDataFrame = new StationDataFrame();
+        _currentStationDataFrame.stationID = stationBeginArgs.stationID.ToString();
 
         _currentStationDataFrame.participantID = stationBeginArgs.participantID;
 
@@ -61,7 +62,7 @@ public class StaticDataRecorder : MonoBehaviour
     {
         if (_currentStationDataFrame == null)
         {
-            Debug.LogWarning("Pakour data start data not found, you miss  data");
+            Debug.LogWarning("Pakour data start data not found, you miss  data (Pakour begin)");
             _currentStationDataFrame = new StationDataFrame();
         }
 
@@ -75,7 +76,7 @@ public class StaticDataRecorder : MonoBehaviour
     {
         if (_currentStationDataFrame == null)
         {
-            Debug.LogWarning("Pakour data start data not found, you miss  data");
+            Debug.LogWarning("Pakour data start data not found, you miss  data (Pakour End)");
             _currentStationDataFrame = new StationDataFrame();
         }
         
@@ -93,7 +94,7 @@ public class StaticDataRecorder : MonoBehaviour
         Debug.Log("save data of static data");
         if (_currentStationDataFrame == null)
         {
-            Debug.LogWarning("Pakour data start data not found, you miss  data");
+            Debug.LogWarning("Pakour data start data not found, you miss  data(Data Gathering end)");
             _currentStationDataFrame = new StationDataFrame();
         }
         
