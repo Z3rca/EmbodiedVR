@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class GoalBox : MonoBehaviour
 {
-
+    public Area2Manager manager;
     public int counter = 0;
     public int goal = 3;
     public UnityEvent goalReached;
@@ -15,9 +15,8 @@ public class GoalBox : MonoBehaviour
 
     public TMP_Text visibleCounter;
     
-    public AudioSource audioSource;
-    public AudioClip enoughCollected;
-    
+    public AudioSource sufficientCubesAudio18;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,9 +29,9 @@ public class GoalBox : MonoBehaviour
         if (!eventCalled & counter>=goal)
         {
             goalReached.Invoke();
-            audioSource.clip = enoughCollected;
-            audioSource.Play();
+            sufficientCubesAudio18.Play();
             eventCalled = true;
+            manager.StopArea();
         }
     }
     
