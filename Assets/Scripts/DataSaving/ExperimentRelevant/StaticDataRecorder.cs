@@ -21,7 +21,7 @@ public class StaticDataRecorder : MonoBehaviour
     {
         _currentDataFrame.ExperimentFinishTimeStamp = e.ExperimentEndTime;
         
-        DataSavingManager.Instance.Save(_currentDataFrame, _currentDataFrame.participantID +" " + _currentDataFrame.Condition +" "+ _currentDataFrame.Order);
+        DataSavingManager.Instance.Save(_currentDataFrame, _currentDataFrame.participantID +"_" + _currentDataFrame.Condition +"_"+ _currentDataFrame.Order);
     }
 
 
