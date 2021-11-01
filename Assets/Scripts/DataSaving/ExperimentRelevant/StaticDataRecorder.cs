@@ -34,7 +34,7 @@ public class StaticDataRecorder : MonoBehaviour
         _currentDataFrame.participantID = startExperimentArgs.ParticipantID;
         _currentDataFrame.Order = startExperimentArgs.Order;
         _currentDataFrame._stationDataFrames = new List<StationDataFrame>();
-        DataSavingManager.Instance.Save(_currentDataFrame, startExperimentArgs.ParticipantID + " - " + _currentDataFrame.ExperimentStartTimestamp);
+        DataSavingManager.Instance.Save(_currentStationDataFrame,"tmp_"+  startExperimentArgs.ParticipantID +"_" +ExperimentManager.Instance.GetCondition()+"_" + startExperimentArgs.Order);
 
     }
 
