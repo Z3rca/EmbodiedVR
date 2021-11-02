@@ -9,6 +9,7 @@ public class MicrophoneManager : MonoBehaviour
     private List<AudioClip> Audioclips;
     private bool _isRecording;
     private string _audioFileName;
+    private float _remainingAudioFileLength;
     [SerializeField] private bool IsDebug;
 
     [SerializeField] private string Device;
@@ -36,12 +37,18 @@ public class MicrophoneManager : MonoBehaviour
         
     }
 
+    public float GetRatioOfRemainingFileLenth()
+    {
+        return _remainingAudioFileLength;
+    }
 
     public void StartRecording(int timeInSeconds, bool loop=false)
     {
         
         _audioSource.Stop();
         _audioSource.clip = Microphone.Start(Device, loop, timeInSeconds, frequency);
+        _isRecording=true;
+        StartCoroutine(CountRemainingPercentage(timeInSeconds));
 
         if (Microphone.IsRecording(Device))
         {
@@ -61,6 +68,19 @@ public class MicrophoneManager : MonoBehaviour
 
 
         StartCoroutine(StoreDataAfterRecording(timeInSeconds));
+    }
+
+    private IEnumerator CountRemainingPercentage(int TotaltimeInSeconds)
+    {
+        float remainingTime = TotaltimeInSeconds;
+        while (_isRecording)
+        {
+            remainingTime -= Time.deltaTime;
+            _remainingAudioFileLength = remainingTime/TotaltimeInSeconds; 
+            yield return new WaitForEndOfFrame();
+        }
+
+        _remainingAudioFileLength = 0f;
     }
 
     private IEnumerator StoreDataAfterRecording(int timeInSeconds)

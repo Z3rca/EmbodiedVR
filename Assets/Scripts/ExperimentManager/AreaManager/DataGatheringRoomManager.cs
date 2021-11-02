@@ -48,7 +48,7 @@ public class DataGatheringRoomManager : MonoBehaviour
             Debug.LogWarning("Area manager was not found");
         }
         
-        _measuringFlow.StartDataGathering();
+        
     }
 
 
@@ -89,6 +89,8 @@ public class DataGatheringRoomManager : MonoBehaviour
         {
             _areaManager.ReachedRatingBoard();
         }
+        
+        _measuringFlow.StartDataGathering();
     }
 
     public void SicknessRatingStarted()

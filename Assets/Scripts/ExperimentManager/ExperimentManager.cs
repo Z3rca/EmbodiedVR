@@ -359,6 +359,10 @@ public class ExperimentManager : MonoBehaviour
         _microphoneManager.StartRecording(time);
     }
 
+    public float GetRemainingTimePercentageOfAudioRecord()
+    {
+        return _microphoneManager.GetRatioOfRemainingFileLenth();
+    }
     public void DataGatheringEnds()
     {
         DataGatheringEndArgs dataGatheringEndArgs = new DataGatheringEndArgs();

@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class MeasuringFlow : MonoBehaviour
 {
     public UnityEvent whenSicknessButtonPressed;
-    
+
+    public GameObject startScreen;
     public GameObject audioMeasuringTool;
     public GameObject motionSicknessMeasuringTool;
     public GameObject posturalStabilityMeasuringTool;
@@ -22,7 +24,7 @@ public class MeasuringFlow : MonoBehaviour
 
     public float recoveryTimeOfButton = 2f;
     
-    private bool recordingStarted = false;
+    private bool audioRecordingStarted = false;
     private bool audioMeasured = false;
 
     public bool sicknessMeasured { get; set; } = false;
@@ -39,6 +41,13 @@ public class MeasuringFlow : MonoBehaviour
     [SerializeField] private Material DeactivatedOkayButtonMaterial;
 
     private float _posturalStabilityMeasuringDuration=5f;
+    
+    
+    //Image of Audio recording
+    [SerializeField] private float pulseSpeed=5f;
+    [SerializeField] private Image audioRecordingCircle;
+    [SerializeField] private Image audioMicrophoneSymbol;
+    [SerializeField] private GameObject CircleLogo;
 
     public event Action MotionsicknessMeasurementStart;
     public event Action AudioRecordingStarted;
@@ -70,13 +79,30 @@ public class MeasuringFlow : MonoBehaviour
         audioMeasuringTool.SetActive(true);
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(false);
-
-        
-        while(!audioMeasured||ExperimentManager.Instance.MicrophoneIsRecording())
+        float factor = -1f;
+        while (!audioRecordingStarted)
         {
             yield return null;
         }
+        CircleLogo.SetActive(true);
         
+        while(!audioMeasured||ExperimentManager.Instance.MicrophoneIsRecording())
+        {
+            if (audioMicrophoneSymbol.color.a <= 0.1f)
+            {
+                factor = 1;
+            }
+
+            if (audioMicrophoneSymbol.color.a >= 1)
+            {
+                factor =-1;
+            }
+            
+            audioMicrophoneSymbol.color += factor*Color.black*0.1f*pulseSpeed*Time.deltaTime;
+            audioRecordingCircle.fillAmount = ExperimentManager.Instance.GetRemainingTimePercentageOfAudioRecord();
+            yield return null;
+        }
+        CircleLogo.SetActive(false);
         AudioRecordingEnded.Invoke();
         
         yield return new WaitForSeconds(1);
@@ -139,7 +165,7 @@ public class MeasuringFlow : MonoBehaviour
         if(audioMeasured)
             return;
         
-        if (recordingStarted)
+        if (audioRecordingStarted)
         {
             AudioRecordingEnded.Invoke();
             audioMeasured = true;
@@ -147,8 +173,7 @@ public class MeasuringFlow : MonoBehaviour
         else
         {
             AudioRecordingStarted.Invoke();
-            recordingStarted = true;
-            audioRunningText.text = "Audio recording is in progress.";
+            audioRecordingStarted = true;
         }
     }
 
