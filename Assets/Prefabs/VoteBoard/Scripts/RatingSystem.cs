@@ -12,8 +12,8 @@ public class RatingSystem : MonoBehaviour
    private double currentTimeStamp;
    private List<int> _choiceValues;
    private List<double> _timeStamps;
-   
-   
+
+   private bool activeRatingProcess;
    [SerializeField] private string basic;
    [SerializeField] private GameObject PreSelection;
    [SerializeField] private GameObject PostSelection;
@@ -31,10 +31,16 @@ public class RatingSystem : MonoBehaviour
       _choiceValues = new List<int>();
       _timeStamps = new List<double>();
    }
-   
-   
+
+   public void SetActiveRatingProcess(bool state)
+   {
+      activeRatingProcess = state;
+   }
    public void SetValue(int val)
    {
+      if(!activeRatingProcess)
+         return;
+            
       _value = val;
       ChangeText();
       ResetColors();

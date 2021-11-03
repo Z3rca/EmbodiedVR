@@ -101,6 +101,8 @@ public class DataGatheringRoomManager : MonoBehaviour
 
     public void SicknessRatingStarted()
     {
+        _ratingSystem.SetActiveRatingProcess(true);
+        
         if (ExperimentManager.Instance != null)
         {
             _areaManager = ExperimentManager.Instance.GetCurrentAreaManager();
@@ -121,6 +123,7 @@ public class DataGatheringRoomManager : MonoBehaviour
             _areaManager.choiceValue = motionsicknessChoice;
             _areaManager.choiceTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         }
+        _ratingSystem.SetActiveRatingProcess(false);
     }
 
     public void StartedPosturalStabilityTest()
