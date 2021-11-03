@@ -4,28 +4,29 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class MeasuringFlow : MonoBehaviour
 {
     public UnityEvent whenSicknessButtonPressed;
-    
+
+    public GameObject welcomeScreen;
     public GameObject audioMeasuringTool;
     public GameObject motionSicknessMeasuringTool;
     public GameObject posturalStabilityMeasuringTool;
-
-    public TMP_Text audioRunningText;
     
-    public AudioSource audioInstruction21;
+    
     public AudioSource audioInstruction22;
     public AudioSource audioInstruction23;
     public AudioSource audioInstruction24;
 
     public float recoveryTimeOfButton = 2f;
     
-    private bool recordingStarted = false;
+    private bool audioRecordingStarted = false;
     private bool audioMeasured = false;
+    private bool welcomeCompleted;
 
-    public bool sicknessMeasured { get; set; } = false;
+    private bool sicknessMeasured;
     
     private bool stabilityMeasured = false;
 
@@ -34,12 +35,28 @@ public class MeasuringFlow : MonoBehaviour
     private bool audioRecordingPassed;
 
     private bool _pressed;
+    private bool _posturalTestInProgress;
     [SerializeField] private GameObject AcceptButton;
     [SerializeField] private Material ActiveOkayButtonMaterial;
     [SerializeField] private Material DeactivatedOkayButtonMaterial;
 
-    private float _posturalStabilityMeasuringDuration=5f;
-
+    [SerializeField] private float posturalStabilityMeasuringDuration=5f;
+    [SerializeField] private float delayPosturalStabilityStart=2f;
+    
+    
+    //Image of Audio recording
+    [SerializeField] private float audioPulseSpeed=5f;
+    [SerializeField] private Image audioRecordingCircle;
+    [SerializeField] private Image audioMicrophoneSymbol;
+    [SerializeField] private GameObject audioCircleLogo;
+    
+    //Image of Postural Stability Measurement
+    
+    [SerializeField] private float posturePulseSpeed=5f;
+    [SerializeField] private Image postureCircle;
+    [SerializeField] private Image postureSymbol;
+    [SerializeField] private GameObject postureCircleLogo;
+    
     public event Action MotionsicknessMeasurementStart;
     public event Action AudioRecordingStarted;
     public event Action AudioRecordingEnded;
@@ -55,9 +72,13 @@ public class MeasuringFlow : MonoBehaviour
     {
     }
 
+    public void FinishMotionsicknessRating()
+    {
+        sicknessMeasured =true;
+    }
     public void SetPosturalMeasuringDuration(float duration)
     {
-        _posturalStabilityMeasuringDuration = duration;
+        posturalStabilityMeasuringDuration = duration;
     }
 
     public void StartDataGathering()
@@ -67,16 +88,46 @@ public class MeasuringFlow : MonoBehaviour
 
     private IEnumerator Flow()
     {
-        audioMeasuringTool.SetActive(true);
+        //welcome screen
+        welcomeScreen.SetActive(true);
+        audioMeasuringTool.SetActive(false);
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(false);
-
         
-        while(!audioMeasured||ExperimentManager.Instance.MicrophoneIsRecording())
+        while (!welcomeCompleted)
         {
             yield return null;
         }
         
+        //audio measuring
+        welcomeScreen.SetActive(false);
+        audioMeasuringTool.SetActive(true);
+        motionSicknessMeasuringTool.SetActive(false);
+        posturalStabilityMeasuringTool.SetActive(false);
+        float factor = -1f;
+        while (!audioRecordingStarted)
+        {
+            yield return null;
+        }
+        audioCircleLogo.SetActive(true);
+        
+        while(!audioMeasured||ExperimentManager.Instance.MicrophoneIsRecording())
+        {
+            if (audioMicrophoneSymbol.color.a <= 0.1f)
+            {
+                factor = 1;
+            }
+
+            if (audioMicrophoneSymbol.color.a >= 1)
+            {
+                factor =-1;
+            }
+            
+            audioMicrophoneSymbol.color += factor*Color.black*0.1f*audioPulseSpeed*Time.deltaTime;
+            audioRecordingCircle.fillAmount = ExperimentManager.Instance.GetRemainingTimePercentageOfAudioRecord();
+            yield return null;
+        }
+        audioCircleLogo.SetActive(false);
         AudioRecordingEnded.Invoke();
         
         yield return new WaitForSeconds(1);
@@ -92,7 +143,6 @@ public class MeasuringFlow : MonoBehaviour
         
         motionSicknessMeasuringTool.SetActive(false);
         posturalStabilityMeasuringTool.SetActive(true);
-        
         while(!stabilityMeasured)
         {
             yield return null;
@@ -139,7 +189,7 @@ public class MeasuringFlow : MonoBehaviour
         if(audioMeasured)
             return;
         
-        if (recordingStarted)
+        if (audioRecordingStarted)
         {
             AudioRecordingEnded.Invoke();
             audioMeasured = true;
@@ -147,8 +197,7 @@ public class MeasuringFlow : MonoBehaviour
         else
         {
             AudioRecordingStarted.Invoke();
-            recordingStarted = true;
-            audioRunningText.text = "Audio recording is in progress.";
+            audioRecordingStarted = true;
         }
     }
 
@@ -159,9 +208,10 @@ public class MeasuringFlow : MonoBehaviour
 
     private void StabilityFlow()
     {
-        PosturalStabilityTestStarted.Invoke();
-
-        StartCoroutine(WaitForPosturalStabiltyTestDuration(_posturalStabilityMeasuringDuration));
+        if (_posturalTestInProgress)
+            return;
+        _posturalTestInProgress = true;
+        StartCoroutine(WaitForPosturalStabiltyTestDuration(posturalStabilityMeasuringDuration, delayPosturalStabilityStart));
     }
 
     public void OkayButton()
@@ -171,6 +221,10 @@ public class MeasuringFlow : MonoBehaviour
         
         _pressed = true;
         AcceptButton.GetComponent<Renderer>().material = DeactivatedOkayButtonMaterial;
+        if (welcomeScreen.activeSelf)
+        {
+            WelcomeButton();
+        }
         if (audioMeasuringTool.activeSelf)
         {
             AudioButton();
@@ -182,6 +236,11 @@ public class MeasuringFlow : MonoBehaviour
             StabilityFlow();
         }
 
+    }
+
+    private void WelcomeButton()
+    {
+        welcomeCompleted = true;
     }
 
     public void RecoverButton()
@@ -196,10 +255,58 @@ public class MeasuringFlow : MonoBehaviour
         AcceptButton.GetComponent<Renderer>().material = ActiveOkayButtonMaterial;
     }
 
-    private IEnumerator WaitForPosturalStabiltyTestDuration(float duration)
+    private IEnumerator WaitForPosturalStabiltyTestDuration(float duration, float delay)
     {
+        
+        
+        
+        postureCircleLogo.SetActive(true);
+
+        yield return new WaitForSeconds(delay);
+        StartCoroutine(VisualizedPostureProgress(duration));
+        PosturalStabilityTestStarted.Invoke();
+
         yield return new WaitForSeconds(duration);
         stabilityMeasured = true;
+        _posturalTestInProgress = false;
+
+
     }
-    
+
+    private IEnumerator VisualizedPostureProgress(float duration)
+    {
+        postureCircle.fillAmount = 0f;
+        float remainingDuration = duration;
+        float factor = 0f;
+        while (!stabilityMeasured)
+        {
+            remainingDuration -= Time.deltaTime;
+            if (postureSymbol.color.a <= 0.1f)
+            {
+                factor = 1;
+            }
+
+            if (postureSymbol.color.a >= 1)
+            {
+                factor =-1;
+            }
+            
+            postureSymbol.color += factor*Color.black*0.1f*posturePulseSpeed*Time.deltaTime;
+            
+            
+            
+           
+            postureCircle.fillAmount =1 -(remainingDuration / duration) ;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    public void DeactivateBoard()
+    {
+        //this is called after set all texts to a certain language
+        welcomeScreen.SetActive(false);
+        audioMeasuringTool.SetActive(false);
+        motionSicknessMeasuringTool.SetActive(false);
+        posturalStabilityMeasuringTool.SetActive(false);
+    }
 }

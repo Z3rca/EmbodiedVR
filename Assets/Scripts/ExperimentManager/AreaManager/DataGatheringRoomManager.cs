@@ -25,7 +25,13 @@ public class DataGatheringRoomManager : MonoBehaviour
         _measuringFlow.PosturalStabitityTestEnded += EndedPosturalStabilityTest;
         _measuringFlow.DataGatheringEnded += EndDataGathering;
 
+        ExperimentManager.Instance.startedExperiment += DeactivateBoard;
 
+    }
+
+    private void DeactivateBoard(object sender, StartExperimentArgs e)
+    {
+        _measuringFlow.DeactivateBoard();
     }
 
     public void EnteringDataGatheringRoom()
@@ -48,7 +54,7 @@ public class DataGatheringRoomManager : MonoBehaviour
             Debug.LogWarning("Area manager was not found");
         }
         
-        _measuringFlow.StartDataGathering();
+        
     }
 
 
@@ -89,10 +95,14 @@ public class DataGatheringRoomManager : MonoBehaviour
         {
             _areaManager.ReachedRatingBoard();
         }
+        
+        _measuringFlow.StartDataGathering();
     }
 
     public void SicknessRatingStarted()
     {
+        _ratingSystem.SetActiveRatingProcess(true);
+        
         if (ExperimentManager.Instance != null)
         {
             _areaManager = ExperimentManager.Instance.GetCurrentAreaManager();
@@ -113,6 +123,7 @@ public class DataGatheringRoomManager : MonoBehaviour
             _areaManager.choiceValue = motionsicknessChoice;
             _areaManager.choiceTimeStamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         }
+        _ratingSystem.SetActiveRatingProcess(false);
     }
 
     public void StartedPosturalStabilityTest()

@@ -10,6 +10,7 @@ public class GoalBox : MonoBehaviour
     public Area2Manager manager;
     public int counter = 0;
     public int goal = 3;
+    public int final = 5;
     public UnityEvent goalReached;
     private bool eventCalled = false;
 
@@ -20,7 +21,7 @@ public class GoalBox : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        visibleCounter.text = counter + "/" + goal + "spheres collected! \r\n" + (goal-counter) + " are still needed to exit.";
+        visibleCounter.text = counter + "/" + final;
     }
 
     // Update is called once per frame
@@ -40,7 +41,7 @@ public class GoalBox : MonoBehaviour
         if (other.gameObject.tag=="Sphere")
         {
             counter++;
-            visibleCounter.text = counter + " spheres collected! \r\n" + Math.Max((goal-counter), 0) + " still needed to exit.";
+            visibleCounter.text = counter + "/" + final;
             other.gameObject.SetActive(false);
         }
     }
