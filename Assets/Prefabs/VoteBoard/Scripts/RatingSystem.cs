@@ -15,7 +15,8 @@ public class RatingSystem : MonoBehaviour
    
    
    [SerializeField] private string basic;
-   [SerializeField] private TMP_Text textField;
+   [SerializeField] private GameObject PreSelection;
+   [SerializeField] private GameObject PostSelection;
    [SerializeField] private List<GameObject> RatingButtons;
    [SerializeField] private GameObject AcceptButton;
    public EventHandler<RatingBoardDataFrame> HitEvent;
@@ -31,20 +32,26 @@ public class RatingSystem : MonoBehaviour
       _timeStamps = new List<double>();
    }
    
+   
    public void SetValue(int val)
    {
       _value = val;
-      SetText(_value);
+      ChangeText();
       ResetColors();
       readyToAccept = true;
       SetButtonColored(RatingButtons[val]);
       UnlockAcceptButton();
       
    }
-   
+
+   private void ChangeText()
+   {
+      PreSelection.SetActive(false);
+      PostSelection.SetActive(true);
+   }
    private void SetText(int val)
    {
-      textField.text = basic + ": "+ val;
+      //textField.text = val;
    }
 
    public void Restart()
