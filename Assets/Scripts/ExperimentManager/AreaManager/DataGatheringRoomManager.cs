@@ -25,7 +25,13 @@ public class DataGatheringRoomManager : MonoBehaviour
         _measuringFlow.PosturalStabitityTestEnded += EndedPosturalStabilityTest;
         _measuringFlow.DataGatheringEnded += EndDataGathering;
 
+        ExperimentManager.Instance.startedExperiment += DeactivateBoard;
 
+    }
+
+    private void DeactivateBoard(object sender, StartExperimentArgs e)
+    {
+        _measuringFlow.DeactivateBoard();
     }
 
     public void EnteringDataGatheringRoom()

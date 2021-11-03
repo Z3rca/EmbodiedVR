@@ -26,7 +26,7 @@ public class MeasuringFlow : MonoBehaviour
     private bool audioMeasured = false;
     private bool welcomeCompleted;
 
-    public bool sicknessMeasured { get; set; } = false;
+    private bool sicknessMeasured;
     
     private bool stabilityMeasured = false;
 
@@ -71,6 +71,10 @@ public class MeasuringFlow : MonoBehaviour
     {
     }
 
+    public void FinishMotionsicknessRating()
+    {
+        sicknessMeasured =true;
+    }
     public void SetPosturalMeasuringDuration(float duration)
     {
         posturalStabilityMeasuringDuration = duration;
@@ -288,5 +292,13 @@ public class MeasuringFlow : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-    
+
+    public void DeactivateBoard()
+    {
+        //this is called after set all texts to a certain language
+        welcomeScreen.SetActive(false);
+        audioMeasuringTool.SetActive(false);
+        motionSicknessMeasuringTool.SetActive(false);
+        posturalStabilityMeasuringTool.SetActive(false);
+    }
 }

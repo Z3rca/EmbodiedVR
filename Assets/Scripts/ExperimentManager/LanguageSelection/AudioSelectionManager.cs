@@ -17,6 +17,7 @@ public class AudioSelectionManager : MonoBehaviour
     private Dictionary<string, AudioClip> _chosenAudioDictionarty;
     private Dictionary<string, AudioClip> _englishAudioDictionary; 
     private List<AudioSource> _audioSources;
+    private List<TextSelectionController> _textSelectionControllers;
     
     private Language _setLanguage;
 
@@ -26,6 +27,7 @@ public class AudioSelectionManager : MonoBehaviour
     private void Awake()
     {
         _audioSources = new List<AudioSource>();
+        _textSelectionControllers = new List<TextSelectionController>();
     }
 
     // Start is called before the first frame update
@@ -76,13 +78,16 @@ public class AudioSelectionManager : MonoBehaviour
 
     public void RegisterAudioSource(AudioSource audioSource)
     {
-        Debug.Log("hey there Im audio"
-        + " clip " + audioSource.clip.name);
         if (_audioSources != null)
         {
             _audioSources.Add(audioSource);
         }
 
+    }
+    
+    public void RegisterTextController(TextSelectionController controller)
+    {
+        _textSelectionControllers.Add(controller);
     }
 
     public void SetLanguage(Language language)
@@ -98,6 +103,11 @@ public class AudioSelectionManager : MonoBehaviour
                     OverrideAudioClipFromDictionary(_germanAudioDictionary, audioSource, language);
                 }
 
+                foreach (var controller in _textSelectionControllers)
+                {
+                    controller.SetGermanText();
+                }
+
                 _audioDialogController.SwitchClipsToLanguage(Language.German);
                 
                 break;
@@ -105,6 +115,11 @@ public class AudioSelectionManager : MonoBehaviour
                 foreach (var audioSource in _audioSources)
                 {
                     OverrideAudioClipFromDictionary(_englishAudioDictionary, audioSource, language);
+                }
+                
+                foreach (var controller in _textSelectionControllers)
+                {
+                    controller.SetEnglishText();
                 }
                 
                 _audioDialogController.SwitchClipsToLanguage(Language.English);
@@ -150,16 +165,7 @@ public class AudioSelectionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Debug.Log("assign language German");
-            SetLanguage(Language.German);
-        }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            Debug.Log("assign language English");
-            SetLanguage(Language.English);
-        }
+       
     }
 
     private void OverrideAudioClipFromDictionary(Dictionary<string, AudioClip> dictionary, AudioSource AssignedSource, Language language)
