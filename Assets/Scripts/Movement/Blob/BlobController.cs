@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using RootMotion.Demos;
 using UnityEngine;
@@ -21,6 +22,8 @@ public class BlobController : MonoBehaviour
 
         LeftHand = Player.instance.hands[0];
         RightHand = Player.instance.hands[1];
+        
+       
     }
     // Update is called once per frame
     void Update()
@@ -37,6 +40,11 @@ public class BlobController : MonoBehaviour
         {
             
         }
+    }
+
+    private void OnEnable()
+    {
+        
     }
 
     public void Initialize()
@@ -72,8 +80,8 @@ public class BlobController : MonoBehaviour
     private IEnumerator DeactivateHandsWithFade(bool thirdperson)
     {
         Debug.Log("got here");
-        yield return new WaitForSeconds(1f);
-        foreach (var hand in Player.instance.hands)
+        yield return new WaitForSeconds(2f);
+        /*foreach (var hand in Player.instance.hands)
         {
             foreach (var renderModel in hand.renderModels)
             {
@@ -81,8 +89,10 @@ public class BlobController : MonoBehaviour
                 renderModel.SetControllerVisibility(false);
             }
         }
-        
-        
+        */
+        Debug.Log("controllers there");
+        EnabledControllers(true);
+
 
     }
     
