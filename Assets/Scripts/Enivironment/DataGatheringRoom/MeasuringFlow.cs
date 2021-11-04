@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -64,6 +64,8 @@ public class MeasuringFlow : MonoBehaviour
     public event Action PosturalStabitityTestEnded;
 
     public event Action DataGatheringEnded;
+
+    public event Action DataGatheringStarted;
     
     
     
@@ -88,6 +90,7 @@ public class MeasuringFlow : MonoBehaviour
 
     private IEnumerator Flow()
     {
+        DataGatheringStarted.Invoke();
         //welcome screen
         welcomeScreen.SetActive(true);
         audioMeasuringTool.SetActive(false);
