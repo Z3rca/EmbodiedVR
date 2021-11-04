@@ -34,6 +34,7 @@ public class RatingSystem : MonoBehaviour
 
    public void SetActiveRatingProcess(bool state)
    {
+      InitialText();
       activeRatingProcess = state;
    }
    public void SetValue(int val)
@@ -42,7 +43,7 @@ public class RatingSystem : MonoBehaviour
          return;
             
       _value = val;
-      ChangeText();
+      ChangedText();
       ResetColors();
       readyToAccept = true;
       SetButtonColored(RatingButtons[val]);
@@ -50,7 +51,12 @@ public class RatingSystem : MonoBehaviour
       
    }
 
-   private void ChangeText()
+   private void InitialText()
+   {
+      PreSelection.SetActive(true);
+      PostSelection.SetActive(false);
+   }
+   private void ChangedText()
    {
       PreSelection.SetActive(false);
       PostSelection.SetActive(true);
@@ -67,7 +73,7 @@ public class RatingSystem : MonoBehaviour
       _value = 0;
       SetText(_value);
    }
-   
+
    
    private void UnlockAcceptButton()
    {

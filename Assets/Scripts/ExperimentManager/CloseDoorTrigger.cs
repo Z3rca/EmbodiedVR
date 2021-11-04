@@ -12,6 +12,7 @@ public class CloseDoorTrigger : MonoBehaviour
 
     public UnityEvent OnExitTrigger;
 
+    private bool _wasTriggered;
 
     private void Start()
     {
@@ -40,6 +41,10 @@ public class CloseDoorTrigger : MonoBehaviour
     {
         if (other.gameObject.GetComponent<HybridCharacterController>()==playerBody)
         {
+            if (_wasTriggered)
+                return;
+            
+            _wasTriggered = true;
             OnExitTrigger.Invoke();   
         }
     }
