@@ -90,7 +90,6 @@ public class MeasuringFlow : MonoBehaviour
 
     private IEnumerator Flow()
     {
-        DataGatheringStarted.Invoke();
         //welcome screen
         welcomeScreen.SetActive(true);
         audioMeasuringTool.SetActive(false);
