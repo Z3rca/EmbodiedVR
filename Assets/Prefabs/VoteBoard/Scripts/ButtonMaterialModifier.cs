@@ -10,6 +10,8 @@ public class ButtonMaterialModifier : MonoBehaviour
 
     public Material changeMaterial;
 
+    public Material lockMaterial;
+
     private void Start()
     {
         _defaultMaterial = ApplyGameObject.GetComponent<Renderer>().material;
@@ -20,6 +22,14 @@ public class ButtonMaterialModifier : MonoBehaviour
         if (changeMaterial != null)
         {
             ApplyGameObject.GetComponent<Renderer>().material = changeMaterial;
+        }
+    }
+
+    public void LockMaterial()
+    {
+        if (lockMaterial != null)
+        {
+            ApplyGameObject.GetComponent<Renderer>().material = lockMaterial;
         }
     }
 

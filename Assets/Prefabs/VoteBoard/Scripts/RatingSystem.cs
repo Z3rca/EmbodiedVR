@@ -30,12 +30,18 @@ public class RatingSystem : MonoBehaviour
    {
       _choiceValues = new List<int>();
       _timeStamps = new List<double>();
+
+      foreach (var button in RatingButtons)
+      {
+         button.GetComponent<ButtonMaterialModifier>().LockMaterial();
+      }
    }
 
    public void SetActiveRatingProcess(bool state)
    {
       InitialText();
       activeRatingProcess = state;
+      LockAcceptButton();
    }
    public void SetValue(int val)
    {
@@ -82,7 +88,7 @@ public class RatingSystem : MonoBehaviour
 
    private void LockAcceptButton()
    {
-      AcceptButton.GetComponent<ButtonMaterialModifier>().RestoreMaterial();
+      AcceptButton.GetComponent<ButtonMaterialModifier>().LockMaterial();
    }
    private void ResetColors()
    {
