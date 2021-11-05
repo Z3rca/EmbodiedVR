@@ -37,8 +37,8 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField] private MicrophoneManager _microphoneManager;
 
     [SerializeField] private LiveDataRecorder liveDataRecorder;
-    
 
+    private bool firstTimeHeightCalibration;
     public event EventHandler<StartExperimentArgs> startedExperiment;
     public event EventHandler<ExperimentFinishedArgs> FinishedExperiment;
 
@@ -190,7 +190,9 @@ public class ExperimentManager : MonoBehaviour
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
         
         liveDataRecorder.Initialize();
-
+        
+        
+        
         StationBegin();
         
         _playerController.Fading(0.5f,0.5f,0.5f);
@@ -467,9 +469,6 @@ public class ExperimentManager : MonoBehaviour
            
             StationOrder.Add(j);
             order+=(j);
-            
-
-
         }
         
         

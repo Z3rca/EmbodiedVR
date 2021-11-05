@@ -22,7 +22,7 @@ public class HybridController : MonoBehaviour
     private HybridRemoteTransformConroller _remoteTransformConroller;
     private PuppetController _puppetController;
 
-
+    private bool _firstTimeHeightCalibration;
    
     [Header("General Settings Settings")]
     [SerializeField] private bool EmbodiedCondition;
@@ -179,26 +179,15 @@ public class HybridController : MonoBehaviour
     }
     private void MoveAvatar(Vector2 input)
     {
-        
-       
-        //_cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
-
-        
-
-       
-
         Vector3 MovementDirection = new Vector3();
         if (_inputIsAllowed&& !(!AllowMovementDuringFirstperson&& !_currentlyInThirdPerson))
         { 
             MovementDirection = new Vector3(input.x, 0f, input.y);
         }
         
-        
-           
         _characterController.MoveCharacter(MovementDirection);
         _puppetController.SetCurrentSpeed(_currentCharacterSpeed);
         _puppetController.MovePuppet(MovementDirection);
-        
         
         _cameraController.SetPosition(_characterController.GetGeneralCharacterPosition());
         _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
@@ -331,7 +320,8 @@ public class HybridController : MonoBehaviour
     {
         _cameraController.Fading(FadeOutDuration, true);
     }
-
+    
+    
     public void FadeIn(float FadeInDuration)
     {
         _cameraController.Fading(FadeInDuration,false);
@@ -415,6 +405,14 @@ public class HybridController : MonoBehaviour
         ExperimentManager.Instance.TeleportComplete();
     }
 
+
+    private IEnumerator FirstTimeHeightCalibrationProcess()
+    {
+        _firstTimeHeightCalibration = false;
+        FadeOut(0.0f);
+        yield return new WaitUntil(() => _firstTimeHeightCalibration);
+
+    }
 
     private Quaternion GetCurrentRotation()
     {
