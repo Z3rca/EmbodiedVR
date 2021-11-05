@@ -67,7 +67,7 @@ public class RotatonElevator : MonoBehaviour
               {
                  
                   this.transform.Rotate(Vector3.up * (+speed * Time.deltaTime));
-                  //physicalMovementPlayer.GetComponent<HybridCharacterController>().RotateCharacter(Quaternion.Euler(transform.forward));
+                  characterController.AddOuterMovementImpact(_rotationAffector.rb.velocity,speed);
               }
           }
           else
