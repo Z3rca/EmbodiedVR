@@ -23,7 +23,7 @@ public class AudioInstructionsController : MonoBehaviour
 
     public void playAudio()
     {
-        if (potentialIntferingSources.Count!=0)
+        if (potentialIntferingSources.Count>0)
         {
             bool isPlaying = false;
             foreach (var source in potentialIntferingSources.ToList())
@@ -43,6 +43,7 @@ public class AudioInstructionsController : MonoBehaviour
             {
                 if (!playedAudio)
                 {
+                    Debug.Log("audio sources were all quite");
                     audioSource.Play();
                     playedAudio = true;
                 }
@@ -53,6 +54,7 @@ public class AudioInstructionsController : MonoBehaviour
         {
             if (!playedAudio)
             {
+                Debug.Log("not one source was playing");
                 audioSource.Play();
                 playedAudio = true;
             }
@@ -77,7 +79,7 @@ public class AudioInstructionsController : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2f);
         
         if (!playedAudio)
         {
