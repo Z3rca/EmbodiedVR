@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ButtonMaterialModifier : MonoBehaviour
@@ -12,6 +13,8 @@ public class ButtonMaterialModifier : MonoBehaviour
 
     public Material lockMaterial;
 
+    public TextMeshProUGUI textUI;
+
     private void Start()
     {
         _defaultMaterial = ApplyGameObject.GetComponent<Renderer>().material;
@@ -23,6 +26,8 @@ public class ButtonMaterialModifier : MonoBehaviour
         {
             ApplyGameObject.GetComponent<Renderer>().material = changeMaterial;
         }
+
+        
     }
 
     public void LockMaterial()
