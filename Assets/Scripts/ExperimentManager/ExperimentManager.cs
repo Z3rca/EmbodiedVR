@@ -66,6 +66,7 @@ public class ExperimentManager : MonoBehaviour
     private bool runningExperiment;
     private bool _lastStation;
 
+    private float fps;
     
     private enum MenuState
     {
@@ -93,6 +94,7 @@ public class ExperimentManager : MonoBehaviour
     {
         if(runningExperiment)
             totalTime += Time.deltaTime;
+        fps = TimeManager.Instance.GetCurrentFPS();
     }
 
 
@@ -844,6 +846,8 @@ public class ExperimentManager : MonoBehaviour
                 valX += buttonwidth+ 2;
                 TimeSpan time = TimeSpan.FromSeconds(totalTime);
                 GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Total "+ time.ToString("mm':'ss")), boxStyle);
+                valX += buttonwidth+ 2;
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("FPS "+ Math.Round(fps,2) ), boxStyle);
 
                 break;
                 
