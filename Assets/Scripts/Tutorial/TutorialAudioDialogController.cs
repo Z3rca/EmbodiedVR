@@ -10,19 +10,31 @@ public class TutorialAudioDialogController : MonoBehaviour
    private AudioSelectionManager _audioSelectionManager;
    private bool _playingAudioClip;
 
-
+   private bool active;
+   private List<AudioClip> _currentListedAudioClips;
    private void Start()
    {
       _audioSelectionManager = ExperimentManager.Instance.GetComponent<AudioSelectionManager>();
-
+      _currentListedAudioClips = new List<AudioClip>();
    }
 
+  
+   public void ForceStopAllAudio()
+   {
+      audioSource.Stop();
+      _playingAudioClip = false;
+   }
    public void SwitchClipsToLanguage(Language language)
    {
       for (int i = 0; i < _audioClips.Count; i++)
       {
          _audioClips[i] = _audioSelectionManager.GetClipInCorrectLanguage(_audioClips[i].name);
       }
+   }
+
+   public bool GetActive()
+   {
+      return active;
    }
 
    public List<AudioClip> GetAudioClips()
@@ -103,16 +115,59 @@ public class TutorialAudioDialogController : MonoBehaviour
 
 
 
-   private void StartAudioClip(AudioClip clip)
+   private void StartAudioClip(AudioClip clip, bool skipFormer=false)
    {
-      _playingAudioClip = true;
-      audioSource.clip = clip;
-      StartCoroutine(PlayingAudioClip());
+      active = true;
+      /*Debug.Log("play Clip + " + clip.name);
+      if (audioSource.clip == clip)
+         return;
+      if (skipFormer)
+      {
+         _playingAudioClip = false;
+         ForceStopAllAudio();
+      }
+      
+      
+      if (TutorialManager.Instance.GetIsTutorialFinished())
+         return;
+      
+      _currentListedAudioClips.Add(clip);
+      StartCoroutine(PlayingAudioClip(clip));*/
+      
+      
+      if(!_currentListedAudioClips.Contains(clip))
+         _currentListedAudioClips.Add(clip);
    }
 
 
-   private IEnumerator PlayingAudioClip()
+   private void Update()
    {
+      
+      
+      if (active)
+      {
+         if (!_playingAudioClip)
+         {
+            if (_currentListedAudioClips.Count > 0)
+            {
+               StartCoroutine(PlayingAudioListItem(_currentListedAudioClips[0]));
+            }
+         }
+         
+         if (_currentListedAudioClips.Count == 0)
+         {
+            active = false;
+         }
+      }
+   }
+
+   
+   
+   private IEnumerator PlayingAudioClip(AudioClip clip)
+   {
+      yield return new WaitUntil(() => !_playingAudioClip);
+      _playingAudioClip = true;
+      audioSource.clip = clip;
       audioSource.Play();
       while (_playingAudioClip)
       {
@@ -122,6 +177,25 @@ public class TutorialAudioDialogController : MonoBehaviour
          }
 
          yield return new WaitForEndOfFrame();
+      }
+
+      audioSource.clip = null;
+   }
+
+   private IEnumerator PlayingAudioListItem(AudioClip clip)
+   {
+      if (!_playingAudioClip)
+      {
+         _playingAudioClip = true;
+         audioSource.clip = clip;
+         audioSource.Play();
+         while (audioSource.isPlaying)
+         {
+            yield return new WaitForEndOfFrame();
+         }
+      
+         _currentListedAudioClips.RemoveAt(0);
+         _playingAudioClip = false;
       }
    }
 

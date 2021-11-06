@@ -37,8 +37,8 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField] private MicrophoneManager _microphoneManager;
 
     [SerializeField] private LiveDataRecorder liveDataRecorder;
-    
 
+    private bool firstTimeHeightCalibration;
     public event EventHandler<StartExperimentArgs> startedExperiment;
     public event EventHandler<ExperimentFinishedArgs> FinishedExperiment;
 
@@ -66,6 +66,7 @@ public class ExperimentManager : MonoBehaviour
     private bool runningExperiment;
     private bool _lastStation;
 
+    private float fps;
     
     private enum MenuState
     {
@@ -93,6 +94,7 @@ public class ExperimentManager : MonoBehaviour
     {
         if(runningExperiment)
             totalTime += Time.deltaTime;
+        fps = TimeManager.Instance.GetCurrentFPS();
     }
 
 
@@ -165,10 +167,22 @@ public class ExperimentManager : MonoBehaviour
         Debug.Log("finished establishing character");
         _playerController = SelectedAvatar.GetComponent<HybridController>();
         _playerCharacterController = _playerController.GetHybridChracterController();
+        
+        _playerController.StartBodyScaleCalibration();
 
+        yield return new WaitUntil(() => !_playerController.GetCalibrationProcess());
         
-        
-        _playerController.ShowControllers(false);
+        //_playerController.ShowControllers(false);
+        if (_playerController.IsEmbodiedCondition())
+        {
+            _playerController.ShowHands(true);
+            _playerController.ShowControllers(false);
+        }
+        else
+        {
+            _playerController.ShowHands(false);
+            _playerController.ShowControllers(true);
+        }
         
         if (_ActiveStation.ID == 0)
         {
@@ -181,16 +195,21 @@ public class ExperimentManager : MonoBehaviour
             _playerController.AllowInput(true);
         }
         
-        
         StartedExperiment();
 
 
         yield return new WaitForFixedUpdate();
+
+        
         
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
+
+       
         
         liveDataRecorder.Initialize();
-
+        
+        
+        
         StationBegin();
         
         _playerController.Fading(0.5f,0.5f,0.5f);
@@ -467,9 +486,6 @@ public class ExperimentManager : MonoBehaviour
            
             StationOrder.Add(j);
             order+=(j);
-            
-
-
         }
         
         
@@ -830,6 +846,8 @@ public class ExperimentManager : MonoBehaviour
                 valX += buttonwidth+ 2;
                 TimeSpan time = TimeSpan.FromSeconds(totalTime);
                 GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Total "+ time.ToString("mm':'ss")), boxStyle);
+                valX += buttonwidth+ 2;
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("FPS "+ Math.Round(fps,2) ), boxStyle);
 
                 break;
                 

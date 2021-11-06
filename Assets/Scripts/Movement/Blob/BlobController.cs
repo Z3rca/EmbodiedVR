@@ -28,8 +28,6 @@ public class BlobController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        LeftHand.SetVisibility(false);
-        RightHand.SetVisibility(false);
     }
 
     private  void OnControllerLoaded()
@@ -68,6 +66,8 @@ public class BlobController : MonoBehaviour
             //hand.HideController();
             // hand.HideSkeleton();
         }
+        
+        hybridController.ShowHands(false);
 
     }
 
