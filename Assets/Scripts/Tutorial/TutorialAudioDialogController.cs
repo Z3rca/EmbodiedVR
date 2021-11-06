@@ -184,16 +184,19 @@ public class TutorialAudioDialogController : MonoBehaviour
 
    private IEnumerator PlayingAudioListItem(AudioClip clip)
    {
-      _playingAudioClip = true;
-      audioSource.clip = clip;
-      audioSource.Play();
-      while (audioSource.isPlaying)
+      if (!_playingAudioClip)
       {
-         yield return new WaitForEndOfFrame();
-      }
+         _playingAudioClip = true;
+         audioSource.clip = clip;
+         audioSource.Play();
+         while (audioSource.isPlaying)
+         {
+            yield return new WaitForEndOfFrame();
+         }
       
-      _currentListedAudioClips.RemoveAt(0);
-      _playingAudioClip = false;
+         _currentListedAudioClips.RemoveAt(0);
+         _playingAudioClip = false;
+      }
    }
 
 

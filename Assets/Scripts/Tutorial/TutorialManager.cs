@@ -178,23 +178,29 @@ public class TutorialManager : MonoBehaviour
         
         HybridController.HighLightMovementButton(false);
         HybridController.HighLightRotationButton(false);
-        
+
+        GameObject cube;
         Ball.SetActive(true);
+        var cubeHovering = Ball.GetComponentInChildren<IgnoreHovering>();
         
+
+
         if (!_isFirstPersonCondition)
         {
             HybridController.ShowControllers(true);
             HybridController.HighLightControlSwitchButton(true);
             
             audioController.AudioClip8();
-            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            yield return new WaitUntil(() => !audioController.GetActive());
             yield return new WaitUntil(() => !_thirdPersonIsActive);
             
             HybridController.HighLightControlSwitchButton(false);
         }
         
         audioController.AudioClip9();
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        yield return new WaitUntil(() => !audioController.GetActive());
+        
+        Destroy(cubeHovering);
         InteractionState = true;
         HybridController.HighLightGraspButtons(true);
 
@@ -214,7 +220,7 @@ public class TutorialManager : MonoBehaviour
     {
         audioController.AudioClip12();
         _reachedSecondArea = true;
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        yield return new WaitUntil(() => !audioController.GetActive());
         _reachedSecondArea = false;
     }
 
@@ -315,5 +321,6 @@ public class TutorialManager : MonoBehaviour
     {
         audioController.ForceStopAllAudio();
         ExitAreaShine.SetActive(false);
+        HybridController.StopHighlighting();
     }
 }
