@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using Valve.VR;
+using Valve.VR.InteractionSystem;
+using Hand = Valve.VR.InteractionSystem.Hand;
+
 
 public class ControllerRepresentations : MonoBehaviour
 {
@@ -10,12 +14,13 @@ public class ControllerRepresentations : MonoBehaviour
     public GameObject LeftPerspectiveChangeButton;
     public GameObject LeftStick;
     public GameObject LeftSqueeze;
-    
+    public GameObject TriggerButtonLeft;
 
     public GameObject RightController;
     public GameObject RightPerspectiveChangeButton;
     public GameObject RightStick;
     public GameObject RightSqueeze;
+    
     
     public Material HighLightMaterial;
 
@@ -25,20 +30,44 @@ public class ControllerRepresentations : MonoBehaviour
     [SerializeField] private RemoteVR RemoteVR;
 
     private bool Initalized;
+
+
+    private Hand _leftHand;
+
+    private Hand _rightHand;
     // Start is called before the first frame update
     
     // Update is called once per frame
     public bool forceStop;
     private Dictionary<GameObject, bool> highlightedButtons;
+
+    private bool _switchShowHands;
     public void ShowController(bool state)
     {
         LeftController.SetActive(state);
         RightController.SetActive(state);
     }
 
+    private void Start()
+    {
+        _switchShowHands = true;
+        _leftHand = Player.instance.hands[0];
+        _rightHand = Player.instance.hands[1];
+    }
     private void Awake()
     {
         
+    }
+
+    private void Update()
+    {
+        _leftHand.SetVisibility(_switchShowHands);
+        _rightHand.SetVisibility(_switchShowHands);
+    }
+
+    public void ShowHands(bool state)
+    {
+        _switchShowHands = state;
     }
 
     private void initializeButtons()
@@ -50,6 +79,7 @@ public class ControllerRepresentations : MonoBehaviour
         highlightedButtons.Add(RightPerspectiveChangeButton, false);
         highlightedButtons.Add(RightStick, false);
         highlightedButtons.Add(RightSqueeze, false);
+        highlightedButtons.Add(TriggerButtonLeft,false);
     }
     public void HighLightPerspectiveChangeButtons(bool state)
     {
@@ -82,6 +112,17 @@ public class ControllerRepresentations : MonoBehaviour
         }
         
         HighLightButton(RightStick,state);
+    }
+
+    public void HighlightTriggerButton(bool state)
+    {
+        if (!Initalized)
+        {
+            initializeButtons();
+            Initalized = true;
+        }
+        
+        HighLightButton(TriggerButtonLeft,state);
     }
 
     public void HighLightGraspButtons(bool state)

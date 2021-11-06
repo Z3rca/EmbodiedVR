@@ -165,10 +165,22 @@ public class ExperimentManager : MonoBehaviour
         Debug.Log("finished establishing character");
         _playerController = SelectedAvatar.GetComponent<HybridController>();
         _playerCharacterController = _playerController.GetHybridChracterController();
+        
+        _playerController.StartBodyScaleCalibration();
 
+        yield return new WaitUntil(() => !_playerController.GetCalibrationProcess());
         
-        
-        _playerController.ShowControllers(false);
+        //_playerController.ShowControllers(false);
+        if (_playerController.IsEmbodiedCondition())
+        {
+            _playerController.ShowHands(true);
+            _playerController.ShowControllers(false);
+        }
+        else
+        {
+            _playerController.ShowHands(false);
+            _playerController.ShowControllers(true);
+        }
         
         if (_ActiveStation.ID == 0)
         {
@@ -181,13 +193,16 @@ public class ExperimentManager : MonoBehaviour
             _playerController.AllowInput(true);
         }
         
-        
         StartedExperiment();
 
 
         yield return new WaitForFixedUpdate();
+
+        
         
         _playerController.TeleportToPosition(_ActiveStation.gameObject.transform);
+
+       
         
         liveDataRecorder.Initialize();
         

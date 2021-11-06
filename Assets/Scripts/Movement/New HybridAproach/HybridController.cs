@@ -12,6 +12,7 @@ public class HybridController : MonoBehaviour
     private Vector3 _currentRemoteFeetGuess;
     private Quaternion _currentRemoteForwardGuess;
     private float _currentCharacterSpeed;
+    private bool _isInCalibrationProcess;
     
     private bool _fadingInProgress;
     
@@ -52,8 +53,9 @@ public class HybridController : MonoBehaviour
     [Header("Position Readjustment")]
     private float currentPuppetToPlayerOffset;
     private bool _isInsideDistanceThreshold;
-    
-    [Header("Tutorials")] 
+
+    [Header("Tutorials and Start Functions")]
+    private BodyScaleCalibration _scaleCalibration;
     private ControllerRepresentations _controllerRepresentations;
     [SerializeField] private bool ShowControllerHelp;
 
@@ -75,6 +77,7 @@ public class HybridController : MonoBehaviour
         _inputController = GetComponent<InputController>();
         _puppetController = GetComponentInChildren<PuppetController>();
         _controllerRepresentations = GetComponent<ControllerRepresentations>();
+        _scaleCalibration = GetComponent<BodyScaleCalibration>();
         
         _inputController.OnNotifyControlStickMovedObservers += MoveAvatar;
         _inputController.OnNotifySwitchButtonPressedObserver += SwitchView;
@@ -118,6 +121,10 @@ public class HybridController : MonoBehaviour
         return _characterController;
     }
 
+    public bool IsEmbodiedCondition()
+    {
+        return EmbodiedCondition;
+    }
     private void Update()
     {
         _remoteTransformConroller.SetPosition(_characterController.GetGeneralCharacterPosition());
@@ -406,17 +413,59 @@ public class HybridController : MonoBehaviour
     }
 
 
-    private IEnumerator FirstTimeHeightCalibrationProcess()
+    private IEnumerator HeightCalibrationProcess()
     {
+        
+     
+        ShowControllers(true);
+        _controllerRepresentations.HighlightTriggerButton(true);
+        _scaleCalibration.InitializeCalibration();
         _firstTimeHeightCalibration = false;
-        FadeOut(0.0f);
-        yield return new WaitUntil(() => _firstTimeHeightCalibration);
+        _scaleCalibration.EnableScreen(true);
+        _scaleCalibration.ShowBody(false);
+        ShowHands(false);
+        yield return new WaitUntil(() => _scaleCalibration.ButtonWasPressed());
+        if (EmbodiedCondition)
+        {
+            ShowHands(true);
+            ShowControllers(false);
+        }
+        else
+        {
+            ShowHands(false);
+            ShowControllers(true);
+        }
+            
+        
+       
+        
+        _scaleCalibration.ShowBody(true);
+        _scaleCalibration.EnableScreen(false);
 
+        _isInCalibrationProcess = false;
+    }
+
+    public bool GetCalibrationProcess()
+    {
+        return _isInCalibrationProcess;
+    } 
+
+    public void ShowHands(bool state)
+    {
+        if (_isInCalibrationProcess)
+            return;
+        _isInCalibrationProcess = true;
+        _controllerRepresentations.ShowHands(state);
     }
 
     private Quaternion GetCurrentRotation()
     {
         return _currentRotation;
+    }
+
+    public void StartBodyScaleCalibration()
+    {
+        StartCoroutine(HeightCalibrationProcess());
     }
     
 }
