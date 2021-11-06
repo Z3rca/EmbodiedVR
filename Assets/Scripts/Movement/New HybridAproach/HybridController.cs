@@ -435,9 +435,9 @@ public class HybridController : MonoBehaviour
             ShowHands(false);
             ShowControllers(true);
         }
-            
-        
-       
+
+
+        _controllerRepresentations.ForceStop();
         
         _scaleCalibration.ShowBody(true);
         _scaleCalibration.EnableScreen(false);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.XR;
 using Valve.VR;
@@ -39,7 +40,9 @@ public class ControllerRepresentations : MonoBehaviour
     
     // Update is called once per frame
     public bool forceStop;
-    private Dictionary<GameObject, bool> highlightedButtons;
+    private Dictionary<GameObject, bool> _highlightedButtons;
+
+    private List<GameObject> _buttons;
 
     private bool _switchShowHands;
     public void ShowController(bool state)
@@ -53,6 +56,9 @@ public class ControllerRepresentations : MonoBehaviour
         _switchShowHands = true;
         _leftHand = Player.instance.hands[0];
         _rightHand = Player.instance.hands[1];
+        
+        initializeButtons();
+        
     }
     private void Awake()
     {
@@ -72,14 +78,21 @@ public class ControllerRepresentations : MonoBehaviour
 
     private void initializeButtons()
     {
-        highlightedButtons = new Dictionary<GameObject, bool>();
-        highlightedButtons.Add(LeftPerspectiveChangeButton, false);
-        highlightedButtons.Add(LeftStick, false);
-        highlightedButtons.Add(LeftSqueeze, false);
-        highlightedButtons.Add(RightPerspectiveChangeButton, false);
-        highlightedButtons.Add(RightStick, false);
-        highlightedButtons.Add(RightSqueeze, false);
-        highlightedButtons.Add(TriggerButtonLeft,false);
+        _highlightedButtons = new Dictionary<GameObject, bool>();
+        _buttons = new List<GameObject>();
+        _highlightedButtons.Add(LeftPerspectiveChangeButton, false);
+        _highlightedButtons.Add(LeftStick, false);
+        _highlightedButtons.Add(LeftSqueeze, false);
+        _highlightedButtons.Add(RightPerspectiveChangeButton, false);
+        _highlightedButtons.Add(RightStick, false);
+        _highlightedButtons.Add(RightSqueeze, false);
+        _highlightedButtons.Add(TriggerButtonLeft,false);
+        
+        
+        foreach (var key in _highlightedButtons.Keys)
+        {
+            _buttons.Add(key);
+        }
     }
     public void HighLightPerspectiveChangeButtons(bool state)
     {
@@ -138,18 +151,18 @@ public class ControllerRepresentations : MonoBehaviour
     
     private void HighLightButton(GameObject TargetButton, bool state)
     {
-        if (highlightedButtons.ContainsKey(TargetButton))
+        if (_highlightedButtons.ContainsKey(TargetButton))
         {
             Debug.Log("found controllers" + state);
             if (state)
             {
-                highlightedButtons[TargetButton] = true;
+                _highlightedButtons[TargetButton] = true;
                 StartCoroutine(HighLightButtonCoroutine(TargetButton));
             }
             else
             {
-                if(highlightedButtons[TargetButton])
-                    highlightedButtons[TargetButton] = false;
+                if(_highlightedButtons[TargetButton])
+                    _highlightedButtons[TargetButton] = false;
             }
         }
         else
@@ -173,7 +186,7 @@ public class ControllerRepresentations : MonoBehaviour
         bool switchDirection = true;
         
         
-        while (highlightedButtons[Button]||!forceStop)
+        while (_highlightedButtons[Button])
         {
 //            Debug.Log("running " + renderer.material.color.r + " "  +renderer.material.color.g);
             if (switchDirection)
@@ -203,6 +216,10 @@ public class ControllerRepresentations : MonoBehaviour
                 renderer.material.color = standardMaterial.color;
             }
         }
+        
+        
+        renderer.material.color = standardMaterial.color;
+        
         Debug.Log("we are now done with highlighting");
        
 
@@ -212,7 +229,10 @@ public class ControllerRepresentations : MonoBehaviour
 
     public void ForceStop()
     {
-        forceStop = true;
+        foreach (var key in _buttons)
+        {
+            _highlightedButtons[key] = false;
+        }
     }
 
     private void OnDisable()
