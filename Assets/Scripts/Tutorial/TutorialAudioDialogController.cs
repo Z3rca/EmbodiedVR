@@ -17,6 +17,12 @@ public class TutorialAudioDialogController : MonoBehaviour
 
    }
 
+
+   public void ForceStopAllAudio()
+   {
+      audioSource.Stop();
+      _playingAudioClip = false;
+   }
    public void SwitchClipsToLanguage(Language language)
    {
       for (int i = 0; i < _audioClips.Count; i++)
@@ -103,13 +109,36 @@ public class TutorialAudioDialogController : MonoBehaviour
 
 
 
-   private void StartAudioClip(AudioClip clip)
+   private void StartAudioClip(AudioClip clip, bool skipFormer=false)
    {
+      if (audioSource.clip == clip)
+         return;
+      if (!skipFormer)
+      {
+         StartCoroutine(WaitForClipPlayed());
+      }
+      else
+      {
+         
+      }
+
+      if (TutorialManager.Instance.GetIsTutorialFinished())
+         return;
+      
       _playingAudioClip = true;
       audioSource.clip = clip;
       StartCoroutine(PlayingAudioClip());
    }
 
+
+   private IEnumerator WaitForClipPlayed()
+   {
+      if (_playingAudioClip)
+      {
+         yield return new WaitUntil(() => !_playingAudioClip);
+      }
+      
+   }
 
    private IEnumerator PlayingAudioClip()
    {
@@ -123,6 +152,8 @@ public class TutorialAudioDialogController : MonoBehaviour
 
          yield return new WaitForEndOfFrame();
       }
+
+      audioSource.clip = null;
    }
 
 
