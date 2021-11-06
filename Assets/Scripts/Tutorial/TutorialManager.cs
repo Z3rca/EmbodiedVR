@@ -81,7 +81,6 @@ public class TutorialManager : MonoBehaviour
         }
         
         audioController = GetComponent<TutorialAudioDialogController>();
-        
         HybridController.OnNotifyPerspectiveSwitchObservers += PerspectiveSwitchWasPerformend;
         HybridController.ShowControllers(true);
         StartFamilarization();
@@ -96,7 +95,6 @@ public class TutorialManager : MonoBehaviour
 
     public void StartFamilarization()
     {
-        
         StartCoroutine(FamilarizationRoutine());
     }
 
@@ -111,23 +109,23 @@ public class TutorialManager : MonoBehaviour
         HybridController.Fading(0f,2f,2f);
         yield return new WaitUntil(() =>!HybridController.IsFadingInProgress());   
         audioController.AudioClip1();
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        yield return new WaitUntil(() => !audioController.GetActive());
         
         Debug.Log("finished Introduction");
         
         if (!_isFirstPersonCondition)
         {
             audioController.AudioClip2();
-            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            yield return new WaitUntil(() => !audioController.GetActive());
             yield return new WaitForSeconds(1);
             audioController.AudioClip3();
-            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            yield return new WaitUntil(() => !audioController.GetActive());
             yield return new WaitForSeconds(1);
             audioController.AudioClip4();
-            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            yield return new WaitUntil(() => !audioController.GetActive());
             
             HybridController.AllowViewSwitch(true);
-            yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+            yield return new WaitUntil(() => !audioController.GetActive());
             HybridController.ShowControllers(true);
             HybridController.HighLightControlSwitchButton(true);
             yield return new WaitUntil(() => _thirdPersonIsActive);
@@ -142,14 +140,14 @@ public class TutorialManager : MonoBehaviour
         
         HybridController.HighLightRotationButton(true);
         audioController.AudioClip5();
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        yield return new WaitUntil(() => !audioController.GetActive());
         
         //TODO: here only rotation should be enabled
         HybridController.AllowInput(true);
         
         HybridController.HighLightMovementButton(true);
         audioController.AudioClip6();
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        yield return new WaitUntil(() => !audioController.GetActive());
         
         //TODO: here rest of movement should be enabled
         Debug.Log("enabled Movement");
@@ -158,7 +156,7 @@ public class TutorialManager : MonoBehaviour
         
         EnableInteractionArea();
         audioController.AudioClip7();
-        yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        yield return new WaitUntil(() => !audioController.GetActive());
         interactionAreaIsActive = true;
 
 
@@ -206,9 +204,8 @@ public class TutorialManager : MonoBehaviour
 
     public void ReachedSecondInteractionArea()
     {
-        if (_reachedSecondArea)
-            return;
-        _reachedSecondArea = true;
+        /*if (_reachedSecondArea)
+            return;*/
         
         StartCoroutine(ReachedSecondInteractionAreaRoutine());
     }
@@ -216,7 +213,9 @@ public class TutorialManager : MonoBehaviour
     public IEnumerator ReachedSecondInteractionAreaRoutine()
     {
         audioController.AudioClip12();
+        _reachedSecondArea = true;
         yield return new WaitUntil(() => !audioController.GetPlayingAudioStatus());
+        _reachedSecondArea = false;
     }
 
     public void ThrownBallInBox()
@@ -307,7 +306,9 @@ public class TutorialManager : MonoBehaviour
         Door2.SetActive(false);
         finalizedTutorial = true;
         ExperimentManager.Instance.SetisInTutorial(false);
+        
         HybridController.StopHighlighting();
+        
 
     }
     public void StopAllDialogue()

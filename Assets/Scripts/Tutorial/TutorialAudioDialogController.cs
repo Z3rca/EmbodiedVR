@@ -10,14 +10,15 @@ public class TutorialAudioDialogController : MonoBehaviour
    private AudioSelectionManager _audioSelectionManager;
    private bool _playingAudioClip;
 
-
+   private bool active;
+   private List<AudioClip> _currentListedAudioClips;
    private void Start()
    {
       _audioSelectionManager = ExperimentManager.Instance.GetComponent<AudioSelectionManager>();
-
+      _currentListedAudioClips = new List<AudioClip>();
    }
 
-
+  
    public void ForceStopAllAudio()
    {
       audioSource.Stop();
@@ -29,6 +30,11 @@ public class TutorialAudioDialogController : MonoBehaviour
       {
          _audioClips[i] = _audioSelectionManager.GetClipInCorrectLanguage(_audioClips[i].name);
       }
+   }
+
+   public bool GetActive()
+   {
+      return active;
    }
 
    public List<AudioClip> GetAudioClips()
@@ -111,37 +117,57 @@ public class TutorialAudioDialogController : MonoBehaviour
 
    private void StartAudioClip(AudioClip clip, bool skipFormer=false)
    {
+      active = true;
+      /*Debug.Log("play Clip + " + clip.name);
       if (audioSource.clip == clip)
          return;
-      if (!skipFormer)
+      if (skipFormer)
       {
-         StartCoroutine(WaitForClipPlayed());
+         _playingAudioClip = false;
+         ForceStopAllAudio();
       }
-      else
-      {
-         
-      }
-
+      
+      
       if (TutorialManager.Instance.GetIsTutorialFinished())
          return;
       
+      _currentListedAudioClips.Add(clip);
+      StartCoroutine(PlayingAudioClip(clip));*/
+      
+      
+      if(!_currentListedAudioClips.Contains(clip))
+         _currentListedAudioClips.Add(clip);
+   }
+
+
+   private void Update()
+   {
+      
+      
+      if (active)
+      {
+         if (!_playingAudioClip)
+         {
+            if (_currentListedAudioClips.Count > 0)
+            {
+               StartCoroutine(PlayingAudioListItem(_currentListedAudioClips[0]));
+            }
+         }
+         
+         if (_currentListedAudioClips.Count == 0)
+         {
+            active = false;
+         }
+      }
+   }
+
+   
+   
+   private IEnumerator PlayingAudioClip(AudioClip clip)
+   {
+      yield return new WaitUntil(() => !_playingAudioClip);
       _playingAudioClip = true;
       audioSource.clip = clip;
-      StartCoroutine(PlayingAudioClip());
-   }
-
-
-   private IEnumerator WaitForClipPlayed()
-   {
-      if (_playingAudioClip)
-      {
-         yield return new WaitUntil(() => !_playingAudioClip);
-      }
-      
-   }
-
-   private IEnumerator PlayingAudioClip()
-   {
       audioSource.Play();
       while (_playingAudioClip)
       {
@@ -154,6 +180,20 @@ public class TutorialAudioDialogController : MonoBehaviour
       }
 
       audioSource.clip = null;
+   }
+
+   private IEnumerator PlayingAudioListItem(AudioClip clip)
+   {
+      _playingAudioClip = true;
+      audioSource.clip = clip;
+      audioSource.Play();
+      while (audioSource.isPlaying)
+      {
+         yield return new WaitForEndOfFrame();
+      }
+      
+      _currentListedAudioClips.RemoveAt(0);
+      _playingAudioClip = false;
    }
 
 

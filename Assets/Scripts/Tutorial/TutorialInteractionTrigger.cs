@@ -17,9 +17,10 @@ public class TutorialInteractionTrigger : MonoBehaviour
                 return;
 
             
-
-            if (TutorialManager.Instance.CubeIsInHand())
-                return;
+            if(!goalBox)
+                if (TutorialManager.Instance.CubeIsInHand())
+                    return;
+            
             
             
             
@@ -27,7 +28,9 @@ public class TutorialInteractionTrigger : MonoBehaviour
 
             if (goalBox)
             {
-                TutorialManager.Instance.ReachedSecondInteractionArea();
+                Debug.Log("is in second area");
+                if(TutorialManager.Instance.CubeIsInHand())
+                    TutorialManager.Instance.ReachedSecondInteractionArea();
             }
             else
             {
@@ -38,7 +41,7 @@ public class TutorialInteractionTrigger : MonoBehaviour
         
     }
 
-    private void OnTriggerExit(Collider other)
+    /*private void OnTriggerExit(Collider other)
     {
         if (goalBox)
         {
@@ -55,5 +58,5 @@ public class TutorialInteractionTrigger : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         isInsideTrigger = false;
-    }
+    }*/
 }
