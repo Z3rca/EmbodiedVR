@@ -47,6 +47,7 @@ public class ControllerRepresentations : MonoBehaviour
     private bool _switchShowHands;
     public void ShowController(bool state)
     {
+        Debug.Log("show controllers: " + state);
         LeftController.SetActive(state);
         RightController.SetActive(state);
     }

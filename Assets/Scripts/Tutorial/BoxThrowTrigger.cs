@@ -15,6 +15,9 @@ public class BoxThrowTrigger : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
+        if (TutorialManager.Instance.GetIsTutorialFinished())
+            return;
+        
         if (other.gameObject ==TargetObject)
         {
             Debug.Log("finished");
