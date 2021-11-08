@@ -319,8 +319,13 @@ public class TutorialManager : MonoBehaviour
     }
     public void StopAllDialogue()
     {
+        Debug.Log("stopp everything");
         audioController.ForceStopAllAudio();
         ExitAreaShine.SetActive(false);
         HybridController.StopHighlighting();
+        if (HybridController.IsEmbodiedCondition())
+        {
+            HybridController.ShowControllers(false);
+        }
     }
 }

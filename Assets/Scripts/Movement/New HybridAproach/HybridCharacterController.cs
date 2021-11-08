@@ -25,6 +25,7 @@ public class HybridCharacterController : MonoBehaviour
     private bool OrientationBasedOnCenter;
    
     private CharacterController _characterController;
+    private HybridController _generalControl;
 
     private float _currentSpeed;
     public delegate void OnImpactedByOuterfactor(Vector3 direction, float velocity);
@@ -33,6 +34,7 @@ public class HybridCharacterController : MonoBehaviour
     {
         _speedFactor = 1f;
         _characterController= GetComponent<CharacterController>();
+        _generalControl = this.transform.parent.GetComponent<HybridController>();
     }
 
     private void FixedUpdate()
@@ -112,6 +114,11 @@ public class HybridCharacterController : MonoBehaviour
     public float GetCurrentSpeed()
     {
         return _currentSpeed;
+    }
+
+    public HybridController GetGeneralControl()
+    {
+        return _generalControl;
     }
 
 
