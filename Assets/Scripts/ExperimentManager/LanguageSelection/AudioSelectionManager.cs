@@ -59,17 +59,7 @@ public class AudioSelectionManager : MonoBehaviour
             name = audioClip.name.Substring(0, indexOf);
             _englishAudioDictionary.Add(name,audioClip);
         }
-
         
-        foreach (var pair in _germanAudioDictionary)
-        {
-            Debug.Log(pair.Key+ " "+  pair.Value.name);
-        }
-        
-        foreach (var pair in _englishAudioDictionary)
-        {
-            Debug.Log(pair.Key+ " "+  pair.Value.name);
-        }
 
         _audioDialogController = ExperimentManager.Instance.tutorialManager.GetComponent<TutorialAudioDialogController>();
 
