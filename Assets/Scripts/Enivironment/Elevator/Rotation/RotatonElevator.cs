@@ -29,11 +29,7 @@ public class RotatonElevator : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.C))
-        {
-            Debug.Log("Turn");
-            TurnPlatform();
-        }
+       
     }
 
     private void TurnPlatform()
