@@ -26,7 +26,15 @@ public class RotatonElevator : MonoBehaviour
         _rotationAffector.speed = 0f;
         running = false;
     }
-    
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log("Turn");
+            TurnPlatform();
+        }
+    }
 
     private void TurnPlatform()
     {
@@ -58,7 +66,7 @@ public class RotatonElevator : MonoBehaviour
           Vector3 currentEuler=   this.transform.rotation.eulerAngles;
           if (rightSide)
           {
-              if (Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation))<0.01f)
+              if (Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation))<=0.01f)
               {
                   atTarget = true;
                   break;
@@ -67,12 +75,13 @@ public class RotatonElevator : MonoBehaviour
               {
                  
                   this.transform.Rotate(Vector3.up * (+speed * Time.deltaTime));
-                  characterController.AddOuterMovementImpact(_rotationAffector.rb.velocity,speed);
+                  if(characterController!=null)
+                    characterController.AddOuterMovementImpact(_rotationAffector.rb.velocity,speed);
               }
           }
           else
           {
-              if (Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation))<0.01f)
+              if (Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation))<=0.01f)
               {
                   atTarget = true;
                   break;
