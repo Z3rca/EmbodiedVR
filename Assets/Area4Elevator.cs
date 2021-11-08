@@ -94,7 +94,6 @@ public class Area4Elevator : MonoBehaviour
         Plattform.transform.position = plattformPosition;
         
         _currentLinearMapping = _linearMapping.value;
-        Debug.Log(_currentLinearMapping);
 
         if (!_isHighlighted)
         {
@@ -128,12 +127,6 @@ public class Area4Elevator : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        
-       
-        
-        
-        Debug.Log(_currentLinearMapping);
-
         if (!_isHighlighted)
         {
             return;
