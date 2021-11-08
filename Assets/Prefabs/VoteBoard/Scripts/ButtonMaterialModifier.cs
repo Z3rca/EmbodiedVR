@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,11 +14,15 @@ public class ButtonMaterialModifier : MonoBehaviour
 
     public Material lockMaterial;
 
-    public TextMeshProUGUI textUI;
+
+    private void Awake()
+    {
+        _defaultMaterial = ApplyGameObject.GetComponent<Renderer>().material;
+    }
 
     private void Start()
     {
-        _defaultMaterial = ApplyGameObject.GetComponent<Renderer>().material;
+        
     }
     // Start is called before the first frame update
     public void ChangeMaterial()
