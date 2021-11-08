@@ -12,14 +12,12 @@ public class Area4Elevator : MonoBehaviour
     public GameObject LowerPosition;
     public GameObject UpperPosition;
     public GameObject Handle;
-   
-
     public GameObject Plattform;
 
+    public bool startsAtTop;
+    
     private Vector3 plattformPosition;
-    public float upperBoundary;
-    public float lowerBoundary;
-
+    
     public float speed;
 
     private float posX;
@@ -52,7 +50,15 @@ public class Area4Elevator : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        plattformPosition = LowerPosition.transform.position;
+        if (startsAtTop)
+        {
+            plattformPosition = UpperPosition.transform.position;
+        }
+        else
+        {
+            plattformPosition = LowerPosition.transform.position;
+        }
+        
 
         lowerDoor.SetActive(false);
         upperDoor.SetActive(false);
@@ -85,6 +91,8 @@ public class Area4Elevator : MonoBehaviour
 
     private void LateUpdate()
     {
+        Plattform.transform.position = plattformPosition;
+        
         _currentLinearMapping = _linearMapping.value;
         Debug.Log(_currentLinearMapping);
 
@@ -121,7 +129,7 @@ public class Area4Elevator : MonoBehaviour
     private void FixedUpdate()
     {
         
-        Plattform.transform.position = plattformPosition;
+       
         
         
         Debug.Log(_currentLinearMapping);
@@ -175,13 +183,10 @@ public class Area4Elevator : MonoBehaviour
         {
             upperDoor.SetActive(true);
             
-            var posY = gameObject.transform.position.y;
-            
-            posY -= speed * Time.deltaTime;
+            plattformPosition.y -= speed * Time.deltaTime;
             
             // posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
-
-            gameObject.transform.position = new Vector3(posX, posY, posZ);
+            
         }
         else
         {
