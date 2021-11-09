@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 using Valve.VR.InteractionSystem;
 
 public class Area4Elevator : MonoBehaviour
@@ -13,6 +14,8 @@ public class Area4Elevator : MonoBehaviour
     public GameObject UpperPosition;
     public GameObject Handle;
     public GameObject Plattform;
+
+    [SerializeField] private CharacterTrigger _trigger;
 
     public bool startsAtTop;
     
@@ -32,21 +35,48 @@ public class Area4Elevator : MonoBehaviour
 
     private bool _isHighlighted;
     private bool _isMovingBack;
+
+    private bool _isAttached;
+
+    private bool _isInitialized;
+
+    private bool isMovingUpward;
+    private bool isMovingDownward;
     private CircularDrive _circularDrive;
+
+    private SteamVR_Skeleton_Poser poseR;
 
     private float _minAngle;
     private float _maxAngle;
+    
+    private LinearDrive _linearDrive;
+
+    private HybridCharacterController _characterController;
+    private HybridController _hybridController;
+    private bool _characterIsPresent;
+    
+    
 
     private void Awake()
     {
+        
+            
         _linearMapping = Handle.GetComponent<LinearMapping>();
         _interactable = Handle.GetComponent<Interactable>();
         _circularDrive = Handle.GetComponent<CircularDrive>();
+
+        _linearDrive = Handle.GetComponent<LinearDrive>();
         _initialRotation = Handle.transform.localRotation;
-        _minAngle = _circularDrive.minAngle;
-        _maxAngle = _circularDrive.maxAngle;
+//        _minAngle = _circularDrive.minAngle;
+ //       _maxAngle = _circularDrive.maxAngle;
     }
 
+
+    private void Initialize(object sender, StartExperimentArgs startExperimentArgs)
+    {
+        _isInitialized = true;
+    }
+    
     // Start is called before the first frame update
     private void Start()
     {
@@ -60,33 +90,46 @@ public class Area4Elevator : MonoBehaviour
         }
         
 
-        lowerDoor.SetActive(false);
-        upperDoor.SetActive(false);
+        //lowerDoor.SetActive(false);
+        //upperDoor.SetActive(false);
 
-        
-
+       // _trigger.OnCharacterIsPresent += CharacterIsPresent;
+        //_trigger.OnCharacterIsNotPresent += CharacterIsNotPresent;
+        ExperimentManager.Instance.startedExperiment += Initialize;
     }
 
     private void Update()
     {
-        _isHighlighted = _interactable.isHovering;
-        if (!_isHighlighted)
+        if (_isInitialized)
         {
-            //Debug.Log("handle " + Handle.transform.localRotations.y);
+            _isHighlighted = _interactable.isHovering;
+            if (!_isAttached)
+            {
+                //Debug.Log("handle " + Handle.transform.localRotations.y);
             
 //            Debug.Log(Math.Abs(Mathf.Tan(Handle.transform.localRotation.eulerAngles.y)));
             
-            if (Math.Abs(Mathf.Tan(Handle.transform.localRotation.eulerAngles.y)) >= 0.01)
-            {
-                MoveBackToInitialState();
+                if (Math.Abs(Mathf.Tan(Handle.transform.localRotation.eulerAngles.y)) >= 0.01)
+                {
+                    MoveBackToInitialState();
+                }
+            
+            
             }
-            
-            
+
         }
-        
-        
-        
-        
+    }
+
+    private void CharacterIsPresent()
+    {
+        _characterController = _trigger.GetCharacterController();
+        _hybridController = _characterController.GetGeneralControl();
+        _characterIsPresent = true;
+    }
+
+    private void CharacterIsNotPresent()
+    {
+        _characterIsPresent = false;
     }
 
     private void LateUpdate()
@@ -95,29 +138,37 @@ public class Area4Elevator : MonoBehaviour
         
         _currentLinearMapping = _linearMapping.value;
 
-        if (!_isHighlighted)
+        if (_isAttached)
         {
-            return;
-        }
-        if (Math.Abs(_currentLinearMapping - 0.5) <= 0.01f)
-        {
-            Debug.Log("too short");
+            _currentLinearMapping = _linearMapping.value;
+            if (Math.Abs(_currentLinearMapping - 0.5f) > 0.01)
+            {
+                if (_currentLinearMapping < 0.5)
+                {
+                    isMovingUpward = true;
+                    isMovingDownward = false;
+                }
+
+                if (_currentLinearMapping > 0.5f)
+                {
+                    isMovingDownward = true;
+                    isMovingUpward = false;
+                }
+            }
+            else
+            {
+                isMovingUpward = false;
+                isMovingDownward = false;
+            }
         }
         else
         {
-            if (_currentLinearMapping < 0.5f)
-            {
-                MoveUpwards();   
-            }
-        
-            if (_currentLinearMapping > 0.5f)
-            {
-                MoveDownwards();   
-            }
+            _currentLinearMapping = Mathf.Tan(Handle.transform.localRotation.eulerAngles.y);
+            _linearMapping.value = _currentLinearMapping;
+            isMovingDownward = false;
+            isMovingUpward = false;
         }
-
         
-        _currentLinearMapping = 0.5f;
        
 
 
@@ -127,41 +178,37 @@ public class Area4Elevator : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        if (!_isHighlighted)
+        if (isMovingUpward)
         {
+            MoveUpwards();
             return;
         }
-        if (Math.Abs(_currentLinearMapping - 0.5) <= 0.01f)
-        {
-            Debug.Log("too short");
-        }
-        else
-        {
-            if (_currentLinearMapping < 0.5f)
-            {
-                MoveUpwards();   
-            }
-        
-            if (_currentLinearMapping > 0.5f)
-            {
-                MoveDownwards();   
-            }
-        }
 
+        if (isMovingDownward)
+        {
+            MoveDownwards();
+            return;
+        }
         
-        _currentLinearMapping = 0.5f;   
-        
-        
+
     }
 
     public void MoveUpwards()
     {
-        Debug.Log("MOVE UPWARD");
-        if (plattformPosition.y <= UpperPosition.transform.position.y)
+        if (plattformPosition.y < UpperPosition.transform.position.y)
         {
             lowerDoor.SetActive(true);
             
-            plattformPosition.y += speed * Time.deltaTime;
+            
+            
+            plattformPosition.y = Mathf.Clamp(plattformPosition.y+speed*Time.fixedDeltaTime,LowerPosition.transform.position.y, UpperPosition.transform.position.y);
+            
+            if (_characterIsPresent)
+            {
+                _hybridController.ApplyOuterImpact(Vector3.up,speed*Time.deltaTime);
+            }
+
+            
         }
         else
         {
@@ -172,16 +219,17 @@ public class Area4Elevator : MonoBehaviour
 
     public void MoveDownwards()
     {
-        if (gameObject.transform.position.y >= LowerPosition.transform.position.y)
+        if (gameObject.transform.position.y > LowerPosition.transform.position.y)
         {
             upperDoor.SetActive(true);
-            
-            plattformPosition.y -= speed * Time.deltaTime;
-            
-            // posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
-            
+
+
+            plattformPosition.y = Mathf.Clamp(plattformPosition.y - speed * Time.fixedDeltaTime,
+                LowerPosition.transform.position.y, UpperPosition.transform.position.y);
+
         }
-        else
+
+        if (Math.Abs(plattformPosition.y - LowerPosition.transform.position.y) < 0.01f)
         {
             lowerDoor.SetActive(false);
         }
@@ -199,13 +247,24 @@ public class Area4Elevator : MonoBehaviour
 
     private IEnumerator MoveHandleToInitialPosition()
     {
-        while (Quaternion.Angle(Handle.transform.rotation, _initialRotation) >= 0.00f || !_isHighlighted)
+        while (Quaternion.Angle(Handle.transform.rotation, _initialRotation) >= 0.00f || !_isAttached)
         {
             Handle.transform.localRotation = Quaternion.Lerp(Handle.transform.localRotation,_initialRotation,Time.deltaTime);
             yield return new WaitForFixedUpdate();
         }
 
         _isMovingBack = false;
+    }
+
+
+    public void ObjectAttached()
+    {
+        _isAttached=true;
+    }
+
+    public void ObjectDetached()
+    {
+        _isAttached = false;
     }
 
 
