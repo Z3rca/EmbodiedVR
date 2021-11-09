@@ -15,6 +15,8 @@ public class Area4Elevator : MonoBehaviour
     public GameObject Handle;
     public GameObject Plattform;
 
+    [SerializeField] private CharacterTrigger _trigger;
+
     public bool startsAtTop;
     
     private Vector3 plattformPosition;
@@ -46,10 +48,14 @@ public class Area4Elevator : MonoBehaviour
 
     private float _minAngle;
     private float _maxAngle;
-
-    private Hand LeftHand;
-    private Hand RightHand;
+    
     private LinearDrive _linearDrive;
+
+    private HybridCharacterController _characterController;
+    private HybridController _hybridController;
+    private bool _characterIsPresent;
+    
+    
 
     private void Awake()
     {
@@ -68,13 +74,9 @@ public class Area4Elevator : MonoBehaviour
 
     private void Initialize(object sender, StartExperimentArgs startExperimentArgs)
     {
-        LeftHand= ExperimentManager.Instance.GetPlayerController().GetRemoteTransformController().LocalLeft.GetComponent<Hand>();
-        RightHand= ExperimentManager.Instance.GetPlayerController().GetRemoteTransformController().LocalLeft.GetComponent<Hand>();
         _isInitialized = true;
-        
-
-
     }
+    
     // Start is called before the first frame update
     private void Start()
     {
@@ -91,7 +93,8 @@ public class Area4Elevator : MonoBehaviour
         //lowerDoor.SetActive(false);
         //upperDoor.SetActive(false);
 
-
+       // _trigger.OnCharacterIsPresent += CharacterIsPresent;
+        //_trigger.OnCharacterIsNotPresent += CharacterIsNotPresent;
         ExperimentManager.Instance.startedExperiment += Initialize;
     }
 
@@ -115,6 +118,18 @@ public class Area4Elevator : MonoBehaviour
             }
 
         }
+    }
+
+    private void CharacterIsPresent()
+    {
+        _characterController = _trigger.GetCharacterController();
+        _hybridController = _characterController.GetGeneralControl();
+        _characterIsPresent = true;
+    }
+
+    private void CharacterIsNotPresent()
+    {
+        _characterIsPresent = false;
     }
 
     private void LateUpdate()
@@ -180,12 +195,20 @@ public class Area4Elevator : MonoBehaviour
 
     public void MoveUpwards()
     {
-        Debug.Log("MOVE UPWARD");
-        if (plattformPosition.y <= UpperPosition.transform.position.y)
+        if (plattformPosition.y < UpperPosition.transform.position.y)
         {
             lowerDoor.SetActive(true);
             
-            plattformPosition.y += speed * Time.fixedDeltaTime;
+            
+            
+            plattformPosition.y = Mathf.Clamp(plattformPosition.y+speed*Time.fixedDeltaTime,LowerPosition.transform.position.y, UpperPosition.transform.position.y);
+            
+            if (_characterIsPresent)
+            {
+                _hybridController.ApplyOuterImpact(Vector3.up,speed*Time.deltaTime);
+            }
+
+            
         }
         else
         {
@@ -196,16 +219,17 @@ public class Area4Elevator : MonoBehaviour
 
     public void MoveDownwards()
     {
-        if (gameObject.transform.position.y >= LowerPosition.transform.position.y)
+        if (gameObject.transform.position.y > LowerPosition.transform.position.y)
         {
             upperDoor.SetActive(true);
-            
-            plattformPosition.y -= speed * Time.fixedDeltaTime;
-            
-            // posY =  Mathf.Clamp(posY, (lowerBoundary), (upperBoundary));
-            
+
+
+            plattformPosition.y = Mathf.Clamp(plattformPosition.y - speed * Time.fixedDeltaTime,
+                LowerPosition.transform.position.y, UpperPosition.transform.position.y);
+
         }
-        else
+
+        if (Math.Abs(plattformPosition.y - LowerPosition.transform.position.y) < 0.01f)
         {
             lowerDoor.SetActive(false);
         }
