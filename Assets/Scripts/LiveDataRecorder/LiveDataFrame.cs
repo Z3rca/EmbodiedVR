@@ -41,5 +41,15 @@ using UnityEngine;
       
         public Vector3[] LimbPositions;
         public Quaternion[] LimbRotations;
-       
+        
+        
+        //Eyetracking
+
+        public Vector3 HitPosition;
+        public Vector3 HitPosition2;
+        public string HitObject1;
+        public string HitObject2;
+        public Vector3 HitObjectPosition;
+        public Vector3 HitObjectPosition2;
+
     }

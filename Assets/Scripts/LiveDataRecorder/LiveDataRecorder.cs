@@ -36,8 +36,8 @@ public class LiveDataRecorder : MonoBehaviour
     [SerializeField] public Vector3[] limbPositions;
     [SerializeField] public Quaternion[] limbRotations;
 
-    
-    
+
+    private bool _hitSomething;
     
     private Transform Puppet;
     private Transform PuppetHead;
@@ -178,6 +178,20 @@ public class LiveDataRecorder : MonoBehaviour
             {
                 _rotationInput=Vector3.zero;
             }
+            
+            
+            //Eyetracking
+
+            RaycastHit hit;
+
+            if(Physics.Raycast(_hmd.transform.position, _hmd.transform.forward, out hit,30f))
+            {
+                
+            };
+            
+           
+            
+            
             yield return new WaitForSeconds(_frameRate);
         }
     }
