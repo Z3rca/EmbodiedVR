@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Obi;
+//using Obi;
 using RootMotion;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,7 +18,7 @@ public class RemoteControl : MonoBehaviour
 
     public SteamVR_Action_Vector2 MovementInput = SteamVR_Input.GetAction<SteamVR_Action_Vector2>("LiftControl", "Direction");
 
-    private ObiParticleAttachment _cableAttachment; 
+   // private ObiParticleAttachment _cableAttachment; 
     private Vector2 movementInput;
 
     public bool AllowInputX;
@@ -36,14 +36,14 @@ public class RemoteControl : MonoBehaviour
     void Start()
     {
         interactable = GetComponent<Interactable>();
-        ObiParticleAttachment[] particleAttachments = attachedCable.GetComponents<ObiParticleAttachment>();
+   //     ObiParticleAttachment[] particleAttachments = attachedCable.GetComponents<ObiParticleAttachment>();
 
-        foreach (var attachment in particleAttachments)
+     //  foreach (var attachment in particleAttachments)
         {
-            if (attachment.target == this.transform)
+         //   if (attachment.target == this.transform)
             {
-                _cableAttachment = attachment;
-                break;
+       //         _cableAttachment = attachment;
+          //      break;
             }
         }
     }
@@ -56,13 +56,13 @@ public class RemoteControl : MonoBehaviour
         {
             activated = true;
 
-            GetComponent<ObiRigidbody>().kinematicForParticles = true;
+        //    GetComponent<ObiRigidbody>().kinematicForParticles = true;
             /*_cableAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Static;
             Debug.Log("cable attachment is " + _cableAttachment.attachmentType);*/
         }
         else
         {
-            GetComponent<ObiRigidbody>().kinematicForParticles = false;
+          //  GetComponent<ObiRigidbody>().kinematicForParticles = false;
             activated = false;
             LiftActionset.Deactivate(hand);
 //            interactable.attachedToHand.gameObject.transform.parent = Origin.transform;
@@ -74,11 +74,11 @@ public class RemoteControl : MonoBehaviour
 
     private IEnumerator ReactivateAtachment()
     {
-        _cableAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
+        //_cableAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
 
         yield return new WaitForSeconds(0.1f);
 
-        _cableAttachment.enabled=true;
+     //   _cableAttachment.enabled=true;
     }
     
 
