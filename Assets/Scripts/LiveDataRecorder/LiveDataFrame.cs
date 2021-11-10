@@ -14,6 +14,7 @@ using UnityEngine;
         
         //Input
         public Vector2 MovementInput;
+        public Vector3 RotationInput;
         //LeftController - Global Position -> Hand position of Puppet
         public Vector3 LeftHandLocalPositon;
         public Quaternion LeftHandLocalRotation;
@@ -39,5 +40,5 @@ using UnityEngine;
       
         public Vector3[] LimbPositions;
         public Quaternion[] LimbRotations;
-
+       
     }

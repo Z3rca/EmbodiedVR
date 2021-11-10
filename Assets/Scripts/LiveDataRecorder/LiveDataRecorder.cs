@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,7 +29,7 @@ public class LiveDataRecorder : MonoBehaviour
     private Transform Character;
     private bool _isInThirdPerson;
     [SerializeField] private Vector2 _movementInput;
-    [SerializeField] private Vector2 _rotationInput;
+    [SerializeField] private Vector3 _rotationInput;
 
     [SerializeField] public Vector3[] limbPositions;
     [SerializeField] public Quaternion[] limbRotations;
@@ -59,7 +59,10 @@ public class LiveDataRecorder : MonoBehaviour
             _inputController = ExperimentManager.Instance.SelectedAvatar.GetComponent<InputController>();
 
             _movementInput = new Vector2();
+            _rotationInput = new Vector3();
             _inputController.OnNotifyControlStickMovedObservers += ReadInput;
+
+            _inputController.OnNotifyRotationPerformed += RotationPerceived;
             
             Puppet = _remoteController.RemoteFeetPositionGuess;
             PuppetHead = _remoteController.RemoteHMD;
@@ -115,6 +118,11 @@ public class LiveDataRecorder : MonoBehaviour
         _isInThirdPerson = state;
     }
 
+    private void RotationPerceived(Quaternion rotation)
+    {
+        _rotationInput = rotation.eulerAngles;
+    }
+
     private void ReadInput(Vector2 movementInput)
     {
         _movementInput = movementInput;
@@ -145,6 +153,7 @@ public class LiveDataRecorder : MonoBehaviour
             dataFrame.RightHandLocalRotation = _rightController.localRotation;
 
             dataFrame.MovementInput = _movementInput;
+            dataFrame.RotationInput = _rotationInput;
             //Character
             dataFrame.CharacterControllerPosition = _characterController.GetAdjustedPosition();
             dataFrame.CharacterControllerRotation = _characterController.transform.rotation;
@@ -161,6 +170,10 @@ public class LiveDataRecorder : MonoBehaviour
             dataFrame.LimbRotations = _puppetController.GetLimbRotations();
             
             _dataFrames.Add(dataFrame);
+            if (Vector3.Magnitude(_rotationInput) > 0f)
+            {
+                _rotationInput=Vector3.zero;
+            }
             yield return new WaitForSeconds(_frameRate);
         }
     }
