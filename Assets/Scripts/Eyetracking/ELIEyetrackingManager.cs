@@ -37,11 +37,8 @@ public class ELIEyetrackingManager : MonoBehaviour
 
     
     private  IEyetrackingDevice device;
-
-    private void Start()
-    {
-        _eyetrackingValidation = GetComponent<EyetrackingValidation>();
-    }
+    
+    
 
     private void Update()
     {
@@ -50,9 +47,7 @@ public class ELIEyetrackingManager : MonoBehaviour
     
     
 
-    public void StartValidation()
-    {
-    }
+  
 
     public void AbortValidation()
     {
@@ -68,7 +63,13 @@ public class ELIEyetrackingManager : MonoBehaviour
     
     public void StartCalibration()
     {
-        SRanipal_Eye_v2.LaunchEyeCalibration();
+        SRanipal_Eye.LaunchEyeCalibration();
+    }
+
+    public void StartValidation()
+    {
+        _eyetrackingValidation.SetHMDTransform(ExperimentManager.Instance.GetActiveCamera());
+        _eyetrackingValidation.StartValidateEyetracker();
     }
 
     public void StartRecording()

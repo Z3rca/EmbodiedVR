@@ -102,7 +102,7 @@ public class ExperimentManager : MonoBehaviour
         fps = TimeManager.Instance.GetCurrentFPS();
     }
 
-
+    
     private void Awake()
     {
         if (Instance == null)
@@ -168,6 +168,22 @@ public class ExperimentManager : MonoBehaviour
         _eyetrackingManager.StartCalibration();
     }
     
+    public void StartEyeTrackingValidation()
+    {
+        _eyetrackingManager.StartValidation();
+    }
+
+    public Camera GetActiveCamera()
+    {
+        if (runningExperiment)
+        {
+            return avatarCamera;
+        }
+        else
+        {
+            return mainMenuCamera;
+        }
+    }
     private IEnumerator PlayerAwakening()
     {
         SelectedAvatar.gameObject.SetActive(true);
@@ -499,7 +515,7 @@ public class ExperimentManager : MonoBehaviour
         {
             int j = Convert.ToInt32(charArray[i]) - 48;         //ASCII to int
             
-            Debug.Log(j);
+            Debug.Log("Pakour order: "+  j);
 
             if (j < 0 && j <= 4)
             {
@@ -758,7 +774,7 @@ public class ExperimentManager : MonoBehaviour
                 
                 if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Validation", buttonStyle))
                 {
-                    //singe validation
+                    StartEyeTrackingValidation();
                 }
                 
                 valX += w + 2 ;

@@ -12,27 +12,21 @@ public class EyetrackingValidation : MonoBehaviour
     #region Fields
 
     [Space] [Header("Eye-tracker validation field")]
-    [SerializeField] private GameObject mainCamera;
+    private GameObject _camera;
     [SerializeField] private GameObject fixationPoint;
     [SerializeField] private List<Vector3> keyPositions;
 
     private bool _isValidationRunning;
     private bool _isErrorCheckRunning;
-    private bool _isExperiment;
-    
-    private int _validationId;
+
     private int _calibrationFreq;
     
-    private string _participantId;
-    private string _sessionId;
-
-    private Instructions _instructions;
     private Coroutine _runValidationCo;
     private Coroutine _runErrorCheckCo;
     private Transform _hmdTransform;
     private List<EyeValidationData> _eyeValidationDataFrames;
     private EyeValidationData _eyeValidationData;
-    private const float ErrorThreshold = 1.0f;
+    private float ErrorThreshold = 1.5f;
 
     #endregion
 
@@ -48,22 +42,18 @@ public class EyetrackingValidation : MonoBehaviour
 
     private void Start()
     {
-        fixationPoint.SetActive(false);
+//        fixationPoint.SetActive(false);
         _eyeValidationDataFrames = new List<EyeValidationData>();
     }
 
-    private void SaveValidationFile()
+    private void StoreValidationError()
     {
-        var fileName = _participantId + "_EyeValidation_" + TimeManager.Instance.GetCurrentUnixTimeStamp();
+        
+    }
 
-        if (_isExperiment)
-        {
-            DataSavingManager.Instance.SaveList(_eyeValidationDataFrames, fileName + "_TA");
-        }
-        else
-        {
-            DataSavingManager.Instance.SaveList(_eyeValidationDataFrames, fileName + "_Expl" + "_S_" + _sessionId);
-        }
+    public void SetHMDTransform(Camera camera)
+    {
+        _hmdTransform = camera.transform;
     }
     
     private Vector3 GetValidationError()
@@ -71,37 +61,32 @@ public class EyetrackingValidation : MonoBehaviour
         return _eyeValidationData.EyeValidationError;
     }
 
+    public void StartValidateEyetracker()
+    {
+        _runValidationCo = StartCoroutine(ValidateEyeTracker());
+        
+    }
+
+    public void StopValidation()
+    {
+        StopCoroutine(_runValidationCo);
+        fixationPoint.SetActive(false);
+    }
+
     private IEnumerator ValidateEyeTracker(float delay=2)
     {
         if (_isValidationRunning) yield break;
         _isValidationRunning = true;
 
-        _validationId++;
+        fixationPoint.transform.parent = _hmdTransform.gameObject.transform;
 
-        fixationPoint.transform.parent = mainCamera.gameObject.transform;
-
-        _hmdTransform = EyetrackingManager.Instance.GetHmdTransform();
+        //_hmdTransform = EyetrackingManager.Instance.GetHmdTransform();
 
         fixationPoint.transform.position = _hmdTransform.position + _hmdTransform.rotation * new Vector3(0,0,30);
 
         fixationPoint.transform.LookAt(_hmdTransform);
         
-        if (_isExperiment)
-        {
-            ExperimentManager.Instance.SetInstructionText(_instructions.ValidationInstruction);
-
-            yield return new WaitForSeconds(2);
-
-            ExperimentManager.Instance.SetInstructionText("");
-        }
-        else
-        {
-            HumanAExplorationManager.Instance.SetInstructionText(_instructions.ValidationInstruction);
-
-            yield return new WaitForSeconds(2);
-
-            HumanAExplorationManager.Instance.SetInstructionText("");
-        }
+        //Instruction texts
         
         yield return new WaitForSeconds(.15f);
         
@@ -163,7 +148,7 @@ public class EyetrackingValidation : MonoBehaviour
         Debug.Log( "Get validation error" + GetValidationError() + " + " + _eyeValidationData.EyeValidationError);
         
         _eyeValidationDataFrames.Add(_eyeValidationData);
-        SaveValidationFile();
+       // SaveValidationFile();
 
 
         fixationPoint.SetActive(false);
@@ -174,25 +159,12 @@ public class EyetrackingValidation : MonoBehaviour
             CalculateValidationError(anglesZ) > ErrorThreshold ||
             _eyeValidationData.EyeValidationError == Vector3.zero)
         {
-            if (_isExperiment)
-            {
-                ExperimentManager.Instance.SetValidationSuccessStatus(false);
-            }
-            else
-            {
-                HumanAExplorationManager.Instance.SetValidationSuccessStatus(false);
-            }
+            ExperimentManager.Instance.SetValidationSuccessStatus(false);
         }
         else
         {
-            if (_isExperiment)
-            {
-                ExperimentManager.Instance.SetValidationSuccessStatus(true);
-            }
-            else
-            {
-                HumanAExplorationManager.Instance.SetValidationSuccessStatus(true);
-            }
+            ExperimentManager.Instance.SetValidationSuccessStatus(true);
+           
         }
     }
     
@@ -200,33 +172,16 @@ public class EyetrackingValidation : MonoBehaviour
     {
         if (_isErrorCheckRunning) yield break;
         _isErrorCheckRunning = true;
-
-        _validationId++;
         
-        fixationPoint.transform.parent = mainCamera.gameObject.transform;
+        fixationPoint.transform.parent = _camera.gameObject.transform;
 
-        _hmdTransform = EyetrackingManager.Instance.GetHmdTransform();
+      // _hmdTransform = ExperimentManager.Instance.GetHmdTransform();
 
         fixationPoint.transform.position = _hmdTransform.position + _hmdTransform.rotation * new Vector3(0,0,45);
 
         fixationPoint.transform.LookAt(_hmdTransform);
 
-        if (_isExperiment)
-        {
-            ExperimentManager.Instance.SetInstructionText(_instructions.ErrorCheckInstruction);
-
-            yield return new WaitForSeconds(2);
-
-            ExperimentManager.Instance.SetInstructionText("");
-        }
-        else
-        {
-            HumanAExplorationManager.Instance.SetInstructionText(_instructions.ErrorCheckInstruction);
-
-            yield return new WaitForSeconds(2);
-
-            HumanAExplorationManager.Instance.SetInstructionText("");
-        }
+        
         
         yield return new WaitForSeconds(.15f);
 
@@ -262,7 +217,6 @@ public class EyetrackingValidation : MonoBehaviour
         Debug.Log( "Get validation error" + GetValidationError() + " + " + _eyeValidationData.EyeValidationError);
         
         _eyeValidationDataFrames.Add(_eyeValidationData);
-        SaveValidationFile();
 
 
         fixationPoint.SetActive(false);
@@ -273,44 +227,33 @@ public class EyetrackingValidation : MonoBehaviour
             CalculateValidationError(anglesZ) > ErrorThreshold ||
             _eyeValidationData.EyeValidationError == Vector3.zero)
         {
-            if (_isExperiment)
-            {
-                ExperimentManager.Instance.SetValidationSuccessStatus(false);
-            }
-            else
-            {
-                HumanAExplorationManager.Instance.SetValidationSuccessStatus(false);
-            }
+            ExperimentManager.Instance.SetValidationSuccessStatus(false);
         }
         else
         {
-            if (_isExperiment)
-            {
-                ExperimentManager.Instance.SetValidationSuccessStatus(true);
-            }
-            else
-            {
-                HumanAExplorationManager.Instance.SetValidationSuccessStatus(true);
-            }
+            ExperimentManager.Instance.SetValidationSuccessStatus(true);
         }
     }
     
     private EyeValidationData GetEyeValidationData()
     {
+        
         EyeValidationData eyeValidationData = new EyeValidationData();
+
+        VerboseData data; 
+        
+        SRanipal_Eye.GetVerboseData(out data);
         
         Ray ray;
         
         eyeValidationData.UnixTimestamp = TimeManager.Instance.GetCurrentUnixTimeStamp();
         eyeValidationData.IsErrorCheck = _isErrorCheckRunning;
         
-        eyeValidationData.ParticipantID = _participantId;
-        eyeValidationData.ValidationID = _validationId;
         eyeValidationData.CalibrationFreq = _calibrationFreq;
         
         eyeValidationData.PointToFocus = fixationPoint.transform.position;
 
-        if (SRanipal_Eye_v2.GetGazeRay(GazeIndex.LEFT, out ray))
+        if (SRanipal_Eye.GetGazeRay(GazeIndex.LEFT, out ray))
         {
             var angles = Quaternion.FromToRotation((fixationPoint.transform.position - _hmdTransform.position).normalized, _hmdTransform.rotation * ray.direction)
                 .eulerAngles;
@@ -318,22 +261,31 @@ public class EyetrackingValidation : MonoBehaviour
             eyeValidationData.LeftEyeAngleOffset = angles;
         }
         
-        if (SRanipal_Eye_v2.GetGazeRay(GazeIndex.RIGHT, out ray))
+
+            Debug.Log("left"+ ray.direction +" "+   data.left.gaze_origin_mm);
+        
+        if (SRanipal_Eye.GetGazeRay(GazeIndex.RIGHT, out ray))
         {
             var angles = Quaternion.FromToRotation((fixationPoint.transform.position - _hmdTransform.position).normalized, _hmdTransform.rotation * ray.direction)
                 .eulerAngles;
 
             eyeValidationData.RightEyeAngleOffset = angles;
         }
+        
+        Debug.Log("right"+ ray.direction +" "+  data.left.gaze_origin_mm);
 
-        if (SRanipal_Eye_v2.GetGazeRay(GazeIndex.COMBINE, out ray))
+        if (SRanipal_Eye.GetGazeRay(GazeIndex.COMBINE, out ray))
         {
             var angles = Quaternion.FromToRotation((fixationPoint.transform.position - _hmdTransform.position).normalized, _hmdTransform.rotation * ray.direction)
                 .eulerAngles;
 
             eyeValidationData.CombinedEyeAngleOffset = angles;
         }
+        
+        Debug.Log("combined"+ ray.direction + data.combined.eye_data.gaze_origin_mm);
 
+        Debug.Log("validate..." + eyeValidationData.LeftEyeAngleOffset + eyeValidationData.CombinedEyeAngleOffset +
+                  eyeValidationData.RightEyeAngleOffset);
         return eyeValidationData;
     }
     
@@ -348,7 +300,7 @@ public class EyetrackingValidation : MonoBehaviour
 
     public void SetExperimentStatus(bool status)
     {
-        _isExperiment = status;
+     //   _isExperiment = status;
     }
 
     public void ValidateEyeTracking()
@@ -360,26 +312,8 @@ public class EyetrackingValidation : MonoBehaviour
     {
         if(!_isErrorCheckRunning) _runErrorCheckCo = StartCoroutine(CheckErrorEyeTracker());
     }
-
-    public void SetParticipantId(string id)
-    {
-        _participantId = id;
-    }
     
-    public void SetSessionId(string id)
-    {
-        _sessionId = id;
-    }
     
-    public void NotifyCalibrationFrequency()
-    {
-        _calibrationFreq++;
-    }
-
-    public void SetInstructions(Instructions instruct)
-    {
-        _instructions = instruct;
-    }
 
     #endregion
 }

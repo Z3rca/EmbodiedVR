@@ -92,7 +92,7 @@ public class ViveProEyeRecorder : MonoBehaviour, IEyetrackingDevice
         // Find body tracker 
         try
         {
-            VRDeviceManager.Instance.GetBodyTracker(out bodyTrackerIndex, out bodyTracker);
+            //VRDeviceManager.Instance.GetBodyTracker(out bodyTrackerIndex, out bodyTracker);
             Debug.Log("[EyeTrackingRecorder] Found VRDeviceManager.");
         }
         catch (Exception e)
