@@ -6,6 +6,7 @@ using UnityEngine;
 public class HybridController : MonoBehaviour
 {
     private bool _currentlyInThirdPerson;
+    private bool _allowRotation;
     private Quaternion _currentRotation;
     private Vector3 _currentCharacterFeetPosition;
     private Vector3 _currentGeneralCharacterPosition;
@@ -126,6 +127,11 @@ public class HybridController : MonoBehaviour
         return _cameraController;
     }
 
+    public PuppetController GetPuppetController()
+    {
+        return _puppetController;
+    }
+
     public bool IsEmbodiedCondition()
     {
         return EmbodiedCondition;
@@ -164,6 +170,12 @@ public class HybridController : MonoBehaviour
         
         
         
+    }
+
+    public void FreezeMovementandRotation()
+    {
+        AllowInput(false);
+        AllowRotation(false);
     }
     
     void UpdateControllerTransforms()
@@ -214,7 +226,11 @@ public class HybridController : MonoBehaviour
         _currentGeneralCharacterPosition = _characterController.GetGeneralCharacterPosition();
 
     }
-    
+
+    public void AllowRotation(bool state)
+    {
+        _allowRotation = state;
+    }
     public void AllowInput(bool state)
     {
         _inputIsAllowed = state;
@@ -359,7 +375,9 @@ public class HybridController : MonoBehaviour
     
     private void RotateAvatar(Quaternion rotation)
     {
-        
+        if (!_allowRotation)
+            return;
+            
         if (!_currentlyInThirdPerson)
         {
             if (!AllowRotationDuringFirstperson)

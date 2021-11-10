@@ -37,5 +37,7 @@ using UnityEngine;
         public Quaternion PuppetPuppetHeadRotation;
        
       
-        
+        public Vector3[] LimbPositions;
+        public Quaternion[] LimbRotations;
+
     }

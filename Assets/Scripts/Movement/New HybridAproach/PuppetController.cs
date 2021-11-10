@@ -14,7 +14,7 @@ public class PuppetController : MonoBehaviour
     [SerializeField] private GameObject avatar;
 
     [SerializeField]private Animator _animator;
-
+    
 
     private float _maximumSpeed;
     private float _currentSpeed;
@@ -27,7 +27,29 @@ public class PuppetController : MonoBehaviour
     private bool _isEmbodiedCondition;
 
     private float _AnimationRatio;
+
+    private Transform NeckTransform;
+    private Transform ChestTransform;
     
+    private Transform LeftElbowTransform;
+    private Transform RightElbowTransform;
+    
+    private Transform LeftShoulderTransform;
+    private Transform RightShoulderTransform;
+
+    private Transform LeftPelvisTramsform;
+    private Transform RightPelvisTransform;
+
+    private Transform LeftKneeTransform;
+    private Transform RightKneeTransform;
+
+    private Transform LeftFootTransform;
+    private Transform RightFootTransform;
+
+    
+
+    private Vector3[] limbPositions;
+    private Quaternion[] limbRotations;
 
     private void Start()
     {
@@ -37,17 +59,86 @@ public class PuppetController : MonoBehaviour
 
         _maximumSpeed = ccAnimator.maximumForward;
 
+        limbPositions = new Vector3[12];
+        limbRotations = new Quaternion[12];
+
     }
 
-
+    
+    
     public void IsEmobdiedCondition(bool state)
     {
         _isEmbodiedCondition = state;
+
+        if (_isEmbodiedCondition)
+        {
+            LeftShoulderTransform = vriK.references.leftUpperArm;
+            RightShoulderTransform = vriK.references.rightShoulder;
+
+            LeftElbowTransform = vriK.references.leftForearm;
+            RightElbowTransform = vriK.references.rightForearm;
+
+            ChestTransform = vriK.references.chest;
+            NeckTransform = vriK.references.neck;
+
+            LeftPelvisTramsform = vriK.references.leftThigh;
+            RightPelvisTransform = vriK.references.rightThigh;
+
+            LeftKneeTransform = vriK.references.leftCalf;
+            RightKneeTransform = vriK.references.rightCalf;
+
+            LeftFootTransform = vriK.references.leftFoot;
+            RightFootTransform = vriK.references.rightFoot;
+        }
     }
     
     private void FixedUpdate()
     {
-        vriK.solver.locomotion.weight =1- _AnimationRatio;
+        limbPositions[0] = NeckTransform.position;
+        limbRotations[0] = NeckTransform.rotation;
+
+        limbPositions[1] = ChestTransform.position;
+        limbRotations[1] = ChestTransform.rotation;
+
+        limbPositions[2] = LeftShoulderTransform.position;
+        limbRotations[2] = LeftShoulderTransform.rotation;
+
+        limbPositions[3] = RightShoulderTransform.position;
+        limbRotations[3] = RightShoulderTransform.rotation;
+
+        limbPositions[4] = LeftElbowTransform.position;
+        limbRotations[4] = LeftElbowTransform.rotation;
+
+        limbPositions[5] = RightElbowTransform.position;
+        limbRotations[5] = RightElbowTransform.rotation;
+
+        limbPositions[6] = LeftPelvisTramsform.position;
+        limbRotations[6] = LeftPelvisTramsform.rotation;
+
+        limbPositions[7] = RightPelvisTransform.position;
+        limbRotations[7] = RightPelvisTransform.rotation;
+
+        limbPositions[8] = LeftKneeTransform.position;
+        limbRotations[8] = LeftKneeTransform.rotation;
+
+        limbPositions[9] = RightKneeTransform.position;
+        limbRotations[9] = RightKneeTransform.rotation;
+        
+        limbPositions[10] = LeftFootTransform.position;
+        limbRotations[10] = LeftFootTransform.rotation;
+        
+        limbPositions[11] = RightFootTransform.position;
+        limbRotations[11] = RightFootTransform.rotation;
+    }
+
+    public Vector3[] GetLimbPositions()
+    {
+        return limbPositions;
+    }
+
+    public Quaternion[] GetLimbRotations()
+    {
+        return limbRotations;
     }
 
     private void Update()
@@ -87,10 +178,11 @@ public class PuppetController : MonoBehaviour
         ccAnimator.ApplyAnimation(_currentDirection, _currentSpeed);
 
     }
+    
 
     private void LateUpdate()
     {
-        
+        vriK.solver.locomotion.weight =1- _AnimationRatio;    
     }
 
 

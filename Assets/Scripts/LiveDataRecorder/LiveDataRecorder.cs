@@ -15,6 +15,7 @@ public class LiveDataRecorder : MonoBehaviour
     
     private HybridCharacterController _characterController;
     private HybridRemoteTransformConroller _remoteController;
+    private PuppetController _puppetController;
     private InputController _inputController;
     
     private Transform _hmd;
@@ -27,8 +28,13 @@ public class LiveDataRecorder : MonoBehaviour
 
     private Transform Character;
     private bool _isInThirdPerson;
-
     [SerializeField] private Vector2 _movementInput;
+    [SerializeField] private Vector2 _rotationInput;
+
+    [SerializeField] public Vector3[] limbPositions;
+    [SerializeField] public Quaternion[] limbRotations;
+
+    
     
     
     private Transform Puppet;
@@ -57,8 +63,10 @@ public class LiveDataRecorder : MonoBehaviour
             
             Puppet = _remoteController.RemoteFeetPositionGuess;
             PuppetHead = _remoteController.RemoteHMD;
-            
-            
+
+            _puppetController = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>()
+                .GetPuppetController();
+
 
         }
         
@@ -148,6 +156,9 @@ public class LiveDataRecorder : MonoBehaviour
 
             dataFrame.PuppetPuppetHeadPositon = _remoteController.RemoteHMD.transform.position;
             dataFrame.PuppetPuppetHeadRotation = _remoteController.RemoteHMD.transform.rotation;
+
+            dataFrame.LimbPositions = _puppetController.GetLimbPositions();
+            dataFrame.LimbRotations = _puppetController.GetLimbRotations();
             
             _dataFrames.Add(dataFrame);
             yield return new WaitForSeconds(_frameRate);
