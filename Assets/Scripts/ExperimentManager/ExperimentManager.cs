@@ -10,12 +10,15 @@ public class ExperimentManager : MonoBehaviour
 {
     
     public Camera mainMenuCamera;
+    private Camera avatarCamera;
     public static ExperimentManager Instance { get; private set; }
 
     public List<GameObject> Avatars;
     public GameObject SelectedAvatar;
     private HybridController _playerController;
     public HybridCharacterController _playerCharacterController;
+   
+    private ELIEyetrackingManager _eyetrackingManager;
 
     private StationSpawner _ActiveStation;
     private AreaManager _activeAreaManager;
@@ -66,6 +69,8 @@ public class ExperimentManager : MonoBehaviour
     private bool runningExperiment;
     private bool _lastStation;
 
+    private bool _validationSuccess;
+
     private float fps;
     
     private enum MenuState
@@ -109,8 +114,8 @@ public class ExperimentManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
-        
+
+        _eyetrackingManager = GetComponentInChildren<ELIEyetrackingManager>();
     }
 
     private void Start()
@@ -158,6 +163,19 @@ public class ExperimentManager : MonoBehaviour
         StartCoroutine(PlayerInstantiation());
     }
 
+    public void StartEyeTrackingCalibration()
+    {
+        _eyetrackingManager.StartCalibration();
+    }
+    
+    private IEnumerator PlayerAwakening()
+    {
+        SelectedAvatar.gameObject.SetActive(true);
+        yield return new WaitUntil(() => SelectedAvatar.GetComponent<HybridController>() != null);
+        SelectedAvatar.GetComponent<HybridController>().FreezeMovementandRotation();
+        avatarCamera= SelectedAvatar.GetComponent<HybridController>().GetCameraController().GetCamera();
+    }
+
     private IEnumerator PlayerInstantiation()
     {
         SelectedAvatar.gameObject.SetActive(true);
@@ -193,6 +211,7 @@ public class ExperimentManager : MonoBehaviour
         {
             _playerController.AllowViewSwitch(true);
             _playerController.AllowInput(true);
+            _playerController.AllowRotation(true);
         }
         
         StartedExperiment();
@@ -302,6 +321,11 @@ public class ExperimentManager : MonoBehaviour
     public void SetisInTutorial(bool state)
     {
         _isInTutorial = state;
+    }
+
+    public void SetValidationSuccessStatus(bool state)
+    {
+        _validationSuccess = state;
     }
     
     private void StartedExperiment()
@@ -727,7 +751,7 @@ public class ExperimentManager : MonoBehaviour
                 
                 if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Calibration", buttonStyle))
                 {
-                   //launch Calibration and Validation of the Eyetracker
+                  StartEyeTrackingCalibration();
                 }
                 
                 valX += w + 2;
@@ -855,7 +879,11 @@ public class ExperimentManager : MonoBehaviour
     }
 }
 
-
+public class EyeValidationArgs : EventArgs
+{
+    public bool eyeValidationSuccessful;
+    public EyeValidationData eyeValidationData;
+}
 
 public class StartExperimentArgs : EventArgs
 {

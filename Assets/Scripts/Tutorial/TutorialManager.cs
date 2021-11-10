@@ -143,6 +143,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => !audioController.GetActive());
         
         //TODO: here only rotation should be enabled
+        Debug.Log("enabled Movement");
         HybridController.AllowInput(true);
         
         HybridController.HighLightMovementButton(true);
@@ -150,7 +151,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitUntil(() => !audioController.GetActive());
         
         //TODO: here rest of movement should be enabled
-        Debug.Log("enabled Movement");
+       
         
         yield return new WaitForSeconds(4);
         
