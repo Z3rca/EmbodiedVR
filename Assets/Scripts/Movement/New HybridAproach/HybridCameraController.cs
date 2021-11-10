@@ -15,9 +15,16 @@ public class HybridCameraController : MonoBehaviour
     [SerializeField] private float _cameraDistance;
     
     [SerializeField] private StencilWallDection stecilWallDectector;
+    [SerializeField] private Camera _camera;
     
     public delegate void OnFadingCompleted();
     public event OnFadingCompleted OnNotifyFadedCompletedObervers;
+
+
+    public Camera GetCamera()
+    {
+        return _camera;
+    }
 
     private void Start()
     {

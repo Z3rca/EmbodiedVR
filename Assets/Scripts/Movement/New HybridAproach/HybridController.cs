@@ -121,6 +121,11 @@ public class HybridController : MonoBehaviour
         return _characterController;
     }
 
+    public HybridCameraController GetCameraController()
+    {
+        return _cameraController;
+    }
+
     public bool IsEmbodiedCondition()
     {
         return EmbodiedCondition;
@@ -187,9 +192,15 @@ public class HybridController : MonoBehaviour
     private void MoveAvatar(Vector2 input)
     {
         Vector3 MovementDirection = new Vector3();
-        if (_inputIsAllowed&& !(!AllowMovementDuringFirstperson&& !_currentlyInThirdPerson))
-        { 
-            MovementDirection = new Vector3(input.x, 0f, input.y);
+        if (_inputIsAllowed)
+        {
+            if (_currentlyInThirdPerson)
+            {
+                MovementDirection = new Vector3(input.x, 0f, input.y);
+            }
+            if(!_currentlyInThirdPerson&& AllowMovementDuringFirstperson)
+                MovementDirection = new Vector3(input.x, 0f, input.y);
+            
         }
         
         _characterController.MoveCharacter(MovementDirection);
