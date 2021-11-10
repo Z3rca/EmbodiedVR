@@ -78,29 +78,6 @@ public class InputController : MonoBehaviour
         
         movementInput = MovementInput.GetAxis(SteamVR_Input_Sources.Any);
         OnNotifyControlStickMovedObservers?.Invoke(movementInput);
-
-        if (rotateLeft.state || rotateRight.state)
-        {
-            if (!SnapTurn)
-            {
-                rotationImpuls *= Time.deltaTime;
-            }
-            if (rotateLeft.state)
-            {
-                rotationImpuls = -SetRotationImpuls;
-                OnNotifyLeftTurnButtonPressedObserver?.Invoke();
-            }
-            if (rotateRight.state)
-            {
-                rotationImpuls = SetRotationImpuls;
-                OnNotifyRightTurnButtonPressedObserver?.Invoke();
-            }
-            if (!rotating)
-            {
-                rotating = true;
-                StartCoroutine(PerformRotationImpuls());
-            }
-        }
         
         if (rotateLeft.state || rotateRight.state)
         {
