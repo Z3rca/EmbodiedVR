@@ -27,6 +27,7 @@ using UnityEngine;
         public Quaternion RightGlobalRotation;
         
         //Character -  CharacterController Capsule
+        public Vector3 AdjustedCharacterPosition;
         public Vector3 CharacterControllerPosition;
         public Quaternion CharacterControllerRotation;
         public bool isThirdPerson;

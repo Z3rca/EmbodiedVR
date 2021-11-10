@@ -21,12 +21,14 @@ public class LiveDataRecorder : MonoBehaviour
     private Transform _hmd;
     private Transform _leftController;
     private Transform _rightController;
+ 
 
 
     private string HeldObjectInLeftHand;
     private string HeldObjectInRightHand;
 
     private Transform Character;
+    private Vector3 _adjustedCharacterPosition;
     private bool _isInThirdPerson;
     [SerializeField] private Vector2 _movementInput;
     [SerializeField] private Vector3 _rotationInput;
@@ -70,7 +72,7 @@ public class LiveDataRecorder : MonoBehaviour
             _puppetController = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>()
                 .GetPuppetController();
 
-
+            
         }
         
     }
@@ -154,10 +156,12 @@ public class LiveDataRecorder : MonoBehaviour
 
             dataFrame.MovementInput = _movementInput;
             dataFrame.RotationInput = _rotationInput;
+            
             //Character
             dataFrame.CharacterControllerPosition = _characterController.GetAdjustedPosition();
             dataFrame.CharacterControllerRotation = _characterController.transform.rotation;
             dataFrame.isThirdPerson = _isInThirdPerson;
+            dataFrame.AdjustedCharacterPosition = _characterController.GetAdjustedPosition();
             
             //Puppet
             dataFrame.PuppetPosition = _remoteController.RemoteFeetPositionGuess.position;
