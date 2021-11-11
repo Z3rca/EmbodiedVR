@@ -51,8 +51,13 @@ public class PuppetController : MonoBehaviour
     private Vector3[] limbPositions;
     private Quaternion[] limbRotations;
 
+    private bool initialized;
+    
+    
+
     private void Start()
     {
+        
         ccAnimator = GetComponent<CCAnimator>();
         ccAnimator.SetAnimator(_animator);
         vriK = GetComponent<VRIK>();
@@ -62,14 +67,18 @@ public class PuppetController : MonoBehaviour
         limbPositions = new Vector3[12];
         limbRotations = new Quaternion[12];
 
+        ExperimentManager.Instance.OnScaleCalibrationFinished += IsEmobdiedCondition;
+
     }
 
     
     
-    public void IsEmobdiedCondition(bool state)
+    public void IsEmobdiedCondition()
     {
-        _isEmbodiedCondition = state;
 
+        _isEmbodiedCondition = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>()
+            .IsEmbodiedCondition();
+        
         if (_isEmbodiedCondition)
         {
             LeftShoulderTransform = vriK.references.leftUpperArm;
@@ -89,11 +98,20 @@ public class PuppetController : MonoBehaviour
 
             LeftFootTransform = vriK.references.leftFoot;
             RightFootTransform = vriK.references.rightFoot;
+            initialized = true;
         }
+    }
+
+
+    private void StartExperiment()
+    {
+        
     }
     
     private void FixedUpdate()
     {
+        if (!initialized)
+            return;
         limbPositions[0] = NeckTransform.position;
         limbRotations[0] = NeckTransform.rotation;
 
