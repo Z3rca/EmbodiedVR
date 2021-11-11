@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bb0b6e0ccad67643b3e505f2148fc89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  potentialIntferingSources: []
   audioSource: {fileID: 2801438074439873796}
 --- !u!1 &3041908679013419321
 GameObject:
@@ -11500,7 +11501,7 @@ PrefabInstance:
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
@@ -11519,9 +11520,14 @@ PrefabInstance:
       objectReference: {fileID: 3515351070513372452}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
-      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 454060624403870618}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
@@ -11539,13 +11545,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
-      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: playAudio
       objectReference: {fileID: 0}
     - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
+      propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161752864975012729, guid: 68f2e64a4370c504e849669dfb4b2773,
+        type: 3}
       propertyPath: OnExitTrigger.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8303821994303588952, guid: 68f2e64a4370c504e849669dfb4b2773,
         type: 3}
@@ -11557,7 +11568,8 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2446391757770938598, guid: 68f2e64a4370c504e849669dfb4b2773, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 68f2e64a4370c504e849669dfb4b2773, type: 3}
 --- !u!1 &2304423194602059151 stripped
 GameObject:
