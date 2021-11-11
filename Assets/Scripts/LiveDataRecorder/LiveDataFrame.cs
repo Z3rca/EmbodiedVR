@@ -55,6 +55,23 @@ using UnityEngine;
 
 
         //Eyetracking
+        public float eyeOpennessLeft;
+        public float eyeOpennessRight;
+        public float pupilDiameterMillimetersLeft;
+        public float pupilDiameterMillimetersRight;
+        public Vector3 eyePositionCombinedWorld;
+        public Vector3 eyeDirectionCombinedWorld;
+        public Vector3 eyeDirectionCombinedLocal;
+        public Vector3 eyePositionLeftWorld;
+        public Vector3 eyeDirectionLeftWorld;
+        public Vector3 eyeDirectionLeftLocal;
+        public Vector3 eyePositionRightWorld;
+        public Vector3 eyeDirectionRightWorld;
+        public Vector3 eyeDirectionRightLocal;
+        public ulong leftGazeValidityBitmask;
+        public ulong rightGazeValidityBitmask;
+        public ulong combinedGazeValidityBitmask;
+        
         public bool HitSomething;
         public Vector3 HitPosition1;
         public Vector3 HitPosition2;
