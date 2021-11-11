@@ -116,6 +116,12 @@ public class HybridController : MonoBehaviour
         
         
     }
+    
+    
+    public ControllerRepresentations GetControllerRepresentations()
+    {
+        return _controllerRepresentations;
+    }
 
     public HybridCharacterController GetHybridChracterController()
     {

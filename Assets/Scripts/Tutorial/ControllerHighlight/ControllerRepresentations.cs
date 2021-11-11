@@ -45,11 +45,14 @@ public class ControllerRepresentations : MonoBehaviour
     private List<GameObject> _buttons;
 
     private bool _switchShowHands;
+
+    private bool _switchShowControllers;
     public void ShowController(bool state)
     {
         Debug.Log("show controllers: " + state);
         LeftController.SetActive(state);
         RightController.SetActive(state);
+        _switchShowControllers = state;
     }
 
     private void Start()
@@ -75,6 +78,11 @@ public class ControllerRepresentations : MonoBehaviour
     public void ShowHands(bool state)
     {
         _switchShowHands = state;
+    }
+
+    public bool ControllerShown()
+    {
+        return _switchShowHands;
     }
 
     private void initializeButtons()

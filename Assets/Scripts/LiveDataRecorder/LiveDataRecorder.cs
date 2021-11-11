@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Valve.VR;
 using Valve.VR.InteractionSystem;
@@ -17,10 +18,11 @@ public class LiveDataRecorder : MonoBehaviour
     private HybridRemoteTransformConroller _remoteController;
     private PuppetController _puppetController;
     private InputController _inputController;
+    private ControllerRepresentations _controllerRepresentations;
     
     private Transform _hmd;
-    private Transform _leftController;
-    private Transform _rightController;
+    private Hand _leftHand;
+    private Hand _rightHand;
  
 
 
@@ -30,11 +32,11 @@ public class LiveDataRecorder : MonoBehaviour
     private Transform Character;
     private Vector3 _adjustedCharacterPosition;
     private bool _isInThirdPerson;
-    [SerializeField] private Vector2 _movementInput;
-    [SerializeField] private Vector3 _rotationInput;
+    private Vector2 _movementInput;
+    private Vector3 _rotationInput;
 
-    [SerializeField] public Vector3[] limbPositions;
-    [SerializeField] public Quaternion[] limbRotations;
+    private Vector3[] limbPositions;
+    private Quaternion[] limbRotations;
 
 
     private bool _hitSomething;
@@ -49,8 +51,8 @@ public class LiveDataRecorder : MonoBehaviour
         {
             SetFrameRate(framesPerSecond);
             _hmd = Player.instance.hmdTransform;
-            _leftController = Player.instance.leftHand.transform;
-            _rightController = Player.instance.rightHand.transform;
+            _leftHand = Player.instance.leftHand;
+            _rightHand = Player.instance.rightHand;
 
             _characterController = ExperimentManager.Instance._playerCharacterController;
             Character = _characterController.transform;
@@ -72,7 +74,8 @@ public class LiveDataRecorder : MonoBehaviour
             _puppetController = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>()
                 .GetPuppetController();
 
-            
+            _controllerRepresentations = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>()
+                .GetControllerRepresentations();
         }
         
     }
@@ -144,16 +147,20 @@ public class LiveDataRecorder : MonoBehaviour
             dataFrame.NoseVector = _hmd.forward;
             
             //Controller
-            dataFrame.LeftHandGlobalPosition = _leftController.position;
-            dataFrame.LeftHandLocalPositon = _leftController.localPosition;
-            dataFrame.LeftHandGlobalRotation = _leftController.rotation;
-            dataFrame.LeftHandLocalRotation = _leftController.localRotation;
+            dataFrame.LeftHandGlobalPosition = _leftHand.transform.position;
+            dataFrame.LeftHandLocalPositon = _leftHand.transform.localPosition;
+            dataFrame.LeftHandGlobalRotation = _leftHand.transform.rotation;
+            dataFrame.LeftHandLocalRotation = _leftHand.transform.localRotation;
 
-            dataFrame.RightGlobalPosition = _rightController.position;
-            dataFrame.RightHandLocalPositon = _rightController.localPosition;
-            dataFrame.RightGlobalRotation = _rightController.rotation;
-            dataFrame.RightHandLocalRotation = _rightController.localRotation;
+            dataFrame.RightGlobalPosition = _rightHand.transform.position;
+            dataFrame.RightHandLocalPositon = _rightHand.transform.localPosition;
+            dataFrame.RightGlobalRotation = _rightHand.transform.rotation;
+            dataFrame.RightHandLocalRotation = _rightHand.transform.localRotation;
 
+            dataFrame.ControllersAreShown = _controllerRepresentations.ControllerShown();
+          
+            
+            //Input
             dataFrame.MovementInput = _movementInput;
             dataFrame.RotationInput = _rotationInput;
             
@@ -172,26 +179,54 @@ public class LiveDataRecorder : MonoBehaviour
 
             dataFrame.LimbPositions = _puppetController.GetLimbPositions();
             dataFrame.LimbRotations = _puppetController.GetLimbRotations();
+              
+            //Objects 
+            if (_leftHand.currentAttachedObject != null)
+            {
+                dataFrame.ObjectNameLeft = _leftHand.currentAttachedObject.name;
+                dataFrame.ObjectAttachedToLeftHand = true;
+            }
+
+            if (_rightHand.currentAttachedObject != null)
+            {
+                dataFrame.ObjectNameRight = _rightHand.currentAttachedObject.name;
+                dataFrame.ObjectAttachedToRightHand = true;
+            }
+            
+            //Eyetracking
+            RaycastHit[] hits;
+            
+            hits = Physics.RaycastAll(_hmd.transform.position, _hmd.transform.forward, 30f);
+            if (hits.Length > 0)
+            {
+
+                dataFrame.HitSomething = true;
+                if (hits.Length == 1)
+                {
+                    dataFrame.HitObject1 = hits[0].collider.name;
+                    dataFrame.HitPosition1 = hits[0].point;
+                    dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
+                }
+
+                if (hits.Length >= 2)
+                {
+                    hits.OrderBy(x=>x.distance).ToArray();
+                    dataFrame.HitObject1 = hits[0].collider.name;
+                    dataFrame.HitPosition1 = hits[0].point;
+                    dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
+                    
+                    dataFrame.HitObject1 = hits[1].collider.name;
+                    dataFrame.HitPosition1 = hits[1].point;
+                    dataFrame.HitObjectPosition1 = hits[1].collider.gameObject.transform.position;
+                }
+            }
             
             _dataFrames.Add(dataFrame);
             if (Vector3.Magnitude(_rotationInput) > 0f)
             {
                 _rotationInput=Vector3.zero;
             }
-            
-            
-            //Eyetracking
-
-            RaycastHit hit;
-
-            if(Physics.Raycast(_hmd.transform.position, _hmd.transform.forward, out hit,30f))
-            {
-                
-            };
-            
-           
-            
-            
+ 
             yield return new WaitForSeconds(_frameRate);
         }
     }
