@@ -139,7 +139,7 @@ public class AreaManager : MonoBehaviour
     public void EndAudioRecording()
     {
         _endAudioRecordTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
-        _audioFileName = ExperimentManager.Instance.GetParticipantID()+ " "+ ExperimentManager.Instance.GetCondition() +" "+ id ;
+        _audioFileName = ExperimentManager.Instance.GetParticipantID()+ "_"+ ExperimentManager.Instance.GetCondition() +"_"+ id ;
         ExperimentManager.Instance.StopRecordingMicrophone();
         
     }

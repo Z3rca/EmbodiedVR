@@ -50,6 +50,8 @@ public class ExperimentManager : MonoBehaviour
     public event EventHandler<ParkourEndArgs> OnPakourFinished;
 
     public event EventHandler<DataGatheringEndArgs> OnDataGatheringCompleted;
+
+    public event Action OnScaleCalibrationFinished;
     
      
     private event Action OnDataSavingCompleted; 
@@ -205,7 +207,7 @@ public class ExperimentManager : MonoBehaviour
         _playerController.StartBodyScaleCalibration();
 
         yield return new WaitUntil(() => !_playerController.GetCalibrationProcess());
-        
+        OnScaleCalibrationFinished?.Invoke();
         //_playerController.ShowControllers(false);
         if (_playerController.IsEmbodiedCondition())
         {

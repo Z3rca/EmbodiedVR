@@ -122,12 +122,13 @@ public class TutorialManager : MonoBehaviour
             yield return new WaitUntil(() => !audioController.GetActive());
             yield return new WaitForSeconds(1);
             audioController.AudioClip4();
+            HybridController.HighLightControlSwitchButton(true);
             yield return new WaitUntil(() => !audioController.GetActive());
             
             HybridController.AllowViewSwitch(true);
             yield return new WaitUntil(() => !audioController.GetActive());
             HybridController.ShowControllers(true);
-            HybridController.HighLightControlSwitchButton(true);
+            
             yield return new WaitUntil(() => _thirdPersonIsActive);
             HybridController.HighLightControlSwitchButton(false);
         }
@@ -140,6 +141,7 @@ public class TutorialManager : MonoBehaviour
         
         HybridController.HighLightRotationButton(true);
         audioController.AudioClip5();
+        HybridController.AllowRotation(true);
         yield return new WaitUntil(() => !audioController.GetActive());
         
         //TODO: here only rotation should be enabled

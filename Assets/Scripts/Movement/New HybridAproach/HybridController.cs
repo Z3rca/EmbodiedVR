@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -101,7 +101,7 @@ public class HybridController : MonoBehaviour
             _blobController = _puppetController.transform.GetComponent<BlobController>();
         }
         
-        _puppetController.IsEmobdiedCondition(EmbodiedCondition);
+       // _puppetController.IsEmobdiedCondition(EmbodiedCondition);
         
         _characterController.SetOrientationBasedOnCharacter(rotationIsBasedOnAdjustedCharacterPosition);
         SwitchView(startWithThirdPerson);
@@ -115,6 +115,12 @@ public class HybridController : MonoBehaviour
         
         
         
+    }
+    
+    
+    public ControllerRepresentations GetControllerRepresentations()
+    {
+        return _controllerRepresentations;
     }
 
     public HybridCharacterController GetHybridChracterController()
