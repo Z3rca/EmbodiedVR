@@ -14,8 +14,7 @@ public class Area4Elevator : MonoBehaviour
     public GameObject UpperPosition;
     public GameObject Handle;
     public GameObject Plattform;
-
-    [SerializeField] private CharacterTrigger _trigger;
+    
 
     public bool startsAtTop;
     
@@ -120,17 +119,7 @@ public class Area4Elevator : MonoBehaviour
         }
     }
 
-    private void CharacterIsPresent()
-    {
-        _characterController = _trigger.GetCharacterController();
-        _hybridController = _characterController.GetGeneralControl();
-        _characterIsPresent = true;
-    }
-
-    private void CharacterIsNotPresent()
-    {
-        _characterIsPresent = false;
-    }
+    
 
     private void LateUpdate()
     {
@@ -229,7 +218,7 @@ public class Area4Elevator : MonoBehaviour
 
         }
 
-        if (Math.Abs(plattformPosition.y - LowerPosition.transform.position.y) < 0.01f)
+        if (Math.Abs(plattformPosition.y - LowerPosition.transform.position.y) < 0.03f)
         {
             lowerDoor.SetActive(false);
         }
