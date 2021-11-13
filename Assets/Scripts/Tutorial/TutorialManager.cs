@@ -106,6 +106,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         HybridController.AllowViewSwitch(false);
         HybridController.AllowInput(false);
+        HybridController.AllowRotation(false);
         HybridController.Fading(0f,2f,2f);
         yield return new WaitUntil(() =>!HybridController.IsFadingInProgress());   
         audioController.AudioClip1();
@@ -151,10 +152,8 @@ public class TutorialManager : MonoBehaviour
         HybridController.HighLightMovementButton(true);
         audioController.AudioClip6();
         yield return new WaitUntil(() => !audioController.GetActive());
-        
-        //TODO: here rest of movement should be enabled
-       
-        
+
+
         yield return new WaitForSeconds(4);
         
         EnableInteractionArea();
