@@ -34,6 +34,8 @@ public class MeasuringFlow : MonoBehaviour
 
     private bool audioRecordingPassed;
 
+    private bool visualizeCircle;
+
     private bool _pressed;
     private bool _posturalTestInProgress;
     [SerializeField] private GameObject AcceptButton;
@@ -260,10 +262,8 @@ public class MeasuringFlow : MonoBehaviour
     private IEnumerator WaitForPosturalStabiltyTestDuration(float duration, float delay)
     {
         
-        
-        
         postureCircleLogo.SetActive(true);
-
+        
         yield return new WaitForSeconds(delay);
         StartCoroutine(VisualizedPostureProgress(duration));
         PosturalStabilityTestStarted.Invoke();
@@ -271,12 +271,16 @@ public class MeasuringFlow : MonoBehaviour
         yield return new WaitForSeconds(duration);
         stabilityMeasured = true;
         _posturalTestInProgress = false;
-
-
+        visualizeCircle = false;
     }
 
     private IEnumerator VisualizedPostureProgress(float duration)
     {
+        if(visualizeCircle)
+            yield return null;
+        
+        visualizeCircle = true;
+        
         postureCircle.fillAmount = 0f;
         float remainingDuration = duration;
         float factor = 0f;
