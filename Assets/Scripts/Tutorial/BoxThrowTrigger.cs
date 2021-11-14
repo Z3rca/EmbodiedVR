@@ -20,6 +20,12 @@ public class BoxThrowTrigger : MonoBehaviour
         
         if (other.gameObject ==TargetObject)
         {
+            if (ExperimentManager.Instance != null)
+            {
+                ExperimentManager.Instance.AddInteractionCubeToDictionary(other.gameObject.name);
+            }
+            
+            
             Debug.Log("finished");
             OnThrowIn.Invoke();
         }

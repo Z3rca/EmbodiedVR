@@ -14,7 +14,6 @@ public class EyeValidationData
     public int CalibrationFreq;
     
     public Vector3 EyeValidationError;
-    public Vector3 PointToFocus;
     public Vector3 CombinedEyeAngleOffset;
     public Vector3 LeftEyeAngleOffset;
     public Vector3 RightEyeAngleOffset;

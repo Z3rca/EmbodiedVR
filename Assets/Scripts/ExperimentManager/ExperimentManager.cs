@@ -40,6 +40,8 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField] private MicrophoneManager _microphoneManager;
 
     [SerializeField] private LiveDataRecorder liveDataRecorder;
+    
+    private Dictionary<string,double > InteractionAreaCubesAccepted;
 
     private bool firstTimeHeightCalibration;
     public event EventHandler<StartExperimentArgs> startedExperiment;
@@ -70,6 +72,8 @@ public class ExperimentManager : MonoBehaviour
     private float totalTime;
     private bool runningExperiment;
     private bool _lastStation;
+    private bool _SranipalCalibrationDone;
+    private bool _validationProcessIsDone;
 
     private bool _validationSuccess;
 
@@ -160,6 +164,26 @@ public class ExperimentManager : MonoBehaviour
         
     }
 
+    public void AddInteractionCubeToDictionary(string ObjectName)
+    {
+        if (InteractionAreaCubesAccepted == null)
+        {
+            InteractionAreaCubesAccepted = new Dictionary<string, double>();
+        }
+
+        InteractionAreaCubesAccepted.Add(ObjectName, TimeManager.Instance.GetCurrentUnixTimeStamp());
+    }
+
+    public Dictionary<string, double> GetInteractionCubeDictionary()
+    {
+        if (InteractionAreaCubesAccepted == null)
+        {
+            InteractionAreaCubesAccepted = new Dictionary<string, double>();
+        }
+
+        return InteractionAreaCubesAccepted;
+    }
+
     private void InstantiatePlayerOnStation()
     {
         StartCoroutine(PlayerInstantiation());
@@ -173,6 +197,11 @@ public class ExperimentManager : MonoBehaviour
     public void StartEyeTrackingValidation()
     {
         _eyetrackingManager.StartValidation();
+    }
+
+    public bool ValidationWasSucessful()
+    {
+        return _validationSuccess;
     }
 
     public Camera GetActiveCamera()
@@ -263,6 +292,11 @@ public class ExperimentManager : MonoBehaviour
     public Condition GetCondition()
     {
         return _condition;
+    }
+
+    public string GetStationID()
+    {
+        return _ActiveStation.ID.ToString();
     }
     
     public void TakeParticipantToNextStation()
@@ -355,6 +389,9 @@ public class ExperimentManager : MonoBehaviour
         startExperimentArgs.ApplicationStartTime = TimeManager.Instance.GetApplicationStartTime();
         startExperimentArgs.ExperimentStartTime = TimeManager.Instance.GetCurrentUnixTimeStamp();
         startExperimentArgs.ParticipantID = _participantId;
+        startExperimentArgs.CombinedEyeValidationErrorOffset = _eyetrackingManager.GetCombinedEyeValidationErrorAngles();
+        startExperimentArgs.LeftEyeValidationErrorOffset = _eyetrackingManager.GetLeftEyeValidationErrorAngles();
+        startExperimentArgs.RightEyeValidationErrorOffset = _eyetrackingManager.GetRightEyeValidationErrorAngles();
 
         if (startedExperiment != null)
         {
@@ -493,14 +530,18 @@ public class ExperimentManager : MonoBehaviour
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
 
-        StartCoroutine(DisableAvatarView());
+        StartCoroutine(DisableAvatarViewAndQuit(10));
+        
     }
 
-    private IEnumerator DisableAvatarView()
+    private IEnumerator DisableAvatarViewAndQuit(float timeUntilQuit)
     {
         yield return new WaitUntil(() =>SelectedAvatar.GetComponent<HybridController>().IsFading());
         
         SelectedAvatar.GetComponent<HybridController>().FadeOut(2f);
+
+        yield return new WaitForSeconds(timeUntilQuit);
+        Application.Quit();
     }
 
     public string GetParticipantID()
@@ -531,6 +572,21 @@ public class ExperimentManager : MonoBehaviour
         }
         
         
+    }
+
+
+    private IEnumerator EyeCalibrationAndValidation()
+    {
+        _eyetrackingManager.StartCalibration();
+        
+        yield return new WaitUntil(()=>_eyetrackingManager.EyetrackerIsCalibrated() ) ;
+        _SranipalCalibrationDone = true;
+        
+        _eyetrackingManager.StartValidation();
+
+        yield return new WaitUntil(() => _eyetrackingManager.GetEyeValidationStatus());
+
+        _validationProcessIsDone = true;
     }
 
     public bool MicrophoneIsRecording()
@@ -769,7 +825,8 @@ public class ExperimentManager : MonoBehaviour
                 
                 if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Calibration", buttonStyle))
                 {
-                  StartEyeTrackingCalibration();
+                  //StartEyeTrackingCalibration();
+                  StartCoroutine(EyeCalibrationAndValidation());
                 }
                 
                 valX += w + 2;
@@ -785,11 +842,66 @@ public class ExperimentManager : MonoBehaviour
                 {
                     _menuState = MenuState.SafetyBeforeStart;
                 }
+              
+
+                valY = Screen.height / 2 + 100;
+                valX = x;
+
+                if (_SranipalCalibrationDone)
+                {
+                    if (_eyetrackingManager.EyetrackerIsCalibrated())
+                    {
+                        GUI.color = Color.green;
+                        GUI.Box(new Rect(valX, valY, w, 80), new GUIContent("SUCCESS"), boxStyle);
+                    }
+                    else
+                    {
+                        GUI.color = Color.red;
+                        GUI.Box(new Rect(valX, valY, w, 80), new GUIContent("FAILED"), boxStyle);
+                    }
+                }
+                else
+                {
+                    GUI.color = Color.grey;
+                    GUI.Box(new Rect(valX, valY, w, 80), new GUIContent("-"), boxStyle);
+                }
+                
+                
+                
+                valX += w + 2 ;
+                
+                if (_validationProcessIsDone)
+                {
+                    if (_eyetrackingManager.GetEyeValidationStatus())
+                    {
+                        GUI.color = Color.green;
+                        GUI.Box(new Rect(valX, valY, w+w, 80), new GUIContent("SUCCESS: "+ _eyetrackingManager.GetCombinedEyeValidationErrorAngles()), boxStyle);
+                    }
+                    else
+                    {
+                        GUI.color = Color.red;
+                        GUI.Box(new Rect(valX, valY, w+w, 80), new GUIContent("FAILURE: "+ _eyetrackingManager.GetCombinedEyeValidationErrorAngles()), boxStyle);
+                    }
+                }
+                else
+                {
+                    GUI.color = Color.grey;
+                    GUI.Box(new Rect(valX, valY, w+w, 80), new GUIContent("-"), boxStyle);
+                }
+
+                GUI.color = Color.grey;
+                
+
+
+
+
                 break;
-            
                 case MenuState.SafetyBeforeStart:
                     
+                GUI.backgroundColor = Color.cyan;
+                    
                     valX = x;
+                    valY = y;
                 GUI.Box(new Rect(valX, 100, w, 80), new GUIContent("ID: "+ _participantId), boxStyle);
 
                 valX += w+ 2;
@@ -897,14 +1009,13 @@ public class ExperimentManager : MonoBehaviour
     }
 }
 
-public class EyeValidationArgs : EventArgs
-{
-    public bool eyeValidationSuccessful;
-    public EyeValidationData eyeValidationData;
-}
+
 
 public class StartExperimentArgs : EventArgs
 {
+    public Vector3 CombinedEyeValidationErrorOffset;
+    public Vector3 LeftEyeValidationErrorOffset;
+    public Vector3 RightEyeValidationErrorOffset;
     public HybridCharacterController CharacterController;
     public ExperimentManager.Condition Condition;
     public double ApplicationStartTime;

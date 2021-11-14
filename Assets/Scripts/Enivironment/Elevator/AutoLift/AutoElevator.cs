@@ -16,6 +16,7 @@ public class AutoElevator : MonoBehaviour
     private GameObject TargetPosition;
     private bool upward;
     public float speed;
+    public bool startsUpward;
 
     private bool isUp;
     
@@ -31,6 +32,13 @@ public class AutoElevator : MonoBehaviour
         {
             door.SetActive(false);
         }
+
+        if (startsUpward)
+            elevator.transform.position = UpperBoundary.transform.position;
+        else
+        {
+            elevator.transform.position = LowerBoundary.transform.position;
+        }
         _boundedPosition = elevator.transform.position;
         
         
@@ -38,10 +46,7 @@ public class AutoElevator : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            StartLift();
-        }
+      
         
         if (reachedPosition && elevatorCheck.IsAvatarIsInside())
         {

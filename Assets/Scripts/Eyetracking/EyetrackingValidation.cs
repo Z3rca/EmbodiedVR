@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Schema;
 using UnityEngine;
 using ViveSR.anipal.Eye;
 
@@ -14,6 +15,8 @@ public class EyetrackingValidation : MonoBehaviour
     [Space] [Header("Eye-tracker validation field")]
     private GameObject _camera;
     [SerializeField] private GameObject fixationPoint;
+    [SerializeField] private GameObject InstructionText;
+    private float TimeShowingInstructionText = 2f;
     [SerializeField] private List<Vector3> keyPositions;
 
     private bool _isValidationRunning;
@@ -27,6 +30,8 @@ public class EyetrackingValidation : MonoBehaviour
     private List<EyeValidationData> _eyeValidationDataFrames;
     private EyeValidationData _eyeValidationData;
     private float ErrorThreshold = 1.5f;
+
+    public EventHandler<EyeValidationArgs> OnValidationCompleted;
 
     #endregion
 
@@ -77,14 +82,23 @@ public class EyetrackingValidation : MonoBehaviour
     {
         if (_isValidationRunning) yield break;
         _isValidationRunning = true;
+        
 
         fixationPoint.transform.parent = _hmdTransform.gameObject.transform;
-
+        InstructionText.SetActive(false);
         //_hmdTransform = EyetrackingManager.Instance.GetHmdTransform();
 
         fixationPoint.transform.position = _hmdTransform.position + _hmdTransform.rotation * new Vector3(0,0,30);
 
         fixationPoint.transform.LookAt(_hmdTransform);
+
+
+        fixationPoint.GetComponent<MeshRenderer>().enabled = false;
+        InstructionText.SetActive(true);
+        yield return new WaitForSeconds(TimeShowingInstructionText);
+        InstructionText.SetActive(false);
+        fixationPoint.GetComponent<MeshRenderer>().enabled = true;
+        
         
         //Instruction texts
         
@@ -152,20 +166,34 @@ public class EyetrackingValidation : MonoBehaviour
 
 
         fixationPoint.SetActive(false);
-        
+        bool successful;
         // give feedback whether the error was too large or not
         if (CalculateValidationError(anglesX) > ErrorThreshold || 
             CalculateValidationError(anglesY) > ErrorThreshold ||
-            CalculateValidationError(anglesZ) > ErrorThreshold ||
+          //  CalculateValidationError(anglesZ) > ErrorThreshold ||
             _eyeValidationData.EyeValidationError == Vector3.zero)
         {
-            ExperimentManager.Instance.SetValidationSuccessStatus(false);
+            Debug.Log("calibration failed" + _eyeValidationData.EyeValidationError);
+            successful = false;
         }
         else
         {
-            ExperimentManager.Instance.SetValidationSuccessStatus(true);
+            successful = true;
+            Debug.Log("calibration sucessful"+ _eyeValidationData.EyeValidationError);
            
         }
+
+        EyeValidationArgs arguments = new EyeValidationArgs();
+
+        arguments.eyeValidationData = _eyeValidationData;
+        arguments.errorAngles = _eyeValidationData.EyeValidationError;
+        arguments.leftEyeErrorAngles = _eyeValidationData.LeftEyeAngleOffset;
+        arguments.rightEyeErrorAngles = _eyeValidationData.RightEyeAngleOffset;
+        
+        arguments.eyeValidationSuccessful = successful;
+
+
+        OnValidationCompleted.Invoke(this,arguments);
     }
     
     private IEnumerator CheckErrorEyeTracker(float delay=5)
@@ -227,11 +255,13 @@ public class EyetrackingValidation : MonoBehaviour
             CalculateValidationError(anglesZ) > ErrorThreshold ||
             _eyeValidationData.EyeValidationError == Vector3.zero)
         {
-            ExperimentManager.Instance.SetValidationSuccessStatus(false);
+            //ExperimentManager.Instance.SetValidationSuccessStatus(false);
+           
         }
         else
         {
-            ExperimentManager.Instance.SetValidationSuccessStatus(true);
+           // ExperimentManager.Instance.SetValidationSuccessStatus(true);
+            
         }
     }
     
@@ -239,10 +269,7 @@ public class EyetrackingValidation : MonoBehaviour
     {
         
         EyeValidationData eyeValidationData = new EyeValidationData();
-
-        VerboseData data; 
         
-        SRanipal_Eye.GetVerboseData(out data);
         
         Ray ray;
         
@@ -251,9 +278,8 @@ public class EyetrackingValidation : MonoBehaviour
         
         eyeValidationData.CalibrationFreq = _calibrationFreq;
         
-        eyeValidationData.PointToFocus = fixationPoint.transform.position;
 
-        if (SRanipal_Eye.GetGazeRay(GazeIndex.LEFT, out ray))
+        if (SRanipal_Eye_v2.GetGazeRay(GazeIndex.LEFT, out ray))
         {
             var angles = Quaternion.FromToRotation((fixationPoint.transform.position - _hmdTransform.position).normalized, _hmdTransform.rotation * ray.direction)
                 .eulerAngles;
@@ -262,19 +288,17 @@ public class EyetrackingValidation : MonoBehaviour
         }
         
 
-            Debug.Log("left"+ ray.direction +" "+   data.left.gaze_origin_mm);
+   
         
-        if (SRanipal_Eye.GetGazeRay(GazeIndex.RIGHT, out ray))
+        if (SRanipal_Eye_v2.GetGazeRay(GazeIndex.RIGHT, out ray))
         {
             var angles = Quaternion.FromToRotation((fixationPoint.transform.position - _hmdTransform.position).normalized, _hmdTransform.rotation * ray.direction)
                 .eulerAngles;
 
             eyeValidationData.RightEyeAngleOffset = angles;
         }
-        
-        Debug.Log("right"+ ray.direction +" "+  data.left.gaze_origin_mm);
 
-        if (SRanipal_Eye.GetGazeRay(GazeIndex.COMBINE, out ray))
+        if (SRanipal_Eye_v2.GetGazeRay(GazeIndex.COMBINE, out ray))
         {
             var angles = Quaternion.FromToRotation((fixationPoint.transform.position - _hmdTransform.position).normalized, _hmdTransform.rotation * ray.direction)
                 .eulerAngles;
@@ -282,10 +306,8 @@ public class EyetrackingValidation : MonoBehaviour
             eyeValidationData.CombinedEyeAngleOffset = angles;
         }
         
-        Debug.Log("combined"+ ray.direction + data.combined.eye_data.gaze_origin_mm);
 
-        Debug.Log("validate..." + eyeValidationData.LeftEyeAngleOffset + eyeValidationData.CombinedEyeAngleOffset +
-                  eyeValidationData.RightEyeAngleOffset);
+//        Debug.Log("validate..." + eyeValidationData.LeftEyeAngleOffset + eyeValidationData.CombinedEyeAngleOffset +eyeValidationData.RightEyeAngleOffset);
         return eyeValidationData;
     }
     
@@ -312,8 +334,19 @@ public class EyetrackingValidation : MonoBehaviour
     {
         if(!_isErrorCheckRunning) _runErrorCheckCo = StartCoroutine(CheckErrorEyeTracker());
     }
-    
-    
+
 
     #endregion
+    
+    
+   
+}
+
+public class EyeValidationArgs : EventArgs
+{
+    public bool eyeValidationSuccessful;
+    public Vector3 errorAngles;
+    public Vector3 leftEyeErrorAngles;
+    public Vector3 rightEyeErrorAngles;
+    public EyeValidationData eyeValidationData;
 }

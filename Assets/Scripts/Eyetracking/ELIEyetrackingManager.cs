@@ -20,9 +20,18 @@ public class ELIEyetrackingManager : MonoBehaviour
     private bool _eyeValidationSucessful;
     private bool _calibrationSuccess;
 
+
+    private bool _validationCompleted;
+
+    private bool _isCalibrated;
+
     private float eyeValidationDelay;
 
     private Vector3 _eyeValidationErrorAngles;
+    private Vector3 _leftEyeValidationErrorAngles;
+    private Vector3 _rightEyeValidationErrorAngles;
+
+    private EyeValidationData _validationData;
     
     public delegate void OnCompletedEyeValidation(bool wasSuccessful);
     public event OnCompletedEyeValidation NotifyEyeValidationCompletnessObservers;
@@ -44,10 +53,13 @@ public class ELIEyetrackingManager : MonoBehaviour
     {
         
     }
-    
-    
 
-  
+
+    private void Start()
+    {
+        _eyetrackingValidation.OnValidationCompleted += OnValidationCompleted;
+    }
+
 
     public void AbortValidation()
     {
@@ -63,7 +75,7 @@ public class ELIEyetrackingManager : MonoBehaviour
     
     public void StartCalibration()
     {
-        SRanipal_Eye.LaunchEyeCalibration();
+        _isCalibrated = SRanipal_Eye_v2.LaunchEyeCalibration();
     }
 
     public void StartValidation()
@@ -94,7 +106,7 @@ public class ELIEyetrackingManager : MonoBehaviour
 
     public bool EyetrackerIsCalibrated()
     {
-        return device.GetCalibrationStatus();
+        return _isCalibrated;
     }
     
     public Transform GetHmdTransform()
@@ -103,14 +115,36 @@ public class ELIEyetrackingManager : MonoBehaviour
     }
     
 
-    public Vector3 GetEyeValidationErrorAngles()
+    public Vector3 GetCombinedEyeValidationErrorAngles()
     {
         return _eyeValidationErrorAngles;
     }
-    
 
+    public Vector3 GetLeftEyeValidationErrorAngles()
+    {
+        return _leftEyeValidationErrorAngles;
+    }
+    
+    public Vector3 GetRightEyeValidationErrorAngles()
+    {
+        return _rightEyeValidationErrorAngles;
+    }
+
+    
+    
     private void StoreEyeTrackingData()
     {
+    }
+
+    private void OnValidationCompleted(object sender, EyeValidationArgs eyeValidationArgs)
+    {
+        _eyeValidationErrorAngles = eyeValidationArgs.errorAngles;
+        _leftEyeValidationErrorAngles = eyeValidationArgs.leftEyeErrorAngles;
+        _rightEyeValidationErrorAngles = eyeValidationArgs.rightEyeErrorAngles;
+        _eyeValidationSucessful = eyeValidationArgs.eyeValidationSuccessful;
+        _validationData = eyeValidationArgs.eyeValidationData;
+        _validationCompleted = true;
+        
     }
     
     private void SetEyeValidationStatus(bool eyeValidationWasSucessfull, Vector3 errorAngles)
