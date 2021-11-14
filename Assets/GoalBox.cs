@@ -40,6 +40,11 @@ public class GoalBox : MonoBehaviour
     {
         if (other.gameObject.tag=="Sphere")
         {
+            if (ExperimentManager.Instance != null)
+            {
+                ExperimentManager.Instance.AddInteractionCubeToDictionary(other.gameObject.name);
+            }
+            
             counter++;
             visibleCounter.text = counter + "/" + final;
             other.gameObject.SetActive(false);

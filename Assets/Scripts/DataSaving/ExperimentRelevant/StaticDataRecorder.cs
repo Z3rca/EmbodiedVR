@@ -6,6 +6,9 @@ public class StaticDataRecorder : MonoBehaviour
 {
     private ELIVRDataFrame _currentDataFrame;
     private StationDataFrame _currentStationDataFrame;
+
+    private List<string> InteractionCubeNames;
+    private List<double> InteractionCubeTimeStamps;
     
     void Start()
     {
@@ -15,6 +18,9 @@ public class StaticDataRecorder : MonoBehaviour
         ExperimentManager.Instance.OnPakourFinished += OnPakourEnds;
         ExperimentManager.Instance.OnDataGatheringCompleted += OnDataGatheringRoomCompleted;
         ExperimentManager.Instance.FinishedExperiment += OnFinishExperiment;
+
+        InteractionCubeNames = new List<string>();
+        InteractionCubeTimeStamps = new List<double>();
     }
 
     private void OnFinishExperiment(object sender, ExperimentFinishedArgs e)
@@ -125,6 +131,24 @@ public class StaticDataRecorder : MonoBehaviour
        // DataSavingManager.Instance.Save(_currentStationDataFrame," tmp "+  _currentStationDataFrame.participantID   +" - "  + _currentStationDataFrame.pakourOrder+  " - " + _currentStationDataFrame.stationIndex);
         _currentDataFrame._stationDataFrames.Add(_currentStationDataFrame);
         _currentStationDataFrame = null;
+
+        if (ExperimentManager.Instance.GetInteractionCubeDictionary() != null)
+        {
+            Dictionary<string, double> InteractableCubeDictionary =
+                ExperimentManager.Instance.GetInteractionCubeDictionary();
+            InteractionCubeNames.Clear();
+            InteractionCubeTimeStamps.Clear();
+
+            foreach (var key in InteractableCubeDictionary.Keys)
+            {
+                InteractionCubeNames.Add(key);
+                InteractionCubeTimeStamps.Add(InteractableCubeDictionary[key]);
+            }
+            
+            _currentDataFrame.InteractionCubeNames = InteractionCubeNames;
+            _currentDataFrame.InteractionCubeAcceptedTimeStamps = InteractionCubeTimeStamps;
+        }
+        
     }
 
 

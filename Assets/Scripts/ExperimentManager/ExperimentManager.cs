@@ -40,6 +40,8 @@ public class ExperimentManager : MonoBehaviour
     [SerializeField] private MicrophoneManager _microphoneManager;
 
     [SerializeField] private LiveDataRecorder liveDataRecorder;
+    
+    private Dictionary<string,double > InteractionAreaCubesAccepted;
 
     private bool firstTimeHeightCalibration;
     public event EventHandler<StartExperimentArgs> startedExperiment;
@@ -160,6 +162,26 @@ public class ExperimentManager : MonoBehaviour
         
         InstantiatePlayerOnStation();
         
+    }
+
+    public void AddInteractionCubeToDictionary(string ObjectName)
+    {
+        if (InteractionAreaCubesAccepted == null)
+        {
+            InteractionAreaCubesAccepted = new Dictionary<string, double>();
+        }
+
+        InteractionAreaCubesAccepted.Add(ObjectName, TimeManager.Instance.GetCurrentUnixTimeStamp());
+    }
+
+    public Dictionary<string, double> GetInteractionCubeDictionary()
+    {
+        if (InteractionAreaCubesAccepted == null)
+        {
+            InteractionAreaCubesAccepted = new Dictionary<string, double>();
+        }
+
+        return InteractionAreaCubesAccepted;
     }
 
     private void InstantiatePlayerOnStation()
