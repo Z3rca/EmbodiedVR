@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Valve.VR;
 using Valve.VR.InteractionSystem;
+using ViveSR.anipal.Eye;
 
 public class LiveDataRecorder : MonoBehaviour
 {
@@ -40,6 +41,7 @@ public class LiveDataRecorder : MonoBehaviour
 
 
     private bool _hitSomething;
+    private bool _recordEyetData;
     
     private Transform Puppet;
     private Transform PuppetHead;
@@ -194,32 +196,111 @@ public class LiveDataRecorder : MonoBehaviour
             }
             
             //Eyetracking
-            RaycastHit[] hits;
-            
-            hits = Physics.RaycastAll(_hmd.transform.position, _hmd.transform.forward, 30f);
-            if (hits.Length > 0)
+
+            VerboseData eyeData;
+            if(SRanipal_Eye_v2.GetVerboseData(out eyeData))
             {
+                //ValidityCheck;
+                dataFrame.combinedGazeValidityBitmask = eyeData.combined.eye_data.eye_data_validata_bit_mask;
+                dataFrame.leftGazeValidityBitmask = eyeData.left.eye_data_validata_bit_mask;
+                dataFrame.rightGazeValidityBitmask = eyeData.right.eye_data_validata_bit_mask;
+                
+                //pupil diameter
+                dataFrame.pupilDiameterMillimetersLeft = eyeData.left.pupil_diameter_mm;
+                dataFrame.pupilDiameterMillimetersRight = eyeData.right.pupil_diameter_mm;
+                
+                //eye openness
+                dataFrame.eyeOpennessLeft = eyeData.left.eye_openness;
+                dataFrame.eyeOpennessRight = eyeData.right.eye_openness;
+                
+                Vector3 coordinateAdaptedGazeDirectionLeft = new Vector3(eyeData.left.gaze_direction_normalized.x * -1,  eyeData.left.gaze_direction_normalized.y, eyeData.left.gaze_direction_normalized.z);
+                Vector3 coordinateAdaptedGazeDirectionRight = new Vector3(eyeData.right.gaze_direction_normalized.x * -1,  eyeData.right.gaze_direction_normalized.y, eyeData.right.gaze_direction_normalized.z);
+                Vector3 coordinateAdaptedGazeDirectionCombined = new Vector3(eyeData.combined.eye_data.gaze_direction_normalized.x * -1,  eyeData.combined.eye_data.gaze_direction_normalized.y, eyeData.combined.eye_data.gaze_direction_normalized.z);
+                
+                
+                //local direction 
 
-                dataFrame.HitSomething = true;
-                if (hits.Length == 1)
-                {
-                    dataFrame.HitObject1 = hits[0].collider.name;
-                    dataFrame.HitPosition1 = hits[0].point;
-                    dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
-                }
+                dataFrame.eyeDirectionLeftLocal = coordinateAdaptedGazeDirectionLeft;
+                dataFrame.eyeDirectionRightLocal = coordinateAdaptedGazeDirectionRight;
+                dataFrame.eyeDirectionCombinedLocal = coordinateAdaptedGazeDirectionCombined;
+                
+                //local position
+                
+                dataFrame.eyePositionLeftLocal= eyeData.left.gaze_origin_mm;
+                dataFrame.eyePositionRightLocal = eyeData.right.gaze_origin_mm;
+                dataFrame.eyePositionCombinedLocal = eyeData.combined.eye_data.gaze_origin_mm;
+                
+                //global direction
+                
+                dataFrame.eyeDirectionLeftWorld = _hmd.rotation * coordinateAdaptedGazeDirectionLeft;
+                dataFrame.eyeDirectionRightWorld = _hmd.rotation * coordinateAdaptedGazeDirectionRight;
+                dataFrame.eyeDirectionCombinedWorld = _hmd.rotation * coordinateAdaptedGazeDirectionCombined;
+                
+                //global position
 
-                if (hits.Length >= 2)
+                dataFrame.eyePositionLeftWorld = eyeData.left.gaze_origin_mm / 1000 + _hmd.position;
+                dataFrame.eyePositionRightWorld = eyeData.right.gaze_origin_mm / 1000 + _hmd.position;
+                dataFrame.eyePositionCombinedWorld = eyeData.combined.eye_data.gaze_origin_mm / 1000 + _hmd.position;
+
+
+                RaycastHit[] hits;
+                
+                hits = Physics.RaycastAll( dataFrame.eyePositionCombinedWorld, dataFrame.eyeDirectionCombinedWorld, 30f);
+                if (hits.Length > 0)
                 {
-                    hits.OrderBy(x=>x.distance).ToArray();
-                    dataFrame.HitObject1 = hits[0].collider.name;
-                    dataFrame.HitPosition1 = hits[0].point;
-                    dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
+                    dataFrame.HitSomething = true;
+                    if (hits.Length == 1)
+                    {
+                        dataFrame.HitObject1 = hits[0].collider.name;
+                        dataFrame.HitPosition1 = hits[0].point;
+                        dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
+                    }
+
+                    if (hits.Length >= 2)
+                    {
+                        hits.OrderBy(x=>x.distance).ToArray();
+                        dataFrame.HitObject1 = hits[0].collider.name;
+                        dataFrame.HitPosition1 = hits[0].point;
+                        dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
                     
-                    dataFrame.HitObject1 = hits[1].collider.name;
-                    dataFrame.HitPosition1 = hits[1].point;
-                    dataFrame.HitObjectPosition1 = hits[1].collider.gameObject.transform.position;
+                        dataFrame.HitObject1 = hits[1].collider.name;
+                        dataFrame.HitPosition1 = hits[1].point;
+                        dataFrame.HitObjectPosition1 = hits[1].collider.gameObject.transform.position;
+                    }
+                }
+                
+            }
+            else
+            {
+                RaycastHit[] hits;
+            
+                hits = Physics.RaycastAll(_hmd.transform.position, _hmd.transform.forward, 30f);
+                if (hits.Length > 0)
+                {
+
+                    dataFrame.HitSomething = true;
+                    if (hits.Length == 1)
+                    {
+                        dataFrame.HitObject1 = hits[0].collider.name;
+                        dataFrame.HitPosition1 = hits[0].point;
+                        dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
+                    }
+
+                    if (hits.Length >= 2)
+                    {
+                        hits.OrderBy(x=>x.distance).ToArray();
+                        dataFrame.HitObject1 = hits[0].collider.name;
+                        dataFrame.HitPosition1 = hits[0].point;
+                        dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
+                    
+                        dataFrame.HitObject1 = hits[1].collider.name;
+                        dataFrame.HitPosition1 = hits[1].point;
+                        dataFrame.HitObjectPosition1 = hits[1].collider.gameObject.transform.position;
+                    }
                 }
             }
+            
+            
             
             _dataFrames.Add(dataFrame);
             if (Vector3.Magnitude(_rotationInput) > 0f)

@@ -51,27 +51,39 @@ using UnityEngine;
         public bool ObjectAttachedToRightHand;
         public string ObjectNameLeft;
         public string ObjectNameRight;
-
-
+        
+        //validity
+        public ulong leftGazeValidityBitmask;   //
+        public ulong rightGazeValidityBitmask; //
+        public ulong combinedGazeValidityBitmask;//
 
         //Eyetracking
-        public float eyeOpennessLeft;
-        public float eyeOpennessRight;
-        public float pupilDiameterMillimetersLeft;
-        public float pupilDiameterMillimetersRight;
-        public Vector3 eyePositionCombinedWorld;
-        public Vector3 eyeDirectionCombinedWorld;
-        public Vector3 eyeDirectionCombinedLocal;
-        public Vector3 eyePositionLeftWorld;
-        public Vector3 eyeDirectionLeftWorld;
-        public Vector3 eyeDirectionLeftLocal;
-        public Vector3 eyePositionRightWorld;
-        public Vector3 eyeDirectionRightWorld;
-        public Vector3 eyeDirectionRightLocal;
-        public ulong leftGazeValidityBitmask;
-        public ulong rightGazeValidityBitmask;
-        public ulong combinedGazeValidityBitmask;
+        public float eyeOpennessLeft; //
+        public float eyeOpennessRight; //
+        public float pupilDiameterMillimetersLeft; //
+        public float pupilDiameterMillimetersRight; //
         
+        //local direction
+        public Vector3 eyeDirectionLeftLocal;
+        public Vector3 eyeDirectionRightLocal;
+        public Vector3 eyeDirectionCombinedLocal;
+        
+        //local position
+        public Vector3 eyePositionLeftLocal;
+        public Vector3 eyePositionRightLocal;
+        public Vector3 eyePositionCombinedLocal;
+        
+        //global direction
+        public Vector3 eyeDirectionLeftWorld;
+        public Vector3 eyeDirectionRightWorld;
+        public Vector3 eyeDirectionCombinedWorld;
+        
+        //global position;
+        public Vector3 eyePositionLeftWorld;
+        public Vector3 eyePositionCombinedWorld;
+        public Vector3 eyePositionRightWorld;
+        
+        //hit data
         public bool HitSomething;
         public Vector3 HitPosition1;
         public Vector3 HitPosition2;
