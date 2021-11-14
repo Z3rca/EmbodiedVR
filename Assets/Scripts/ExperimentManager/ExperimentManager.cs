@@ -177,6 +177,11 @@ public class ExperimentManager : MonoBehaviour
         _eyetrackingManager.StartValidation();
     }
 
+    public bool ValidationWasSucessful()
+    {
+        return _validationSuccess;
+    }
+
     public Camera GetActiveCamera()
     {
         if (runningExperiment)
