@@ -293,6 +293,11 @@ public class ExperimentManager : MonoBehaviour
     {
         return _condition;
     }
+
+    public string GetStationID()
+    {
+        return _ActiveStation.ID.ToString();
+    }
     
     public void TakeParticipantToNextStation()
     {
