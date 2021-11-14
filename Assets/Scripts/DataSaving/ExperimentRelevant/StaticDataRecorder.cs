@@ -28,6 +28,9 @@ public class StaticDataRecorder : MonoBehaviour
     void OnStartedExperiment(object sender, StartExperimentArgs startExperimentArgs)
     {
         _currentDataFrame = new ELIVRDataFrame();
+        _currentDataFrame.CombinedvalidationErrorOffset = startExperimentArgs.CombinedEyeValidationErrorOffset;
+        _currentDataFrame.LeftEyeValidationErrorOffset = startExperimentArgs.LeftEyeValidationErrorOffset;
+        _currentDataFrame.RightEyeValidationOffset = startExperimentArgs.RightEyeValidationErrorOffset;
         _currentDataFrame.Condition = ExperimentManager.Instance.GetCondition().ToString();
         _currentDataFrame.applicationStartTimestamp = startExperimentArgs.ApplicationStartTime;
         _currentDataFrame.ExperimentStartTimestamp = startExperimentArgs.ExperimentStartTime;
