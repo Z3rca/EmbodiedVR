@@ -530,14 +530,18 @@ public class ExperimentManager : MonoBehaviour
         else
             Debug.LogWarning("WARNING DATA EVENT HAS NO LISTENER");
 
-        StartCoroutine(DisableAvatarView());
+        StartCoroutine(DisableAvatarViewAndQuit(10));
+        
     }
 
-    private IEnumerator DisableAvatarView()
+    private IEnumerator DisableAvatarViewAndQuit(float timeUntilQuit)
     {
         yield return new WaitUntil(() =>SelectedAvatar.GetComponent<HybridController>().IsFading());
         
         SelectedAvatar.GetComponent<HybridController>().FadeOut(2f);
+
+        yield return new WaitForSeconds(timeUntilQuit);
+        Application.Quit();
     }
 
     public string GetParticipantID()
