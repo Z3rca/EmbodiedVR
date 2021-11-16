@@ -732,36 +732,41 @@ public class ExperimentManager : MonoBehaviour
                 
                 GUI.backgroundColor = Color.cyan;
 
-
-                if (GUI.Button(new Rect(x, Screen.height/2, w, 80), "Hybrid", buttonStyle))
+                valX = x;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "A) Avatar Hybrid", buttonStyle))
                 {
                     condition = "Hybrid";
                     _condition = Condition.Hybrid;
                     SelectedAvatar = Avatars[0];
                     _menuState = MenuState.MainMenu;
                 }
-                if (GUI.Button(new Rect(x*3.5f, Screen.height/2, w, 80), "Hybrid(Blob)", buttonStyle))
+
+                x += w * 2;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "B) Avatar First-Person", buttonStyle))
                 {
                     SelectedAvatar = Avatars[2];
+                    condition = "Firstperson";
+                    _condition = Condition.FirstPerson;
+                    _menuState = MenuState.MainMenu;
+                }
+                x += w * 2;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "C) Blob Hybrid", buttonStyle))
+                {
+                    SelectedAvatar = Avatars[1];
                     condition = "Hybrid(Blob)";
                     _condition = Condition.Blob;
                     _menuState = MenuState.MainMenu;
                 }
-                if (GUI.Button(new Rect(x*6, Screen.height/2, w, 80), "First-person", buttonStyle))
-                {
-                    SelectedAvatar = Avatars[1];
-                    condition = "First-person";
-                    _condition = Condition.FirstPerson;
-                    _menuState = MenuState.MainMenu;
-                }
-                if (GUI.Button(new Rect(x*8.5f, Screen.height/2, w*1.3f, 80), "Bodiless", buttonStyle))
+                x += w * 2;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2f, 80), "D) Blob First-Person", buttonStyle))
                 {
                     SelectedAvatar = Avatars[3];
                     condition = "First-Person(Blob)";
                     _condition = Condition.Bodiless;
                     _menuState = MenuState.MainMenu;
                 }
-                
+
+                x = valX;
                 
                 break;
             case MenuState.MainMenu:
@@ -806,9 +811,9 @@ public class ExperimentManager : MonoBehaviour
                 GUI.backgroundColor = Color.cyan;
 
                 valX += w+2;
-                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent(condition), boxStyle);
+                GUI.Box(new Rect(valX, 100, w*2, 80), new GUIContent(condition), boxStyle);
                 
-                valX += w+2;
+                valX += 2*w+2;
                 GUI.backgroundColor = Color.red;
 
                 
