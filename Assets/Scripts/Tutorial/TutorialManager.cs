@@ -307,16 +307,21 @@ public class TutorialManager : MonoBehaviour
 
     private void FinishTutorial()
     {
+        StartCoroutine(FinishExperiment());
+    }
+
+    private IEnumerator FinishExperiment()
+    {
         EnableExitArea();
         audioController.AudioClip13();
-
-        Door.SetActive(false);
-        Door2.SetActive(false);
         finalizedTutorial = true;
         ExperimentManager.Instance.SetisInTutorial(false);
         
-        HybridController.StopHighlighting();
+        yield return new WaitUntil(() => !audioController.GetActive());
+        Door.SetActive(false);
+        Door2.SetActive(false);
         
+        HybridController.StopHighlighting();
 
     }
     public void StopAllDialogue()
