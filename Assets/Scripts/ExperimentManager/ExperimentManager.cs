@@ -584,7 +584,7 @@ public class ExperimentManager : MonoBehaviour
         
         _eyetrackingManager.StartValidation();
 
-        yield return new WaitUntil(() => _eyetrackingManager.GetEyeValidationStatus());
+        yield return new WaitUntil(() => _eyetrackingManager.GetValidationCompletedSatus());
 
         _validationProcessIsDone = true;
     }

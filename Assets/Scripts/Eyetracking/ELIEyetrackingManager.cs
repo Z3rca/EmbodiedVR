@@ -146,6 +146,11 @@ public class ELIEyetrackingManager : MonoBehaviour
         _validationCompleted = true;
         
     }
+
+    public bool GetValidationCompletedSatus()
+    {
+        return _validationCompleted;
+    }
     
     private void SetEyeValidationStatus(bool eyeValidationWasSucessfull, Vector3 errorAngles)
     {
