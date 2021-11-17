@@ -120,18 +120,18 @@ public class TutorialManager : MonoBehaviour
             yield return new WaitUntil(() => !audioController.GetActive());
             yield return new WaitForSeconds(1);
             audioController.AudioClip3();
+            HybridController.HighLightControlSwitchButton(true);
             yield return new WaitUntil(() => !audioController.GetActive());
             yield return new WaitForSeconds(1);
             audioController.AudioClip4();
-            HybridController.HighLightControlSwitchButton(true);
+            
             yield return new WaitUntil(() => !audioController.GetActive());
             
             HybridController.AllowViewSwitch(true);
-            yield return new WaitUntil(() => !audioController.GetActive());
-            HybridController.ShowControllers(true);
-            
+
             yield return new WaitUntil(() => _thirdPersonIsActive);
             HybridController.HighLightControlSwitchButton(false);
+            HybridController.ShowControllers(true);
         }
         else
         {
@@ -184,7 +184,7 @@ public class TutorialManager : MonoBehaviour
         GameObject cube;
         Ball.SetActive(true);
         var cubeHovering = Ball.GetComponentInChildren<IgnoreHovering>();
-        
+        Ball.GetComponentInChildren<Rigidbody>().mass = 20000f;
 
 
         if (!_isFirstPersonCondition)
@@ -200,11 +200,13 @@ public class TutorialManager : MonoBehaviour
         }
         
         audioController.AudioClip9();
+        HybridController.HighLightGraspButtons(true);
         yield return new WaitUntil(() => !audioController.GetActive());
         
         Destroy(cubeHovering);
+        Ball.GetComponentInChildren<Rigidbody>().mass = 1f;
         InteractionState = true;
-        HybridController.HighLightGraspButtons(true);
+        
 
         
         
