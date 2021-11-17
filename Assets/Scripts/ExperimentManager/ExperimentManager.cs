@@ -172,6 +172,9 @@ public class ExperimentManager : MonoBehaviour
             InteractionAreaCubesAccepted = new Dictionary<string, double>();
         }
 
+        if (InteractionAreaCubesAccepted.ContainsKey(ObjectName))
+            return;
+
         InteractionAreaCubesAccepted.Add(ObjectName, TimeManager.Instance.GetCurrentUnixTimeStamp());
     }
 
