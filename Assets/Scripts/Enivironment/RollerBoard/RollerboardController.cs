@@ -2,10 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RollerboardController : MonoBehaviour
 {
     private RollerBoardVisuals _visuals;
+
+    public UnityEvent OnTriggerActivate;
+    public UnityEvent OnTriggerDeactivated;
 
     private void Start()
     {
@@ -28,6 +32,7 @@ public class RollerboardController : MonoBehaviour
         if (other.GetComponent<HybridCharacterController>())
         {
             other.transform.parent.parent = this.transform;
+            OnTriggerActivate.Invoke();
         }
     }
 
@@ -37,6 +42,7 @@ public class RollerboardController : MonoBehaviour
         {
             other.transform.parent.parent = null;
         }
+        OnTriggerDeactivated.Invoke();
     }
     
 }

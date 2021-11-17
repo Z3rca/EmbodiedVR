@@ -66,16 +66,5 @@ public class RollerBoardVisuals : MonoBehaviour
     
     // Update is called once per frame
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            MoveRollerBoard();
-        }
-    }
-
-    private void FixedUpdate()
-    {
-//        Debug.Log(GetComponent<Rigidbody>().velocity);
-    }
+   
 }
