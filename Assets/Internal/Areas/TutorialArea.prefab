@@ -161,7 +161,7 @@ Transform:
   m_LocalScale: {x: 0.99644995, y: 3.02697, z: 2.00372}
   m_Children: []
   m_Father: {fileID: 9181747864533819274}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5911331595523800749
 MeshFilter:
@@ -469,6 +469,9 @@ MonoBehaviour:
   tutManagerReference: {fileID: 9181747864047146917}
   floor: {fileID: 2121096727087286396}
   originalPos: {fileID: 0}
+  RespawnedCube:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7372557892475794164
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,7 +710,6 @@ MonoBehaviour:
   BoxAreaShine: {fileID: 9181747864749872585}
   ExitAreaShine: {fileID: 9181747864729684405}
   Ball: {fileID: 0}
-  success: 0
   Door: {fileID: 757685723205752636}
   Door2: {fileID: 757685724301756139}
 --- !u!114 &9181747864047146920
@@ -750,7 +752,7 @@ GameObject:
   - component: {fileID: 9181747864317498575}
   - component: {fileID: 9181747864317498569}
   m_Layer: 10
-  m_Name: Left_Wall
+  m_Name: ConcreteLeft_Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -871,8 +873,8 @@ Transform:
   - {fileID: 9181747865303223137}
   - {fileID: 3607092180952195328}
   - {fileID: 2650665472977867011}
-  - {fileID: 6511322999985776708}
   - {fileID: 3121559780325487587}
+  - {fileID: 6511322999985776708}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1573,6 +1575,11 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 478036300814785006, guid: 21cfe44e54fd42448b2d17d31be6b11c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 787932481065170085, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1661,6 +1668,11 @@ PrefabInstance:
     - target: {fileID: 3559406539195665338, guid: 21cfe44e54fd42448b2d17d31be6b11c,
         type: 3}
       propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589830700255458107, guid: 21cfe44e54fd42448b2d17d31be6b11c,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3908279150275632517, guid: 21cfe44e54fd42448b2d17d31be6b11c,
@@ -2091,7 +2103,7 @@ PrefabInstance:
     - target: {fileID: 3674525989801780306, guid: 7abaf1daf218cfb4d81712c52b0a08d0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 3674525989801780306, guid: 7abaf1daf218cfb4d81712c52b0a08d0,
         type: 3}
@@ -2170,15 +2182,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7abaf1daf218cfb4d81712c52b0a08d0, type: 3}
---- !u!1 &4356416678178686743 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2727371701444448422, guid: 7abaf1daf218cfb4d81712c52b0a08d0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1850007476680857521}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3121559780325487587 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3674525989801780306, guid: 7abaf1daf218cfb4d81712c52b0a08d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1850007476680857521}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4356416678178686743 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2727371701444448422, guid: 7abaf1daf218cfb4d81712c52b0a08d0,
     type: 3}
   m_PrefabInstance: {fileID: 1850007476680857521}
   m_PrefabAsset: {fileID: 0}
@@ -2192,7 +2204,7 @@ PrefabInstance:
     - target: {fileID: 4451555024099236466, guid: f0b38c2e9ac20ed448a95db91cca40ee,
         type: 3}
       propertyPath: m_Name
-      value: 'Right_Wall '
+      value: 'ConcreteRight_Wall '
       objectReference: {fileID: 0}
     - target: {fileID: 4451555024099236466, guid: f0b38c2e9ac20ed448a95db91cca40ee,
         type: 3}
@@ -2272,7 +2284,7 @@ PrefabInstance:
     - target: {fileID: 4309269690379574720, guid: f73360cafd29e464bab9d882b2aa539a,
         type: 3}
       propertyPath: m_Name
-      value: Back_Wall
+      value: ConcreteBack_Wall
       objectReference: {fileID: 0}
     - target: {fileID: 4309269690379574720, guid: f73360cafd29e464bab9d882b2aa539a,
         type: 3}
@@ -2448,6 +2460,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 8498231128494826815, guid: 45e0bb6e64b69314090d90fc33a7bab7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8498231128494826815, guid: 45e0bb6e64b69314090d90fc33a7bab7,
         type: 3}
@@ -3047,7 +3064,7 @@ PrefabInstance:
     - target: {fileID: 8498231129890061923, guid: 45e0bb6e64b69314090d90fc33a7bab7,
         type: 3}
       propertyPath: m_Name
-      value: Wall
+      value: ConcreteWall
       objectReference: {fileID: 0}
     - target: {fileID: 8498231129890061923, guid: 45e0bb6e64b69314090d90fc33a7bab7,
         type: 3}
@@ -3562,7 +3579,7 @@ PrefabInstance:
     - target: {fileID: 8498231129916951955, guid: 45e0bb6e64b69314090d90fc33a7bab7,
         type: 3}
       propertyPath: m_Name
-      value: Wall
+      value: ConcreteWall
       objectReference: {fileID: 0}
     - target: {fileID: 8498231129916951955, guid: 45e0bb6e64b69314090d90fc33a7bab7,
         type: 3}
@@ -4523,6 +4540,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Door 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8498231130060600552, guid: 45e0bb6e64b69314090d90fc33a7bab7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8498231130060600552, guid: 45e0bb6e64b69314090d90fc33a7bab7,
         type: 3}

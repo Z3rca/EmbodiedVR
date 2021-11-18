@@ -9,12 +9,14 @@ public class Area4Elevator : MonoBehaviour
 {
     public GameObject lowerDoor;
     public GameObject upperDoor;
-
+    
     public GameObject LowerPosition;
     public GameObject UpperPosition;
     public GameObject Handle;
+    public GameObject HandleSides;
     public GameObject Plattform;
-    
+
+    public Material HighLightMaterial;
 
     public bool startsAtTop;
     
@@ -50,6 +52,9 @@ public class Area4Elevator : MonoBehaviour
     
     private LinearDrive _linearDrive;
 
+
+    private Material previousMaterial;
+    
     private HybridCharacterController _characterController;
     private HybridController _hybridController;
     private bool _characterIsPresent;
@@ -249,11 +254,14 @@ public class Area4Elevator : MonoBehaviour
     public void ObjectAttached()
     {
         _isAttached=true;
+        previousMaterial = HandleSides.GetComponent<MeshRenderer>().material;
+        HandleSides.GetComponent<MeshRenderer>().material = HighLightMaterial;
     }
 
     public void ObjectDetached()
     {
         _isAttached = false;
+        HandleSides.GetComponent<MeshRenderer>().material = previousMaterial;
     }
 
 

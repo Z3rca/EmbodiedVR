@@ -73,8 +73,9 @@ public class ExperimentManager : MonoBehaviour
     private bool runningExperiment;
     private bool _lastStation;
     private bool _SranipalCalibrationDone;
+    private bool _SranipalCalibrationInProgress;
     private bool _validationProcessIsDone;
-
+    private bool _validationInProgress;
     private bool _validationSuccess;
 
     private float fps;
@@ -170,6 +171,9 @@ public class ExperimentManager : MonoBehaviour
         {
             InteractionAreaCubesAccepted = new Dictionary<string, double>();
         }
+
+        if (InteractionAreaCubesAccepted.ContainsKey(ObjectName))
+            return;
 
         InteractionAreaCubesAccepted.Add(ObjectName, TimeManager.Instance.GetCurrentUnixTimeStamp());
     }
@@ -577,15 +581,18 @@ public class ExperimentManager : MonoBehaviour
 
     private IEnumerator EyeCalibrationAndValidation()
     {
+        _SranipalCalibrationInProgress = true;
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
         _eyetrackingManager.StartCalibration();
         
         yield return new WaitUntil(()=>_eyetrackingManager.EyetrackerIsCalibrated() ) ;
         _SranipalCalibrationDone = true;
-        
+        _validationInProgress = true;
         _eyetrackingManager.StartValidation();
 
-        yield return new WaitUntil(() => _eyetrackingManager.GetEyeValidationStatus());
-
+        yield return new WaitUntil(() => _eyetrackingManager.GetValidationCompletedSatus());
+        _validationInProgress = false;
         _validationProcessIsDone = true;
     }
 
@@ -732,36 +739,41 @@ public class ExperimentManager : MonoBehaviour
                 
                 GUI.backgroundColor = Color.cyan;
 
-
-                if (GUI.Button(new Rect(x, Screen.height/2, w, 80), "Hybrid", buttonStyle))
+                valX = x;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "A) Avatar - Hybrid", buttonStyle))
                 {
-                    condition = "Hybrid";
+                    condition = "Avatar Hybrid";
                     _condition = Condition.Hybrid;
                     SelectedAvatar = Avatars[0];
                     _menuState = MenuState.MainMenu;
                 }
-                if (GUI.Button(new Rect(x*3.5f, Screen.height/2, w, 80), "Hybrid(Blob)", buttonStyle))
+
+                x += w * 2;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "B) Avatar - First-Person", buttonStyle))
                 {
                     SelectedAvatar = Avatars[2];
-                    condition = "Hybrid(Blob)";
-                    _condition = Condition.Blob;
-                    _menuState = MenuState.MainMenu;
-                }
-                if (GUI.Button(new Rect(x*6, Screen.height/2, w, 80), "First-person", buttonStyle))
-                {
-                    SelectedAvatar = Avatars[1];
-                    condition = "First-person";
+                    condition = "Avatar Firstperson";
                     _condition = Condition.FirstPerson;
                     _menuState = MenuState.MainMenu;
                 }
-                if (GUI.Button(new Rect(x*8.5f, Screen.height/2, w*1.3f, 80), "Bodiless", buttonStyle))
+                x += w * 2;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "C) Blob - Hybrid", buttonStyle))
+                {
+                    SelectedAvatar = Avatars[1];
+                    condition = "Blob Hybrid";
+                    _condition = Condition.Blob;
+                    _menuState = MenuState.MainMenu;
+                }
+                x += w * 2;
+                if (GUI.Button(new Rect(x, Screen.height/2, w*2f, 80), "D) Blob - First-Person", buttonStyle))
                 {
                     SelectedAvatar = Avatars[3];
-                    condition = "First-Person(Blob)";
+                    condition = "Blob First-Person";
                     _condition = Condition.Bodiless;
                     _menuState = MenuState.MainMenu;
                 }
-                
+
+                x = valX;
                 
                 break;
             case MenuState.MainMenu:
@@ -806,9 +818,9 @@ public class ExperimentManager : MonoBehaviour
                 GUI.backgroundColor = Color.cyan;
 
                 valX += w+2;
-                GUI.Box(new Rect(valX, 100, w, 80), new GUIContent(condition), boxStyle);
+                GUI.Box(new Rect(valX, 100, w*2, 80), new GUIContent(condition), boxStyle);
                 
-                valX += w+2;
+                valX += 2*w+2;
                 GUI.backgroundColor = Color.red;
 
                 
@@ -829,14 +841,14 @@ public class ExperimentManager : MonoBehaviour
                   StartCoroutine(EyeCalibrationAndValidation());
                 }
                 
-                valX += w + 2;
+                valX +=  Mathf.RoundToInt(w*1.5f) + 2;
                 
-                if (GUI.Button(new Rect(valX, Screen.height/2, w, 80), "Validation", buttonStyle))
+                if (GUI.Button(new Rect(valX, Screen.height/2, w+w, 80), "Retry Validation", buttonStyle))
                 {
                     StartEyeTrackingValidation();
                 }
                 
-                valX += w + 2 ;
+                valX += w+w+w + 2 ;
                 
                 if (GUI.Button(new Rect(valX, Screen.height/2, w*1.25f, 80), "Start Experiment", buttonStyle))
                 {
@@ -852,23 +864,31 @@ public class ExperimentManager : MonoBehaviour
                     if (_eyetrackingManager.EyetrackerIsCalibrated())
                     {
                         GUI.color = Color.green;
-                        GUI.Box(new Rect(valX, valY, w, 80), new GUIContent("SUCCESS"), boxStyle);
+                        GUI.Box(new Rect(valX, valY, w*1.5f, 80), new GUIContent("SUCCESS"), boxStyle);
                     }
                     else
                     {
                         GUI.color = Color.red;
-                        GUI.Box(new Rect(valX, valY, w, 80), new GUIContent("FAILED"), boxStyle);
+                        GUI.Box(new Rect(valX, valY, w*1.5f, 80), new GUIContent("FAILED"), boxStyle);
                     }
                 }
                 else
                 {
                     GUI.color = Color.grey;
-                    GUI.Box(new Rect(valX, valY, w, 80), new GUIContent("-"), boxStyle);
+                    if (_SranipalCalibrationInProgress)
+                    {
+                        GUI.Box(new Rect(valX, valY, w*1.5f, 80), new GUIContent("IN PROGRESS..."), boxStyle);
+                    }
+                    else
+                    {
+                        GUI.Box(new Rect(valX, valY, w*1.5f, 80), new GUIContent("-"), boxStyle);
+                    }
+                    
                 }
                 
                 
                 
-                valX += w + 2 ;
+                valX +=  Mathf.RoundToInt(w*1.5f) + 2;
                 
                 if (_validationProcessIsDone)
                 {
@@ -886,7 +906,16 @@ public class ExperimentManager : MonoBehaviour
                 else
                 {
                     GUI.color = Color.grey;
-                    GUI.Box(new Rect(valX, valY, w+w, 80), new GUIContent("-"), boxStyle);
+                    if (_validationInProgress)
+                    {
+                        GUI.Box(new Rect(valX, valY, w+w, 80), new GUIContent("IN PROGRESS..."), boxStyle);
+                    }
+                    else
+                    {
+                        GUI.Box(new Rect(valX, valY, w+w, 80), new GUIContent("-"), boxStyle);
+                    }
+                    
+                   
                 }
 
                 GUI.color = Color.grey;
