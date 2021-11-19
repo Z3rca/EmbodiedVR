@@ -53,7 +53,7 @@ public class TriggerGate : MonoBehaviour
                 position.y = Mathf.Clamp( position.y, OpenPosition.transform.position.y,
                     ClosedPosition.transform.position.y);
 
-                if (Math.Abs(position.y - ClosedPosition.transform.position.y) < 0.01f)
+                if (Math.Abs(position.y - OpenPosition.transform.position.y) < 0.01f)
                 {
                     _open = true;
                 }

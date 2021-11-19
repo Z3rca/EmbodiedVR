@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,7 +39,7 @@ public class RollerBoardVisuals : MonoBehaviour
 
     private IEnumerator MovingRollerboard()
     {
-        Debug.Log("rolling rolling");
+    
         while (moving)
         {
             if (transform.position.z > originalZ + range)
