@@ -78,6 +78,8 @@ public class LiveDataRecorder : MonoBehaviour
 
             _controllerRepresentations = ExperimentManager.Instance.SelectedAvatar.GetComponent<HybridController>()
                 .GetControllerRepresentations();
+
+            _recordEyetData = ExperimentManager.Instance.ValidationWasSucessful();
         }
         
     }
@@ -137,6 +139,8 @@ public class LiveDataRecorder : MonoBehaviour
 
     private IEnumerator Recording()
     {
+        yield return new WaitForEndOfFrame();
+        
         while (_isRecording)
         {
             LiveDataFrame dataFrame = new LiveDataFrame();
@@ -167,7 +171,7 @@ public class LiveDataRecorder : MonoBehaviour
             dataFrame.RotationInput = _rotationInput;
             
             //Character
-            dataFrame.CharacterControllerPosition = _characterController.GetAdjustedPosition();
+            dataFrame.CharacterControllerPosition = _characterController.transform.position;
             dataFrame.CharacterControllerRotation = _characterController.transform.rotation;
             dataFrame.isThirdPerson = _isInThirdPerson;
             dataFrame.AdjustedCharacterPosition = _characterController.GetAdjustedPosition();
@@ -198,6 +202,7 @@ public class LiveDataRecorder : MonoBehaviour
             //Eyetracking
 
             VerboseData eyeData;
+            
             if(SRanipal_Eye_v2.GetVerboseData(out eyeData))
             {
                 //ValidityCheck;
@@ -273,8 +278,15 @@ public class LiveDataRecorder : MonoBehaviour
             else
             {
                 RaycastHit[] hits;
-            
-                hits = Physics.RaycastAll(_hmd.transform.position, _hmd.transform.forward, 30f);
+                if (_recordEyetData)
+                {
+                    hits = Physics.RaycastAll(dataFrame.eyePositionCombinedWorld, dataFrame.eyeDirectionCombinedWorld, 30f);
+                }
+                else
+                {
+                    hits = Physics.RaycastAll(_hmd.transform.position, _hmd.transform.forward, 30f);
+                }
+                
                 if (hits.Length > 0)
                 {
 
@@ -286,18 +298,19 @@ public class LiveDataRecorder : MonoBehaviour
                         dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
                     }
 
-                    if (hits.Length >= 2)
+                    if (hits.Length >1)
                     {
-                        hits.OrderBy(x=>x.distance).ToArray();
-                        dataFrame.HitObject1 = hits[0].collider.name;
-                        dataFrame.HitPosition1 = hits[0].point;
-                        dataFrame.HitObjectPosition1 = hits[0].collider.gameObject.transform.position;
+                        var orderedHits = hits.OrderBy(x=>x.distance).ToArray();
+                        dataFrame.HitObject1 = orderedHits[0].collider.name;
+                        dataFrame.HitPosition1 = orderedHits[0].point;
+                        dataFrame.HitObjectPosition1 = orderedHits[0].collider.gameObject.transform.position;
                     
-                        dataFrame.HitObject1 = hits[1].collider.name;
-                        dataFrame.HitPosition1 = hits[1].point;
-                        dataFrame.HitObjectPosition1 = hits[1].collider.gameObject.transform.position;
+                        dataFrame.HitObject1 = orderedHits[1].collider.name;
+                        dataFrame.HitPosition1 = orderedHits[1].point;
+                        dataFrame.HitObjectPosition1 = orderedHits[1].collider.gameObject.transform.position;
                     }
                 }
+                
             }
             
             
