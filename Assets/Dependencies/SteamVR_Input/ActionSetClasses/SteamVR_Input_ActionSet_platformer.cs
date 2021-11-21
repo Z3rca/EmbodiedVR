@@ -64,5 +64,13 @@ namespace Valve.VR
                 return SteamVR_Actions.platformer_SwitchPerspective;
             }
         }
+        
+        public virtual SteamVR_Action_Boolean MenuButton
+        {
+            get
+            {
+                return SteamVR_Actions.platformer_MenuButton;
+            }
+        }
     }
 }
