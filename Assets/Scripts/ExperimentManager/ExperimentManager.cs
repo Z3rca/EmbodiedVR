@@ -93,10 +93,10 @@ public class ExperimentManager : MonoBehaviour
 
     public enum Condition
     {
-        Hybrid,
-        FirstPerson,
-        Blob,
-        Bodiless
+        AvatarHybrid,
+        AvatarFirstperson,
+        BlobHybrid,
+        BlobFirstperson
     }
     
     
@@ -743,7 +743,7 @@ public class ExperimentManager : MonoBehaviour
                 if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "A) Avatar - Hybrid", buttonStyle))
                 {
                     condition = "Avatar Hybrid";
-                    _condition = Condition.Hybrid;
+                    _condition = Condition.AvatarHybrid;
                     SelectedAvatar = Avatars[0];
                     _menuState = MenuState.MainMenu;
                 }
@@ -751,25 +751,25 @@ public class ExperimentManager : MonoBehaviour
                 x += w * 2;
                 if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "B) Avatar - First-Person", buttonStyle))
                 {
-                    SelectedAvatar = Avatars[2];
+                    SelectedAvatar = Avatars[1];
                     condition = "Avatar Firstperson";
-                    _condition = Condition.FirstPerson;
+                    _condition = Condition.AvatarFirstperson;
                     _menuState = MenuState.MainMenu;
                 }
                 x += w * 2;
                 if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "C) Blob - Hybrid", buttonStyle))
                 {
-                    SelectedAvatar = Avatars[1];
+                    SelectedAvatar = Avatars[3];
                     condition = "Blob Hybrid";
-                    _condition = Condition.Blob;
+                    _condition = Condition.BlobHybrid;
                     _menuState = MenuState.MainMenu;
                 }
                 x += w * 2;
                 if (GUI.Button(new Rect(x, Screen.height/2, w*2f, 80), "D) Blob - First-Person", buttonStyle))
                 {
-                    SelectedAvatar = Avatars[3];
+                    SelectedAvatar = Avatars[4];
                     condition = "Blob First-Person";
-                    _condition = Condition.Bodiless;
+                    _condition = Condition.BlobFirstperson;
                     _menuState = MenuState.MainMenu;
                 }
 
@@ -1024,7 +1024,7 @@ public class ExperimentManager : MonoBehaviour
                 valY = y + 100;
                 
                 valX += buttonwidth+ 2;
-                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent("Time Station: "+ _ActiveStation.ID), boxStyle);
+                GUI.Box(new Rect(valX , valY, buttonwidth, 80), new GUIContent(condition), boxStyle);
 
                 valX += buttonwidth+ 2;
                 TimeSpan time = TimeSpan.FromSeconds(totalTime);
