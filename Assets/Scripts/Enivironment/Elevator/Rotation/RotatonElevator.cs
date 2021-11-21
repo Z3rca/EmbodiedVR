@@ -57,6 +57,7 @@ public class RotatonElevator : MonoBehaviour
 
     IEnumerator TurnPlatform(float speed, bool rightSide, Vector3 eulerRotation)
     {
+        physicalMovementPlayer.GetComponent<HybridCharacterController>().GetGeneralControl().AllowRotation(false);
         while (!atTarget)
         {
           Vector3 currentEuler=   this.transform.rotation.eulerAngles;
@@ -100,6 +101,7 @@ public class RotatonElevator : MonoBehaviour
         physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.parent.SetParent(null);
         physicalMovementPlayer.GetComponent<HybridCharacterController>().transform.parent.eulerAngles= Vector3.zero;
         physicalMovementPlayer.GetComponent<HybridCharacterController>().RotateCharacter(Quaternion.Euler(transform.forward));
+        physicalMovementPlayer.GetComponent<HybridCharacterController>().GetGeneralControl().AllowRotation(true);
         running = false;
     }
 
