@@ -74,8 +74,8 @@ public class TutorialManager : MonoBehaviour
         }
 
 
-        if (ExperimentManager.Instance.GetCondition() == ExperimentManager.Condition.FirstPerson ||
-            ExperimentManager.Instance.GetCondition() == ExperimentManager.Condition.Bodiless)
+        if (ExperimentManager.Instance.GetCondition() == ExperimentManager.Condition.BlobFirstperson ||
+            ExperimentManager.Instance.GetCondition() == ExperimentManager.Condition.AvatarFirstperson)
         {
             _isFirstPersonCondition = true;
         }
