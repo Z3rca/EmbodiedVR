@@ -759,7 +759,7 @@ public class ExperimentManager : MonoBehaviour
                 x += w * 2;
                 if (GUI.Button(new Rect(x, Screen.height/2, w*2, 80), "C) Blob - Hybrid", buttonStyle))
                 {
-                    SelectedAvatar = Avatars[3];
+                    SelectedAvatar = Avatars[2];
                     condition = "Blob Hybrid";
                     _condition = Condition.BlobHybrid;
                     _menuState = MenuState.MainMenu;
@@ -767,7 +767,7 @@ public class ExperimentManager : MonoBehaviour
                 x += w * 2;
                 if (GUI.Button(new Rect(x, Screen.height/2, w*2f, 80), "D) Blob - First-Person", buttonStyle))
                 {
-                    SelectedAvatar = Avatars[4];
+                    SelectedAvatar = Avatars[3];
                     condition = "Blob First-Person";
                     _condition = Condition.BlobFirstperson;
                     _menuState = MenuState.MainMenu;
