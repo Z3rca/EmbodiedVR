@@ -63,7 +63,7 @@ public class RotatonElevator : MonoBehaviour
           Vector3 currentEuler=   this.transform.rotation.eulerAngles;
           if (rightSide)
           {
-              if (Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation))<=0.01f)
+              if (Math.Abs(Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation)))<=0.01f)
               {
                   atTarget = true;
                   break;
@@ -78,7 +78,7 @@ public class RotatonElevator : MonoBehaviour
           }
           else
           {
-              if (Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation))<=0.01f)
+              if (Math.Abs(Quaternion.Angle(this.transform.localRotation,Quaternion.Euler(eulerRotation)))<=0.01f)
               {
                   atTarget = true;
                   break;
@@ -87,6 +87,8 @@ public class RotatonElevator : MonoBehaviour
               {
                  
                   this.transform.Rotate(Vector3.up * (-speed * Time.deltaTime));
+                  if(characterController!=null)
+                      characterController.AddOuterMovementImpact(_rotationAffector.rb.velocity,speed);
               }
           }
           
