@@ -102,6 +102,13 @@ public class MeasuringFlow : MonoBehaviour
         {
             yield return null;
         }
+
+        if (ExperimentManager.Instance != null)
+        {
+            ExperimentManager.Instance.GetPlayerController().AllowInput(false);
+            ExperimentManager.Instance.GetPlayerController().AllowRotation(false);
+        }
+        
         
         //audio measuring
         welcomeScreen.SetActive(false);
@@ -184,7 +191,11 @@ public class MeasuringFlow : MonoBehaviour
             Debug.Log("Data Gathering ends , measuring panel");
            
             DataGatheringEnded.Invoke();
+            
+            ExperimentManager.Instance.GetPlayerController().AllowInput(true);
+            ExperimentManager.Instance.GetPlayerController().AllowRotation(true);
         }
+        
     }
 
 
