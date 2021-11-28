@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GeneralTrigger : MonoBehaviour
+public class GeneralBodyTrigger : MonoBehaviour
 {
     public UnityEvent TriggeredEvent;
-
-
+    
+    
     private void OnTriggerEnter(Collider other)
     {
-        TriggeredEvent?.Invoke();
-
+        if (other.GetComponent<HybridCharacterController>())
+        {
+            TriggeredEvent.Invoke();
+        }
     }
 }
