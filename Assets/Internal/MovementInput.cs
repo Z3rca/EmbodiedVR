@@ -6,7 +6,7 @@ using Valve.VR;
 
 public class MovementInput : MonoBehaviour
 {
-    public bool DisableSideWayMovement;
+    private bool _disableSideWayMovement;
     
     public SteamVR_ActionSet actionSetEnable;
     public SteamVR_Action_Vector2 Input;
@@ -20,6 +20,8 @@ public class MovementInput : MonoBehaviour
     
 
 
+    private Vector2 movementInput;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -32,21 +34,26 @@ public class MovementInput : MonoBehaviour
         //Use.AddOnStateDownListener(TriggerUp, SteamVR_Input_Sources.Any);
         UseIsPressed = false;
 
+       
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        Vector2 Movement = Input.GetAxis(SteamVR_Input_Sources.Any);
+        movementInput = Input.GetAxis(SteamVR_Input_Sources.Any);
+        
+        MovementData movementData= new MovementData();
+        movementData.input = movementInput;
+        //TODO still missing inputData.timeStamp;
 
-        if (DisableSideWayMovement)
+        if (_disableSideWayMovement)
         {
-            Movement.x = 0;
+            movementInput.x = 0;
         }
         
         if(InputAllowed)
-            Mover.Move(Movement);
+            Mover.Move(movementInput);
         
     }
     
@@ -57,12 +64,20 @@ public class MovementInput : MonoBehaviour
         InputAllowed= state;
     }
 
-   
 
-    
+
+    public void DisableSideWayMovement(bool state)
+    {
+        _disableSideWayMovement = state;
+    }
 
     private void SetUseState(bool state=true)
     {
         UseIsPressed = state;
+    }
+
+    public Vector2 GetMovementInput()
+    {
+        return movementInput;
     }
 }
