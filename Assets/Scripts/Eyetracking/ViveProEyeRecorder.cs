@@ -1,12 +1,4 @@
-﻿/*
- * Stefan Balle
- * sballe@uni-osnabrueck.de
- * Year: 2020
- */
-
-
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using ViveSR.anipal.Eye;
 using UnityEngine;
