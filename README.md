@@ -59,5 +59,5 @@ Special Thanks goes to:
 - Janine Reichmann(UI/UX design, organisational matters, data gathering)
 - Henrik Himmelreich (Programming, organizational matters, data gathering)
 - Anna Jansen (3D Assets and Design, data gathering)
-- Lea Kühne https://github.com/lmlightbulb(UI/UX design, Study design, organisational matters, Scene design, data gathering) 
+- Lea Kühne https://github.com/lmlightbulb (UI/UX design, Study design, organisational matters, Scene design, data gathering) 
 
