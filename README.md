@@ -1,7 +1,9 @@
 ### COPYRIGHT DISCLAIMER: 
 This project uses third-party assets. For Inverse Kinematics the "Final IK tool"  was used. (https://assetstore.unity.com/packages/tools/animation/final-ik-14290). Any Rights of the asset in use or in this repository belong to the according authors. The project or contents of it is only free to use for educational purposes. 
 
-# ELI - Embodied Locomotion and Interaction, previously known as  EmbodiedVR   
+# ELI - Embodied Locomotion and Interaction
+previously known as  EmbodiedVR   
+
 ELI Was a Study project based on the Hybrid Locomotion Approach for Virtual Reality at the University of Osnabrück. The goal was to investigate and explore methods of locomotion that induce a sense of embodiment and presence in the virtual environment while ensuring the well-being of the user.
 
 
