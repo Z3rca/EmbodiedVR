@@ -28,7 +28,7 @@ Area 3: Undeliberate movement.  (moving platforms)
 Area 4: Deliberate Vertical movement.
 
 
-## usage:
+## Usage:
 The experiment will not start directly and needs to be set up first. type in a participant ID, use an order and select the condition in which you want to start. Confirm and start.
 
 ##Caution:
