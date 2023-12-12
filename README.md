@@ -21,6 +21,7 @@ The "Hybrid"-locomotion approach, combines a third-person view and a first-perso
 ## Paper draft
 The authors created this paper that summarized the study.
 
+https://github.com/Z3rca/EmbodiedVR/releases/tag/Research
 
 ## Content:
 The application contains 4 areas that would simulate the general use of an interactive application. 
